@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f4c025",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#221e10",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif"],
+                        "sans": ["Noto Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(244, 192, 37, 0.4);
+        }
+        .mystical-overlay {
+            background: linear-gradient(to bottom, rgba(34, 30, 16, 0.2), rgba(34, 30, 16, 0.95));
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<div class="relative flex flex-1 flex-col justify-between overflow-x-hidden">
+<!-- Header / Logo Area -->
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 justify-between border-b border-primary/10">
+<div class="text-primary flex size-12 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined text-3xl">star</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12">Celestial Guidance</h2>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col items-center justify-center px-6 py-8">
+<!-- Visual Element -->
+<div class="w-full max-w-md @container mb-8">
+<div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-primary/20">
+<div class="absolute inset-0 bg-center bg-cover" data-alt="A mystical night sky with glowing stars and nebulae" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCf9wohXnlHzop9MhcLbVCkYCXX09VY4usSF586sIDuuyrebIs7fuy6q0Pz5c-BAqMbArVwk88tdDMkP4-3Nh9EKnlSdw1WK376IovONE6cJXj4ANRk0r9ANYMq4_4G9KzXMiFSB4dnd71T-rkRJb81VlmKXQAQGA7fiN1KsFD7khzGJO3a6S7oANDhvPHrqKVoZVolVRdvbKCeK1aR9hNumEcPSKedXshupmHsgOExHagi9XWtRCQnR3OrKENaudqOnh8hemOBLSw2");'>
+</div>
+<div class="absolute inset-0 mystical-overlay flex flex-col justify-end p-6 text-center">
+<h1 class="text-slate-100 text-3xl font-bold leading-tight mb-2">Unlock Your Destiny</h1>
+<p class="text-primary/80 text-sm font-sans">The stars have written your story. Sign in to read it.</p>
+</div>
+</div>
+</div>
+<!-- Login Form -->
+<div class="w-full max-w-md space-y-6">
+<div class="space-y-4">
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-900 dark:text-slate-100 text-sm font-medium font-sans">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/60">mail</span>
+<input class="w-full pl-12 pr-4 h-14 rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-sans placeholder:text-slate-400 dark:placeholder:text-slate-500" placeholder="Enter your celestial email" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<label class="text-slate-900 dark:text-slate-100 text-sm font-medium font-sans">Password</label>
+<a class="text-primary text-xs font-sans hover:underline" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/60">lock</span>
+<input class="w-full pl-12 pr-4 h-14 rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-sans placeholder:text-slate-400 dark:placeholder:text-slate-500" placeholder="Enter your secret key" type="password"/>
+</div>
+</div>
+</div>
+<!-- Login Button -->
+<button class="w-full h-14 bg-primary text-background-dark font-bold text-lg rounded-xl gold-glow hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group">
+<span>Consult the Oracle</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">auto_awesome</span>
+</button>
+<!-- Divider -->
+<div class="flex items-center gap-4 py-2">
+<div class="h-px flex-1 bg-primary/20"></div>
+<span class="text-slate-400 dark:text-slate-500 text-xs font-sans uppercase tracking-widest">Or connect via</span>
+<div class="h-px flex-1 bg-primary/20"></div>
+</div>
+<!-- Social Login Placeholder -->
+<div class="grid grid-cols-2 gap-4">
+<button class="h-12 rounded-lg border border-primary/20 bg-transparent flex items-center justify-center hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary">brightness_5</span>
+</button>
+<button class="h-12 rounded-lg border border-primary/20 bg-transparent flex items-center justify-center hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary">brightness_2</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer Actions -->
+<footer class="p-8 text-center">
+<p class="text-slate-500 dark:text-slate-400 font-sans">
+                New to the cosmos? 
+                <a class="text-primary font-bold ml-1 hover:underline" href="#">Register Now</a>
+</p>
+</footer>
+<!-- Bottom Navigation (Component Reference) -->
+<nav class="flex gap-2 border-t border-primary/10 bg-background-light dark:bg-background-dark px-4 pb-6 pt-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">star</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">diamond</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">colors_spark</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">account_circle</span>
+</a>
+</nav>
+</div>
+</body></html>

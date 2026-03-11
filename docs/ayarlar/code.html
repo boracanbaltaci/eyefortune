@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Noto+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f4c025",
+              "background-light": "#f8f8f5",
+              "background-dark": "#221e10",
+            },
+            fontFamily: {
+              "display": ["Noto Serif", "serif"],
+              "sans": ["Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<title>Fortune Settings</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-display text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">Mystic Settings</h1>
+</div>
+</header>
+<main class="flex-1 max-w-2xl mx-auto w-full pb-24">
+<div class="p-4">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/20 p-6 mb-8">
+<div class="relative z-10">
+<h2 class="font-display text-lg font-bold text-primary mb-1">Celestial Premium</h2>
+<p class="text-sm opacity-80 mb-4">Unlock daily detailed horoscopes and planetary alignments.</p>
+<button class="bg-primary text-background-dark px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                        Upgrade Now
+                    </button>
+</div>
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]">workspace_premium</span>
+</div>
+</div>
+<section class="space-y-1">
+<h3 class="font-display text-xs uppercase tracking-widest text-primary font-bold px-4 mb-3 opacity-70">General Experience</h3>
+<div class="group flex items-center gap-4 bg-primary/5 hover:bg-primary/10 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 rounded-xl cursor-pointer transition-all">
+<div class="flex items-center justify-center rounded-lg bg-primary/20 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Notification Settings</p>
+<p class="text-xs opacity-60">Daily readings &amp; cosmic alerts</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="group flex items-center gap-4 bg-primary/5 hover:bg-primary/10 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 rounded-xl cursor-pointer transition-all">
+<div class="flex items-center justify-center rounded-lg bg-primary/20 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">visibility_off</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Account Privacy</p>
+<p class="text-xs opacity-60">Control your spiritual data</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="group flex items-center gap-4 bg-primary/5 hover:bg-primary/10 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 rounded-xl cursor-pointer transition-all">
+<div class="flex items-center justify-center rounded-lg bg-primary/20 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Theme Selection</p>
+<p class="text-xs opacity-60">Customize your interface vibes</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-primary">Midnight</span>
+<span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+<section class="mt-8 space-y-1">
+<h3 class="font-display text-xs uppercase tracking-widest text-primary font-bold px-4 mb-3 opacity-70">Support &amp; Legal</h3>
+<div class="group flex items-center gap-4 bg-primary/5 hover:bg-primary/10 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 rounded-xl cursor-pointer transition-all">
+<div class="flex items-center justify-center rounded-lg bg-primary/20 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Subscription</p>
+<p class="text-xs opacity-60">Manage your premium plan</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="group flex items-center gap-4 bg-primary/5 hover:bg-primary/10 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 rounded-xl cursor-pointer transition-all">
+<div class="flex items-center justify-center rounded-lg bg-primary/20 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">help</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Help Center</p>
+<p class="text-xs opacity-60">Oracles are here to help</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors">open_in_new</span>
+</div>
+</section>
+<div class="mt-12 text-center">
+<button class="text-rose-500 font-bold text-sm hover:underline">
+                    Delete Cosmic Profile
+                </button>
+<p class="mt-4 text-[10px] opacity-40 uppercase tracking-tighter">App Version 2.4.0 (Stellar)</p>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-primary/10 px-4 pb-6 pt-2 z-20">
+<div class="max-w-2xl mx-auto flex justify-around items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">auto_fix</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Readings</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">nights_stay</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Daily</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

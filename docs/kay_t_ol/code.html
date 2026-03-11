@@ -1,0 +1,110 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Noto+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f4c025",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#221e10",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<!-- Top Bar -->
+<div class="flex items-center bg-transparent p-4 pb-2 justify-between">
+<div class="text-primary flex size-12 shrink-0 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Celestial Guidance</h2>
+</div>
+<!-- Hero/Header Image -->
+<div class="@container">
+<div class="@[480px]:px-4 @[480px]:py-3">
+<div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-primary/10 @[480px]:rounded-xl min-h-[218px] relative border-b border-primary/20" data-alt="Mystical night sky with glowing constellations and nebulas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCA9aIZ5oPJa1D-s5CTEm77VWagK8lU-lcnvEYEMiWN0KodoQEVxlr4TPpfXxkcWMc0Z6-QxR3OMO68GbkpDqcEZsadcrU11pP7SdxKyDMTeJ_V4p_TQUNrp2ZvgC-Zp2V2kv7uvEHS-gZbfRpjHMabNwjwBBvN-hvnuniNROgMxCT6B3EavGyZ4mc3PgjeeZ9qjqisrW2R4l5DbkHYLezE56HquaQ2Gkq9f9dPz2xpRjdndDwRXmXIkA66JU1H8b9u4tFhSHEKUX70");'>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent opacity-80"></div>
+</div>
+</div>
+</div>
+<div class="max-w-[480px] mx-auto w-full px-4">
+<h1 class="text-slate-900 dark:text-slate-100 tracking-light text-[32px] font-bold leading-tight text-center pb-3 pt-6">Begin Your Journey</h1>
+<p class="text-slate-600 dark:text-slate-400 text-center mb-6 font-sans">Enter your details to reveal what the stars have in store for you.</p>
+<form class="space-y-4">
+<!-- Full Name -->
+<div class="flex flex-col w-full">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal pb-2">Full Name</p>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">person</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-primary/5 dark:bg-primary/10 focus:border-primary h-14 placeholder:text-slate-500 dark:placeholder:text-primary/40 pl-12 pr-4 text-base font-normal leading-normal" placeholder="Enter your name" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="flex flex-col w-full">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal pb-2">Email</p>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">mail</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-primary/5 dark:bg-primary/10 focus:border-primary h-14 placeholder:text-slate-500 dark:placeholder:text-primary/40 pl-12 pr-4 text-base font-normal leading-normal" placeholder="your.soul@cosmos.com" type="email"/>
+</div>
+</div>
+<!-- Password -->
+<div class="flex flex-col w-full">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal pb-2">Password</p>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">lock</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-primary/5 dark:bg-primary/10 focus:border-primary h-14 placeholder:text-slate-500 dark:placeholder:text-primary/40 pl-12 pr-4 text-base font-normal leading-normal" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="flex flex-col w-full">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal pb-2">Confirm Password</p>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">verified_user</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-primary/5 dark:bg-primary/10 focus:border-primary h-14 placeholder:text-slate-500 dark:placeholder:text-primary/40 pl-12 pr-4 text-base font-normal leading-normal" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Create Account Button -->
+<div class="pt-6 pb-4">
+<button class="w-full h-14 bg-primary text-background-dark font-bold text-lg rounded-xl shadow-[0_0_20px_rgba(244,192,37,0.4)] hover:shadow-[0_0_30px_rgba(244,192,37,0.6)] transition-all duration-300 flex items-center justify-center gap-2">
+<span>Create Account</span>
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+</div>
+</form>
+<!-- Login Link -->
+<div class="text-center pb-12">
+<p class="text-slate-600 dark:text-slate-400 font-sans">
+                    Already have an account? 
+                    <a class="text-primary font-bold hover:underline ml-1" href="#">Log In</a>
+</p>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="fixed bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t from-primary/5 to-transparent"></div>
+</div>
+</body></html>

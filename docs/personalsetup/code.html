@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cosmic Registration | Mystic Path</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Noto+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f4c025",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#1a1814",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 192, 37, 0.1);
+        }
+        .element-card-selected {
+            border: 2px solid #f4c025;
+            background: rgba(244, 192, 37, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-sans text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header Section -->
+<header class="flex items-center p-6 justify-between max-w-2xl mx-auto w-full">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold font-display tracking-tight flex-1 text-center pr-10">Birth Chart Setup</h2>
+</header>
+<!-- Progress Indicator -->
+<div class="flex w-full flex-row items-center justify-center gap-3 py-4">
+<div class="h-1.5 w-10 rounded-full bg-primary"></div>
+<div class="h-1.5 w-10 rounded-full bg-primary/20"></div>
+<div class="h-1.5 w-10 rounded-full bg-primary/20"></div>
+</div>
+<main class="flex-1 max-w-2xl mx-auto w-full px-6 pb-12">
+<div class="pt-8 pb-10">
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-bold font-display leading-tight text-center">Map Your Destiny</h1>
+<p class="text-slate-600 dark:text-slate-400 text-center mt-2 text-sm">Our elders use these details to align your stars.</p>
+</div>
+<!-- Form Section -->
+<section class="space-y-6">
+<!-- Name Input -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
+<div class="relative">
+<input class="w-full h-14 bg-white/5 dark:bg-white/5 border border-primary/20 rounded-xl px-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="E.g. Alexander Orion" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Date Picker -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Birth Date</label>
+<div class="relative group">
+<input class="w-full h-14 bg-white/5 dark:bg-white/5 border border-primary/20 rounded-xl px-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="MM / DD / YYYY" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-4 text-slate-400">calendar_month</span>
+</div>
+</div>
+<!-- Birth Time -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Exact Birth Time</label>
+<div class="relative group">
+<input class="w-full h-14 bg-white/5 dark:bg-white/5 border border-primary/20 rounded-xl px-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="12:00 PM" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-4 text-slate-400">schedule</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Personality Quiz Section -->
+<section class="mt-12">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-px flex-1 bg-primary/20"></div>
+<h3 class="text-primary font-display font-semibold uppercase tracking-widest text-xs">Personality Test</h3>
+<div class="h-px flex-1 bg-primary/20"></div>
+</div>
+<div class="glass-card rounded-xl p-6">
+<h4 class="text-slate-900 dark:text-slate-100 text-xl font-display font-bold mb-6 text-center">Which element do you feel most connected to?</h4>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<!-- Fire Card -->
+<button class="flex flex-col items-center justify-center p-4 rounded-xl glass-card hover:bg-primary/10 transition-all group">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-orange-500/20 text-orange-500 mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">local_fire_department</span>
+</div>
+<span class="text-sm font-bold">Fire</span>
+</button>
+<!-- Water Card (Selected) -->
+<button class="flex flex-col items-center justify-center p-4 rounded-xl element-card-selected transition-all group">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500/20 text-blue-500 mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">water_drop</span>
+</div>
+<span class="text-sm font-bold">Water</span>
+</button>
+<!-- Air Card -->
+<button class="flex flex-col items-center justify-center p-4 rounded-xl glass-card hover:bg-primary/10 transition-all group">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">air</span>
+</div>
+<span class="text-sm font-bold">Air</span>
+</button>
+<!-- Earth Card -->
+<button class="flex flex-col items-center justify-center p-4 rounded-xl glass-card hover:bg-primary/10 transition-all group">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-amber-800/20 text-amber-700 mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">landscape</span>
+</div>
+<span class="text-sm font-bold">Earth</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Submit Section -->
+<div class="mt-10 flex flex-col items-center gap-4">
+<button class="w-full max-w-sm h-14 bg-primary text-background-dark font-bold rounded-xl text-lg hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Continue Journey
+                </button>
+<p class="text-xs text-slate-500 dark:text-slate-400">
+                    Step 1 of 3: Spiritual Alignment
+                </p>
+</div>
+</main>
+<!-- Decorative Background Elements -->
+<div class="fixed top-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/5 blur-[100px] -z-10 rounded-full"></div>
+<div class="fixed bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-primary/5 blur-[80px] -z-10 rounded-full"></div>
+</div>
+</body></html>

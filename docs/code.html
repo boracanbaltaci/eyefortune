@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#f4c025",
+                "background-light": "#f8f8f5",
+                "background-dark": "#221e10",
+              },
+              fontFamily: {
+                "display": ["Noto Serif", "serif"],
+                "sans": ["Noto Sans", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<title>Celestial Premium</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-hidden">
+<!-- Modal Container -->
+<div class="mx-auto w-full max-w-md bg-background-light dark:bg-background-dark h-full flex flex-col shadow-2xl">
+<!-- Top Bar -->
+<div class="flex items-center p-6 pb-2 justify-between">
+<h2 class="text-slate-900 dark:text-primary text-xl font-bold leading-tight tracking-tight">Celestial Premium</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-slate-200 dark:bg-primary/10 text-slate-900 dark:text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-6">
+<!-- Hero Image Area -->
+<div class="mt-4 @container">
+<div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-[220px] relative border border-primary/20" data-alt="A mystical eye surrounded by celestial gold constellations" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuASEc2ADZtNFDKcNqcJOyQDw0JY1yAfDaLIj9FbrQA1CEX27ukw_vMCGvrJIBlB6YvF8Wz6qpBwsQyjxJvPDglQWiBbMtH88VxuOtAAG2rkTcmQ_SEzdwA5f-AbGVX3unhqq07u0WrjVm0rei69LEmYGDo8jdrT2gc4Cm91tlxT2myUsNXIrZVfNxhFTVy5wBnib80fKkAB-YpfZectt2plCmzEPNh0UQOUo6amJ_C69XVWwRNOh7txTXP_-snZa8OA_O-dddTED3lx");'>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent"></div>
+</div>
+</div>
+<!-- Headline -->
+<h2 class="text-slate-900 dark:text-slate-100 tracking-tight text-3xl font-black leading-tight text-center pb-4 pt-8">
+                    Unlock Your Destiny
+                </h2>
+<!-- Benefits List -->
+<div class="space-y-1 mb-8">
+<div class="flex items-center gap-x-4 py-3 px-4 rounded-lg bg-slate-100 dark:bg-primary/5 border border-transparent dark:border-primary/10">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<p class="text-slate-700 dark:text-slate-200 text-base font-medium">Detailed Daily Horoscopes</p>
+</div>
+<div class="flex items-center gap-x-4 py-3 px-4 rounded-lg bg-slate-100 dark:bg-primary/5 border border-transparent dark:border-primary/10">
+<span class="material-symbols-outlined text-primary">visibility_off</span>
+<p class="text-slate-700 dark:text-slate-200 text-base font-medium">Ad-free Experience</p>
+</div>
+<div class="flex items-center gap-x-4 py-3 px-4 rounded-lg bg-slate-100 dark:bg-primary/5 border border-transparent dark:border-primary/10">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<p class="text-slate-700 dark:text-slate-200 text-base font-medium">Priority Oracle Consultations</p>
+</div>
+</div>
+<!-- Pricing Plans -->
+<div class="grid grid-cols-1 gap-4 mb-8">
+<!-- Monthly Plan -->
+<label class="relative flex flex-col gap-2 rounded-xl border-2 border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark/50 p-5 cursor-pointer hover:border-primary/50 transition-all group">
+<input checked="" class="absolute right-4 top-4 h-5 w-5 border-2 border-primary text-primary focus:ring-primary focus:ring-offset-background-dark bg-transparent" name="plan" type="radio"/>
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Monthly Mystic</h3>
+<div class="flex items-baseline gap-1">
+<span class="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight">$3</span>
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">/month</span>
+</div>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Standard celestial access, billed monthly.</p>
+</label>
+<!-- Annual Plan -->
+<label class="relative flex flex-col gap-2 rounded-xl border-2 border-primary bg-primary/5 dark:bg-primary/10 p-5 cursor-pointer transition-all shadow-lg shadow-primary/5">
+<input class="absolute right-4 top-4 h-5 w-5 border-2 border-primary text-primary focus:ring-primary focus:ring-offset-background-dark bg-transparent" name="plan" type="radio"/>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between pr-8">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Annual Oracle</h3>
+<span class="text-background-dark text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary px-3 py-1">Best Value</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight">$25</span>
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">/year</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-primary text-sm font-bold">
+<span class="material-symbols-outlined text-sm">savings</span>
+<span>Save 30% annually</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="p-6 pt-2 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-primary/10">
+<button class="w-full bg-primary hover:bg-primary/90 text-background-dark font-bold py-4 px-6 rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 text-lg">
+                    Subscribe Now
+                </button>
+<p class="text-center text-[11px] text-slate-500 dark:text-slate-500 mt-4 leading-relaxed">
+                    Recurring billing, cancel anytime. By subscribing, you agree to our Terms of Service and Privacy Policy.
+                </p>
+</div>
+</div>
+</div>
+</body></html>
