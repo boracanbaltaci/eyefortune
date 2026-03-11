@@ -3,26 +3,27 @@ import SwiftUI
 struct ScannerView: View {
     @EnvironmentObject var scannerViewModel: ScannerViewModel
     @EnvironmentObject var themeManager: ThemeManager
-    
+    @EnvironmentObject var lm: LocalizationManager
+
     var body: some View {
         NavigationView {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
-                
+
                 VStack {
-                    Text("Gözünü Tarat")
+                    Text(lm.t(.scanTitle))
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(themeManager.primaryTextColor)
-                    
-                    Text("Yapay zeka göz irisine bakarak kaderini okuyacak.")
+
+                    Text(lm.t(.scanSubtitle))
                         .font(.subheadline)
                         .foregroundColor(themeManager.secondaryTextColor)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                    
+
                     Spacer()
-                    
+
                     ZStack {
                         Circle()
                             .strokeBorder(
@@ -32,7 +33,7 @@ struct ScannerView: View {
                             .frame(width: 250, height: 250)
                             .shadow(color: themeManager.accentYellow, radius: scannerViewModel.isScanning ? 20 : 0)
                             .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: scannerViewModel.isScanning)
-                        
+
                         if scannerViewModel.isScanning {
                             Circle()
                                 .trim(from: 0.0, to: CGFloat(scannerViewModel.scanProgress))
@@ -40,11 +41,11 @@ struct ScannerView: View {
                                 .frame(width: 270, height: 270)
                                 .rotationEffect(Angle(degrees: -90))
                                 .animation(.linear(duration: 0.1), value: scannerViewModel.scanProgress)
-                            
+
                             VStack {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: themeManager.primaryTextColor))
-                                Text("Analiz ediliyor...")
+                                Text(lm.t(.scanAnalyzing))
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .font(.caption)
                                     .padding(.top, 5)
@@ -61,13 +62,13 @@ struct ScannerView: View {
                                 .foregroundColor(themeManager.primaryTextColor.opacity(0.5))
                         }
                     }
-                    
+
                     Spacer()
-                    
+
                     Button(action: {
                         scannerViewModel.startScan()
                     }) {
-                        Text(scannerViewModel.isScanning ? "Taranıyor..." : "Taramayı Başlat")
+                        Text(scannerViewModel.isScanning ? lm.t(.scanning) : lm.t(.scanButton))
                             .font(.headline)
                             .foregroundColor(themeManager.bgColor)
                             .frame(maxWidth: .infinity)
@@ -78,7 +79,7 @@ struct ScannerView: View {
                             .padding(.horizontal, 40)
                     }
                     .disabled(scannerViewModel.isScanning)
-                    
+
                     Spacer()
                 }
                 .padding(.vertical)
@@ -98,4 +99,5 @@ struct ScannerView: View {
     ScannerView()
         .environmentObject(ScannerViewModel())
         .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }

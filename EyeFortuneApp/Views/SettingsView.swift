@@ -2,84 +2,92 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     @Environment(\.presentationMode) var presentationMode
-    
+
+    @State private var showLanguagePicker = false
+
     var body: some View {
         NavigationView {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
-                
+
                 ScrollView {
                     VStack(spacing: 24) {
-                        
+
                         // Premium Banner
-                        PremiumBanner(themeManager: themeManager)
-                        
+                        PremiumBanner(themeManager: themeManager, lm: lm)
+
                         // General Experience Section
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("GENERAL EXPERIENCE")
+                            Text(lm.t(.settingsSectionGeneral))
                                 .font(.system(size: 11, weight: .bold))
                                 .tracking(2)
                                 .foregroundColor(themeManager.accentYellow.opacity(0.7))
                                 .padding(.leading, 16)
-                            
+
                             VStack(spacing: 8) {
                                 SettingsRow(
                                     icon: "bell.badge.fill",
-                                    title: "Notification Settings",
-                                    subtitle: "Daily readings & cosmic alerts",
+                                    title: lm.t(.settingsNotifications),
+                                    subtitle: lm.t(.settingsNotifSub),
                                     themeManager: themeManager
                                 )
-                                
+
                                 SettingsRow(
                                     icon: "eye.slash.fill",
-                                    title: "Account Privacy",
-                                    subtitle: "Control your spiritual data",
+                                    title: lm.t(.settingsPrivacy),
+                                    subtitle: lm.t(.settingsPrivacySub),
                                     themeManager: themeManager
                                 )
-                                
-                                ThemeToggleRow(themeManager: themeManager)
+
+                                ThemeToggleRow(themeManager: themeManager, lm: lm)
+
+                                // Language Picker Row
+                                LanguagePickerRow(
+                                    themeManager: themeManager,
+                                    lm: lm,
+                                    showPicker: $showLanguagePicker
+                                )
                             }
                         }
-                        
+
                         // Support & Legal Section
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("SUPPORT & LEGAL")
+                            Text(lm.t(.settingsSectionSupport))
                                 .font(.system(size: 11, weight: .bold))
                                 .tracking(2)
                                 .foregroundColor(themeManager.accentYellow.opacity(0.7))
                                 .padding(.leading, 16)
-                            
+
                             VStack(spacing: 8) {
                                 SettingsRow(
                                     icon: "sparkles.rectangle.stack.fill",
-                                    title: "Subscription",
-                                    subtitle: "Manage your premium plan",
+                                    title: lm.t(.settingsSubscription),
+                                    subtitle: lm.t(.settingsSubscriptionSub),
                                     themeManager: themeManager
                                 )
-                                
+
                                 SettingsRow(
                                     icon: "questionmark.circle.fill",
-                                    title: "Help Center",
-                                    subtitle: "Oracles are here to help",
+                                    title: lm.t(.settingsHelp),
+                                    subtitle: lm.t(.settingsHelpSub),
                                     showExternalIcon: true,
                                     themeManager: themeManager
                                 )
                             }
                         }
-                        
+
                         // Delete Profile
                         VStack(spacing: 16) {
-                            Button(action: {
-                                // Delete Action
-                            }) {
-                                Text("Delete Cosmic Profile")
+                            Button(action: {}) {
+                                Text(lm.t(.settingsDeleteProfile))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.red)
                             }
                             .padding(.top, 16)
-                            
-                            Text("APP VERSION 2.4.0 (STELLAR)")
+
+                            Text(lm.t(.settingsVersion))
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(themeManager.secondaryTextColor.opacity(0.4))
                         }
@@ -100,11 +108,139 @@ struct SettingsView: View {
                             .font(.system(size: 18))
                     }
                 }
-                
+
                 ToolbarItem(placement: .principal) {
-                    Text("Mystic Settings")
+                    Text(lm.t(.settingsTitle))
                         .font(.system(size: 18, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
+                }
+            }
+            .toolbarBackground(themeManager.bgColor, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .sheet(isPresented: $showLanguagePicker) {
+                LanguagePickerSheet(themeManager: themeManager, lm: lm)
+            }
+        }
+    }
+}
+
+// MARK: - Language Picker Row
+struct LanguagePickerRow: View {
+    @ObservedObject var themeManager: ThemeManager
+    @ObservedObject var lm: LocalizationManager
+    @Binding var showPicker: Bool
+
+    var body: some View {
+        Button(action: { showPicker = true }) {
+            HStack(spacing: 16) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(themeManager.accentYellow.opacity(0.2))
+                        .frame(width: 40, height: 40)
+                    Text(lm.language.flag)
+                        .font(.system(size: 22))
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(lm.t(.settingsLanguage))
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(themeManager.primaryTextColor)
+                    Text(lm.t(.settingsLanguageSub))
+                        .font(.system(size: 12))
+                        .foregroundColor(themeManager.secondaryTextColor)
+                }
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text(lm.language.displayName)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(themeManager.accentYellow)
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(themeManager.accentYellow.opacity(0.4))
+                        .font(.system(size: 14, weight: .semibold))
+                }
+            }
+            .padding(16)
+            .background(themeManager.cardBgColor)
+            .cornerRadius(12)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Language Picker Sheet
+struct LanguagePickerSheet: View {
+    @ObservedObject var themeManager: ThemeManager
+    @ObservedObject var lm: LocalizationManager
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+                themeManager.bgColor.ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 10) {
+                        ForEach(AppLanguage.allCases) { language in
+                            Button(action: {
+                                withAnimation {
+                                    lm.language = language
+                                }
+                                dismiss()
+                            }) {
+                                HStack(spacing: 16) {
+                                    Text(language.flag)
+                                        .font(.system(size: 28))
+
+                                    Text(language.displayName)
+                                        .font(.system(size: 17, weight: .medium, design: .serif))
+                                        .foregroundColor(themeManager.primaryTextColor)
+
+                                    Spacer()
+
+                                    if lm.language == language {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundColor(themeManager.accentYellow)
+                                            .font(.system(size: 20))
+                                    }
+                                }
+                                .padding(16)
+                                .background(
+                                    lm.language == language
+                                        ? themeManager.accentYellow.opacity(0.1)
+                                        : themeManager.cardBgColor
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(
+                                            lm.language == language
+                                                ? themeManager.accentYellow.opacity(0.4)
+                                                : themeManager.accentYellow.opacity(0.08),
+                                            lineWidth: lm.language == language ? 1.5 : 1
+                                        )
+                                )
+                                .cornerRadius(14)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(16)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(lm.t(.settingsSelectLanguage))
+                        .font(.system(size: 17, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.primaryTextColor)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(themeManager.secondaryTextColor)
+                            .font(.system(size: 20))
+                    }
                 }
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
@@ -116,21 +252,22 @@ struct SettingsView: View {
 // MARK: - Subcomponents
 struct PremiumBanner: View {
     @ObservedObject var themeManager: ThemeManager
-    
+    @ObservedObject var lm: LocalizationManager
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Celestial Premium")
+                Text(lm.t(.premiumTitle))
                     .font(.system(size: 18, weight: .bold, design: .serif))
                     .foregroundColor(themeManager.accentYellow)
-                
-                Text("Unlock daily detailed horoscopes and planetary alignments.")
+
+                Text(lm.t(.premiumSubtitle))
                     .font(.system(size: 13))
                     .foregroundColor(themeManager.primaryTextColor.opacity(0.8))
                     .padding(.bottom, 8)
-                
+
                 Button(action: {}) {
-                    Text("Upgrade Now")
+                    Text(lm.t(.premiumUpgrade))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(themeManager.bgColor)
                         .padding(.horizontal, 24)
@@ -154,8 +291,7 @@ struct PremiumBanner: View {
                     .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
             )
             .cornerRadius(16)
-            
-            // Background Icon
+
             Image(systemName: "rosette")
                 .font(.system(size: 120))
                 .foregroundColor(themeManager.accentYellow.opacity(0.1))
@@ -171,31 +307,31 @@ struct SettingsRow: View {
     var subtitle: String
     var showExternalIcon: Bool = false
     @ObservedObject var themeManager: ThemeManager
-    
+
     var body: some View {
         HStack(spacing: 16) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(themeManager.accentYellow.opacity(0.2))
                     .frame(width: 40, height: 40)
-                
+
                 Image(systemName: icon)
                     .foregroundColor(themeManager.accentYellow)
                     .font(.system(size: 18))
             }
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundColor(themeManager.primaryTextColor)
-                
+
                 Text(subtitle)
                     .font(.system(size: 12))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
-            
+
             Spacer()
-            
+
             Image(systemName: showExternalIcon ? "arrow.up.right" : "chevron.right")
                 .foregroundColor(themeManager.accentYellow.opacity(0.4))
                 .font(.system(size: 14, weight: .semibold))
@@ -208,31 +344,32 @@ struct SettingsRow: View {
 
 struct ThemeToggleRow: View {
     @ObservedObject var themeManager: ThemeManager
-    
+    @ObservedObject var lm: LocalizationManager
+
     var body: some View {
         HStack(spacing: 16) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(themeManager.accentYellow.opacity(0.2))
                     .frame(width: 40, height: 40)
-                
+
                 Image(systemName: "paintpalette.fill")
                     .foregroundColor(themeManager.accentYellow)
                     .font(.system(size: 18))
             }
-            
+
             VStack(alignment: .leading, spacing: 2) {
-                Text("Theme Selection")
+                Text(lm.t(.settingsTheme))
                     .font(.system(size: 15, weight: .medium))
                     .foregroundColor(themeManager.primaryTextColor)
-                
-                Text("Customize your interface vibes")
+
+                Text(lm.t(.settingsThemeSub))
                     .font(.system(size: 12))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
-            
+
             Spacer()
-            
+
             Button(action: {
                 withAnimation {
                     themeManager.activeTheme = themeManager.activeTheme == .midnight ? .aurora : .midnight
@@ -242,7 +379,7 @@ struct ThemeToggleRow: View {
                     Text(themeManager.activeTheme.rawValue)
                         .font(.system(size: 12, weight: .bold))
                         .foregroundColor(themeManager.accentYellow)
-                    
+
                     Image(systemName: "chevron.right")
                         .foregroundColor(themeManager.accentYellow.opacity(0.4))
                         .font(.system(size: 14, weight: .semibold))
@@ -258,4 +395,5 @@ struct ThemeToggleRow: View {
 #Preview {
     SettingsView()
         .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }

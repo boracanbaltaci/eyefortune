@@ -2,36 +2,41 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject var themeManager: ThemeManager
-    
+    @EnvironmentObject var lm: LocalizationManager
+
     init() {
-        // Customize TabBar appearance
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(white: 0, alpha: 0.05) // Transparent enough to let the background show slightly, but readable
-        
+        appearance.backgroundColor = UIColor(white: 0, alpha: 0.05)
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
-    
+
     var body: some View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "sparkles")
+                    Label(lm.t(.tabHome), systemImage: "sparkles")
                 }
-            
+
+            ReadingView()
+                .tabItem {
+                    Label(lm.t(.tabReading), systemImage: "book.fill")
+                }
+
             ScannerView()
                 .tabItem {
-                    Label("Scan Eye", systemImage: "eye.circle.fill")
+                    Label(lm.t(.tabScan), systemImage: "eye.circle.fill")
                 }
-            
+
             HistoryView()
                 .tabItem {
-                    Label("History", systemImage: "clock.arrow.circlepath")
+                    Label(lm.t(.tabHistory), systemImage: "clock.arrow.circlepath")
                 }
+
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape")
+                    Label(lm.t(.tabSettings), systemImage: "gearshape")
                 }
         }
         .accentColor(themeManager.accentYellow)
@@ -43,4 +48,5 @@ struct MainTabView: View {
         .environmentObject(FortuneViewModel())
         .environmentObject(ScannerViewModel())
         .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }

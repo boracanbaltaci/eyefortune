@@ -15,6 +15,7 @@ struct InsightCategory: Identifiable {
 struct HomeView: View {
     @EnvironmentObject var fortuneViewModel: FortuneViewModel
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     
     @AppStorage("scannedEyeImagePath") var scannedEyeImagePath: String = ""
     @AppStorage("userName") var userName: String = "Oracle Seer"
@@ -95,7 +96,7 @@ struct HomeView: View {
                                     .fill(themeManager.accentYellow.opacity(0.3))
                                     .frame(width: 48, height: 1)
                                 
-                                Text("TIER IV MYSTIC")
+                            Text("TIER IV MYSTIC")
                                     .font(.system(size: 11, weight: .bold))
                                     .tracking(3)
                                     .foregroundColor(themeManager.accentYellow.opacity(0.8))
@@ -110,7 +111,7 @@ struct HomeView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: "star.fill")
                                         .font(.system(size: 14))
-                                    Text("Strengths")
+                                    Text(lm.t(.homeStrengths))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
                                 }
                                 .foregroundColor(themeManager.accentYellow)
@@ -128,7 +129,7 @@ struct HomeView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: "exclamationmark.circle")
                                         .font(.system(size: 14))
-                                    Text("Weaknesses")
+                                    Text(lm.t(.homeWeaknesses))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
                                 }
                                 .foregroundColor(themeManager.secondaryTextColor)
@@ -153,7 +154,7 @@ struct HomeView: View {
                                 HStack(spacing: 10) {
                                     Image(systemName: "sparkles")
                                         .font(.system(size: 18, weight: .bold))
-                                    Text("GÜNLÜK FALINI GÖR")
+                                    Text(lm.t(.homeDailyFortune))
                                         .font(.system(size: 15, weight: .black))
                                         .tracking(2)
                                 }
@@ -178,7 +179,7 @@ struct HomeView: View {
                                 HStack(spacing: 10) {
                                     Image(systemName: "brain.head.profile")
                                         .font(.system(size: 18, weight: .bold))
-                                    Text("KİŞİLİK ANALİZİNİ GÖR")
+                                    Text(lm.t(.homePersonality))
                                         .font(.system(size: 15, weight: .black))
                                         .tracking(2)
                                 }
@@ -369,4 +370,5 @@ struct PulseEffect: ViewModifier {
     HomeView()
         .environmentObject(FortuneViewModel())
         .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }

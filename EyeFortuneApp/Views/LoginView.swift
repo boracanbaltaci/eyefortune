@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     
     // State variables
     @State private var email = ""
@@ -41,12 +42,12 @@ struct LoginView: View {
                             .opacity(0.8)
                             
                             VStack(spacing: 8) {
-                                Text("Unlock Your\nDestiny")
+                                Text(lm.t(.loginTitle))
                                     .font(.system(size: 28, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .multilineTextAlignment(.center)
                                 
-                                Text("The stars have written your story. Sign in to\nread it.")
+                                Text(lm.t(.loginSubtitle))
                                     .font(.system(size: 14, weight: .regular))
                                     .foregroundColor(themeManager.accentYellow)
                                     .multilineTextAlignment(.center)
@@ -61,8 +62,8 @@ struct LoginView: View {
                         // Form Fields
                         VStack(spacing: 20) {
                             CustomTextField(
-                                title: "Email Address",
-                                placeholder: "Enter your celestial email",
+                                title: lm.t(.loginEmail),
+                                placeholder: lm.t(.loginEmailPlaceholder),
                                 iconName: "envelope.fill",
                                 text: $email,
                                 isSecure: false,
@@ -71,12 +72,12 @@ struct LoginView: View {
                             
                             VStack(alignment: .trailing, spacing: 6) {
                                 HStack {
-                                    Text("Password")
+                                    Text(lm.t(.loginPassword))
                                         .font(.system(size: 14, weight: .medium))
                                         .foregroundColor(themeManager.primaryTextColor)
                                     Spacer()
                                     Button(action: { /* Forgot Password action */ }) {
-                                        Text("Forgot Password?")
+                                        Text(lm.t(.loginForgot))
                                             .font(.system(size: 12, weight: .medium))
                                             .foregroundColor(themeManager.accentYellow)
                                     }
@@ -88,7 +89,7 @@ struct LoginView: View {
                                         .font(.system(size: 16))
                                         .frame(width: 20)
                                     
-                                    SecureField("Enter your secret key", text: $password)
+                                    SecureField(lm.t(.loginPasswordPlaceholder), text: $password)
                                         .foregroundColor(themeManager.accentYellow)
                                         .colorMultiply(password.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
                                 }
@@ -112,7 +113,7 @@ struct LoginView: View {
                             showSubscription = true
                         }) {
                             HStack {
-                                Text("Consult the Oracle")
+                                Text(lm.t(.loginButton))
                                     .font(.system(size: 17, weight: .bold))
                                 Image(systemName: "sparkles")
                             }
@@ -133,7 +134,7 @@ struct LoginView: View {
                                 .fill(themeManager.inputBgColor)
                                 .frame(height: 1)
                             
-                            Text("OR CONNECT VIA")
+                            Text(lm.t(.loginOrConnect))
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundColor(themeManager.secondaryTextColor)
                                 .padding(.horizontal, 10)
@@ -148,23 +149,19 @@ struct LoginView: View {
                         
                         // Login Social Buttons
                         VStack(spacing: 15) {
-                            LoginSocialButton(title: "Continue with Google", iconName: "envelope.fill", themeManager: themeManager)
-                            // We don't have exactly the Instagram icon in SF Symbols without custom assets, using camera as fallback based on visual similarity
-                            LoginSocialButton(title: "Continue with Instagram", iconName: "camera.fill", themeManager: themeManager)
-                            // We don't have an apple logo in SF Symbols by default unless we use applelogo (only works on Apple devices)
-                            LoginSocialButton(title: "Continue with Apple", iconName: "applelogo", themeManager: themeManager)
+                            LoginSocialButton(title: lm.t(.loginGoogle), iconName: "envelope.fill", themeManager: themeManager)
+                            LoginSocialButton(title: lm.t(.loginInstagram), iconName: "camera.fill", themeManager: themeManager)
+                            LoginSocialButton(title: lm.t(.loginApple), iconName: "applelogo", themeManager: themeManager)
                         }
                         .padding(.horizontal, 20)
                         
                         // Register Link
                         HStack(spacing: 5) {
-                            Text("New to the cosmos?")
+                            Text(lm.t(.loginNewUser))
                                 .font(.system(size: 14))
                                 .foregroundColor(themeManager.secondaryTextColor)
-                            Button(action: {
-                                // Navigate to Register
-                            }) {
-                                Text("Register Now")
+                            Button(action: {}) {
+                                Text(lm.t(.loginRegister))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(themeManager.accentYellow)
                             }
@@ -183,7 +180,7 @@ struct LoginView: View {
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    Text("Celestial Guidance")
+                    Text(lm.t(.loginTitle))
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
@@ -234,4 +231,5 @@ struct LoginSocialButton: View {
 #Preview {
     LoginView()
         .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }
