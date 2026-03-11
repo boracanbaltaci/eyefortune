@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 
 class FortuneViewModel: ObservableObject {
     @Published var dailyFortune: Fortune?

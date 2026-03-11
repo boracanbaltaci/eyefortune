@@ -1,5 +1,7 @@
 import Foundation
 import AVFoundation
+import Combine
+import SwiftUI
 
 /// A mock service for the Eye Scanner.
 /// In a real app, this would use AVCaptureSession to stream camera feed
