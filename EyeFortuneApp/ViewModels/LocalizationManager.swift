@@ -36,6 +36,7 @@ enum AppLanguage: String, CaseIterable, Identifiable, Codable {
 }
 
 // MARK: - Localization Manager
+@MainActor
 class LocalizationManager: ObservableObject {
     @AppStorage("appLanguage") var languageCode: String = AppLanguage.turkish.rawValue {
         didSet { objectWillChange.send() }
