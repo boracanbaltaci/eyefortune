@@ -209,34 +209,35 @@ struct CategoryCard: View {
     }
 
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 12) {
-                Image(systemName: category.icon)
-                    .font(.system(size: 20))
-                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
-                
-                Text(localizedName)
-                    .font(.system(size: 14, weight: .bold, design: .serif))
-                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
-            }
-            .frame(width: 100, height: 100, alignment: .bottomLeading)
-            .padding(12)
-            .background(
-                isSelected
-                    ? themeManager.accentYellow
-                    : themeManager.cardBgColor
-            )
-            .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(
-                        isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.15),
-                        lineWidth: 1
-                    )
-            )
-            .shadow(color: isSelected ? themeManager.accentYellow.opacity(0.3) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        VStack(alignment: .leading, spacing: 12) {
+            Image(systemName: category.icon)
+                .font(.system(size: 20))
+                .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
+            
+            Text(localizedName)
+                .font(.system(size: 14, weight: .bold, design: .serif))
+                .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
         }
-        .buttonStyle(PlainButtonStyle())
+        .frame(width: 100, height: 100, alignment: .bottomLeading)
+        .padding(12)
+        .background(
+            isSelected
+                ? themeManager.accentYellow
+                : themeManager.cardBgColor
+        )
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(
+                    isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.15),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: isSelected ? themeManager.accentYellow.opacity(0.3) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
+        }
     }
 }
 

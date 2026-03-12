@@ -19,8 +19,13 @@ class ThemeManager: ObservableObject {
     }
     
     var accentYellow: Color {
-        // Matches #f4c025 (Primary)
-        Color(red: 244.0/255.0, green: 192.0/255.0, blue: 37.0/255.0)
+        if activeTheme == .midnight {
+            // Matches #f4c025 (Primary Yellow)
+            return Color(red: 244.0/255.0, green: 192.0/255.0, blue: 37.0/255.0)
+        } else {
+            // Matches #221e10 (Dark Discovery Color)
+            return Color(red: 34.0/255.0, green: 30.0/255.0, blue: 16.0/255.0)
+        }
     }
     
     // Input / Card Backgrounds

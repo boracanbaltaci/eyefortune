@@ -10,7 +10,6 @@ struct QuizQuestion: Identifiable {
 
 enum QuizAnswer: String, Codable {
     case yes = "Evet"
-    case maybe = "Kararsızım"
     case no = "Hayır"
 }
 
@@ -22,33 +21,26 @@ class PersonalityQuizViewModel: ObservableObject {
     @Published var analysisComplete = false
     
     let questions: [QuizQuestion] = [
-        // Sosyal Enerji
-        QuizQuestion(text: "Yeni insanlarla tanışmak bana enerji verir.", category: "Sosyal Enerji"),
-        QuizQuestion(text: "Uzun süre yalnız kalmak beni rahatsız etmez.", category: "Sosyal Enerji"),
-        QuizQuestion(text: "Kalabalık ortamlarda kendimi rahat hissederim.", category: "Sosyal Enerji"),
-        QuizQuestion(text: "Sosyal etkinliklerden sonra yalnız kalma ihtiyacı hissederim.", category: "Sosyal Enerji"),
-        QuizQuestion(text: "Sohbeti başlatan kişi genellikle ben olurum.", category: "Sosyal Enerji"),
-        
-        // Bilgi Algılama
-        QuizQuestion(text: "Somut ve gerçek bilgiler bana daha güven verir.", category: "Bilgi Algılama"),
-        QuizQuestion(text: "Hayal kurmak ve yeni fikirler düşünmek hoşuma gider.", category: "Bilgi Algılama"),
-        QuizQuestion(text: "Detaylara dikkat etmek benim için önemlidir.", category: "Bilgi Algılama"),
-        QuizQuestion(text: "Büyük resmi görmek detaylardan daha önemlidir.", category: "Bilgi Algılama"),
-        QuizQuestion(text: "Yeni ve farklı fikirler üretmek beni heyecanlandırır.", category: "Bilgi Algılama"),
-        
-        // Karar Verme
-        QuizQuestion(text: "Karar verirken mantık benim için en önemli faktördür.", category: "Karar Verme"),
-        QuizQuestion(text: "İnsanların duygularını dikkate almak önemlidir.", category: "Karar Verme"),
-        QuizQuestion(text: "Tartışmalarda mantıklı argümanlar benim için önemlidir.", category: "Karar Verme"),
-        QuizQuestion(text: "Başkalarının incinmemesine dikkat ederim.", category: "Karar Verme"),
-        QuizQuestion(text: "Analitik düşünmek bana daha doğal gelir.", category: "Karar Verme"),
-        
-        // Planlama Tarzı
-        QuizQuestion(text: "Günümü önceden planlamayı severim.", category: "Planlama Tarzı"),
-        QuizQuestion(text: "Son anda karar vermek benim için sorun değildir.", category: "Planlama Tarzı"),
-        QuizQuestion(text: "Programlı olmak bana güven verir.", category: "Planlama Tarzı"),
-        QuizQuestion(text: "Planların değişmesi beni rahatsız etmez.", category: "Planlama Tarzı"),
-        QuizQuestion(text: "İşleri erken bitirmeyi tercih ederim.", category: "Planlama Tarzı")
+        QuizQuestion(text: "Yeni bir yere gittiğimde önce etrafımdaki enerjiyi hissederim.", category: "Sezgi"),
+        QuizQuestion(text: "Karar verirken mantığımdan çok iç sesime güvenirim.", category: "Karar Verme"),
+        QuizQuestion(text: "Rüyalarımın çoğu zaman gerçekleştiğine şahit olurum.", category: "Sezgi"),
+        QuizQuestion(text: "Kalabalık ortamlarda insanların duygularını hemen anlarım.", category: "Empati"),
+        QuizQuestion(text: "Doğada vakit geçirmek ruhumu her zaman tazeler.", category: "Enerji"),
+        QuizQuestion(text: "Küçük detaylar yerine büyük resme odaklanmayı tercih ederim.", category: "Algı"),
+        QuizQuestion(text: "Başkalarına yardım etmek bana derin bir huzur verir.", category: "Empati"),
+        QuizQuestion(text: "Planlarımın aniden değişmesi beni endişelendirmez.", category: "Esneklik"),
+        QuizQuestion(text: "Yalnız kalmak benim için bir ihtiyaçtır.", category: "İçsel Denge"),
+        QuizQuestion(text: "Geçmişteki hatalarımdan ders çıkarmak benim için kolaydır.", category: "Gelişim"),
+        QuizQuestion(text: "Gelecek hakkında düşünürken genellikle heyecanlıyımdır.", category: "Bakış Açısı"),
+        QuizQuestion(text: "Yaratıcı projeler üretmek beni motive eder.", category: "Yaratıcılık"),
+        QuizQuestion(text: "İnsanların niyetlerini bakışlarından anlayabilirim.", category: "Sezgi"),
+        QuizQuestion(text: "Hayatımda tesadüflere değil, eşzamanlılıklara inanırım.", category: "İnanç"),
+        QuizQuestion(text: "Farklı görüşlere sahip insanlarla kolayca anlaşabilirim.", category: "Sosyal"),
+        QuizQuestion(text: "Sabah saatleri benim için en verimli vakitlerdir.", category: "Ritim"),
+        QuizQuestion(text: "Bir işe başlamadan önce tüm riskleri hesaplamayı severim.", category: "Mantık"),
+        QuizQuestion(text: "Mistik ve gizemli konular her zaman ilgimi çekmiştir.", category: "Merak"),
+        QuizQuestion(text: "Kendimi ifade ederken sanatsal yolları tercih ederim.", category: "Yaratıcılık"),
+        QuizQuestion(text: "Hayatın bir amacı olduğuna ve her şeyin bir nedeni olduğuna inanırım.", category: "Felsefe")
     ]
     
     var currentQuestion: QuizQuestion {
@@ -74,13 +66,7 @@ class PersonalityQuizViewModel: ObservableObject {
     }
     
     func startAnalysis() {
-        // Save answers to UserDefaults
-        if let encoded = try? JSONEncoder().encode(answers) {
-            UserDefaults.standard.set(encoded, forKey: "savedQuizAnswers")
-        }
-        
         isAnalyzing = true
-        
         // Simulate AI analysis delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             withAnimation {
@@ -134,7 +120,7 @@ struct PersonalityQuizView: View {
             }
             
             ToolbarItem(placement: .principal) {
-                Text("Inner Star Reflection")
+                Text("İçsel Yıldız Yansıması")
                     .font(.system(size: 17, weight: .bold, design: .serif))
                     .foregroundColor(themeManager.primaryTextColor)
             }
@@ -143,7 +129,6 @@ struct PersonalityQuizView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .onChange(of: viewModel.analysisComplete) { _, newValue in
             if newValue {
-                // When analysis completes, move to next step automatically
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     navigateToScanner = true
                 }
@@ -164,7 +149,7 @@ struct PersonalityQuizView: View {
             
             // Progress Text
             HStack {
-                Text("Question \(viewModel.currentIndex + 1) of \(viewModel.questions.count)")
+                Text("Soru \(viewModel.currentIndex + 1) / \(viewModel.questions.count)")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
@@ -204,13 +189,13 @@ struct PersonalityQuizView: View {
                     .foregroundColor(themeManager.accentYellow.opacity(0.5))
                 
                 Text(viewModel.currentQuestion.text)
-                    .font(.system(size: 26, weight: .bold, design: .serif))
-                    .lineLimit(4)
+                    .font(.system(size: 24, weight: .bold, design: .serif))
+                    .lineLimit(5)
                     .minimumScaleFactor(0.7)
                     .multilineTextAlignment(.center)
                     .foregroundColor(themeManager.primaryTextColor)
                     .padding(.horizontal, 24)
-                    .frame(height: 140)
+                    .frame(height: 160)
                     .id(viewModel.currentIndex)
                     .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
             }
@@ -218,13 +203,12 @@ struct PersonalityQuizView: View {
             Spacer()
             
             // Interaction Buttons
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 if viewModel.isLastQuestion && viewModel.answers[viewModel.currentQuestion.id] != nil {
-                    // Final Submit Button
                     Button(action: {
                         viewModel.startAnalysis()
                     }) {
-                        Text("Kişiliğimi Analiz Et")
+                        Text("Cevaplarımı Kaydet")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(themeManager.bgColor)
                             .frame(maxWidth: .infinity)
@@ -235,14 +219,9 @@ struct PersonalityQuizView: View {
                     }
                     .transition(.opacity)
                 } else {
-                    // Answer Options
-                    HStack(spacing: 12) {
+                    HStack(spacing: 20) {
                         AnswerButton(themeManager: themeManager, answer: .no, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .no) {
                             viewModel.answerCurrentQuestion(with: .no)
-                        }
-                        
-                        AnswerButton(themeManager: themeManager, answer: .maybe, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .maybe) {
-                            viewModel.answerCurrentQuestion(with: .maybe)
                         }
                         
                         AnswerButton(themeManager: themeManager, answer: .yes, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .yes) {
@@ -251,12 +230,12 @@ struct PersonalityQuizView: View {
                     }
                 }
                 
-                Text("Step 2 of 3: Inner Reflection")
+                Text("Adım 2 / 3: İçsel Yansıma")
                     .font(.system(size: 12))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .padding(.top, 10)
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 30)
             .padding(.bottom, 50)
         }
     }
@@ -304,7 +283,6 @@ struct AnswerButton: View {
     var color: Color {
         switch answer {
         case .yes: return Color(hex: "4CAF50") // Green-ish
-        case .maybe: return themeManager.accentYellow
         case .no: return Color(hex: "F44336") // Red-ish
         }
     }
@@ -312,7 +290,6 @@ struct AnswerButton: View {
     var icon: String {
         switch answer {
         case .yes: return "checkmark"
-        case .maybe: return "minus"
         case .no: return "xmark"
         }
     }

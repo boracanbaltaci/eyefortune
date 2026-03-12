@@ -13,127 +13,142 @@ struct FortuneResultView: View {
 
     var body: some View {
         ZStack {
-            // Background with mystic gradient and sparkles
+            // Background with mystic gradient
             themeManager.bgColor.edgesIgnoringSafeArea(.all)
             
             GeometryReader { geo in
-                ZStack {
-                    Circle()
-                        .fill(themeManager.accentYellow.opacity(0.05))
-                        .frame(width: geo.size.width * 1.5)
-                        .offset(y: -geo.size.height * 0.4)
-                    
-                    VStack(spacing: 0) {
-                        // Custom Header
-                        HStack {
-                            if fortune.type != .aiScan {
-                                Button(action: {
-                                    if isSaved {
-                                        fortuneViewModel.savedFortunes.removeAll(where: { $0.id == fortune.id })
-                                    } else {
-                                        fortuneViewModel.savedFortunes.append(fortune)
-                                    }
-                                }) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(themeManager.cardBgColor)
-                                            .frame(width: 40, height: 40)
-                                            .shadow(color: Color.black.opacity(0.1), radius: 4)
-                                        
-                                        Image(systemName: isSaved ? "heart.fill" : "heart")
-                                            .foregroundColor(isSaved ? .red : themeManager.accentYellow)
-                                            .font(.system(size: 18, weight: .bold))
-                                    }
+                VStack(spacing: 0) {
+                    // Custom Header (Fixed at top)
+                    HStack {
+                        if fortune.type != .aiScan {
+                            Button(action: {
+                                if isSaved {
+                                    fortuneViewModel.savedFortunes.removeAll(where: { $0.id == fortune.id })
+                                } else {
+                                    fortuneViewModel.savedFortunes.append(fortune)
                                 }
-                            } else {
-                                // Transparent placeholder to keep title centered
-                                Color.clear.frame(width: 40, height: 40)
-                            }
-                            
-                            Spacer()
-                            
-                            Text(fortune.type == .aiScan ? "Kişilik Analizi" : "Günlük Fal")
-                                .font(.system(size: 16, weight: .bold, design: .serif))
-                                .foregroundColor(themeManager.accentYellow)
-                            
-                            Spacer()
-                            
-                            Button(action: { dismiss() }) {
+                            }) {
                                 ZStack {
                                     Circle()
                                         .fill(themeManager.cardBgColor)
-                                        .frame(width: 40, height: 40)
-                                        .shadow(color: Color.black.opacity(0.2), radius: 4)
+                                        .frame(width: 44, height: 44)
+                                        .shadow(color: Color.black.opacity(0.1), radius: 4)
                                     
-                                    Image(systemName: "xmark")
-                                        .foregroundColor(themeManager.primaryTextColor)
-                                        .font(.system(size: 16, weight: .bold))
+                                    Image(systemName: isSaved ? "heart.fill" : "heart")
+                                        .foregroundColor(isSaved ? .red : themeManager.accentYellow)
+                                        .font(.system(size: 20, weight: .bold))
                                 }
+                            }
+                        } else {
+                            Color.clear.frame(width: 44, height: 44)
+                        }
+                        
+                        Spacer()
+                        
+                        Text(fortune.type == .aiScan ? "Kişilik Analizi" : "Günlük Fal")
+                            .font(.system(size: 18, weight: .bold, design: .serif))
+                            .foregroundColor(themeManager.accentYellow)
+                        
+                        Spacer()
+                        
+                        Button(action: { dismiss() }) {
+                            ZStack {
+                                Circle()
+                                    .fill(themeManager.cardBgColor)
+                                    .frame(width: 44, height: 44)
+                                    .shadow(color: Color.black.opacity(0.2), radius: 4)
+                                
+                                Image(systemName: "xmark")
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                    .font(.system(size: 18, weight: .bold))
                             }
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 20)
-                        
-                        ScrollView(showsIndicators: false) {
-                            VStack(spacing: 30) {
-                                // Mystic Icon
-                                ZStack {
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 20)
+                    .zIndex(10)
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 40) {
+                            Spacer(minLength: 20)
+                            
+                            // Mystic Icon Header
+                            ZStack {
+                                Circle()
+                                    .stroke(themeManager.accentYellow.opacity(0.15), lineWidth: 1)
+                                    .frame(width: 130, height: 130)
+                                
+                                Circle()
+                                    .fill(themeManager.accentYellow.opacity(0.05))
+                                    .frame(width: 110, height: 110)
+                                
+                                Image(systemName: fortune.type == .aiScan ? "brain.head.profile" : "sparkles")
+                                    .font(.system(size: 54))
+                                    .foregroundColor(themeManager.accentYellow)
+                                    .shadow(color: themeManager.accentYellow.opacity(0.5), radius: 15)
+                            }
+                            
+                            // Content Card
+                            VStack(alignment: .leading, spacing: 24) {
+                                HStack {
+                                    Text(fortune.dateGenerated, style: .date)
+                                        .font(.system(size: 12, weight: .black))
+                                        .tracking(2)
+                                        .foregroundColor(themeManager.accentYellow.opacity(0.6))
+                                    Spacer()
+                                    Image(systemName: "sparkles")
+                                        .font(.system(size: 10))
+                                        .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                                }
+                                
+                                Text(fortune.text)
+                                    .font(.system(size: 19, weight: .medium, design: .serif))
+                                    .lineSpacing(10)
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                
+                                HStack {
+                                    Spacer()
                                     Circle()
-                                        .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
-                                        .frame(width: 120, height: 120)
-                                    
-                                    Image(systemName: fortune.type == .aiScan ? "brain.head.profile" : "sparkles")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(themeManager.accentYellow)
-                                        .shadow(color: themeManager.accentYellow.opacity(0.5), radius: 10)
+                                        .fill(themeManager.accentYellow.opacity(0.2))
+                                        .frame(width: 6, height: 6)
+                                    Circle()
+                                        .fill(themeManager.accentYellow.opacity(0.1))
+                                        .frame(width: 4, height: 4)
                                 }
-                                .padding(.top, 40)
+                                .padding(.top, 10)
+                            }
+                            .padding(32)
+                            .background(
+                                RoundedRectangle(cornerRadius: 32)
+                                    .fill(themeManager.cardBgColor)
+                                    .shadow(color: Color.black.opacity(0.15), radius: 30, x: 0, y: 15)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 32)
+                                    .stroke(themeManager.accentYellow.opacity(0.15), lineWidth: 1)
+                            )
+                            .padding(.horizontal, 24)
+                            
+                            // Motivational Footer
+                            VStack(spacing: 8) {
+                                Text("KOZMİK REHBER")
+                                    .font(.system(size: 10, weight: .black))
+                                    .tracking(2)
+                                    .foregroundColor(themeManager.accentYellow.opacity(0.5))
                                 
-                                // Content Card
-                                VStack(alignment: .leading, spacing: 20) {
-                                    HStack {
-                                        Text(fortune.dateGenerated, style: .date)
-                                            .font(.system(size: 12, weight: .bold))
-                                            .tracking(2)
-                                            .foregroundColor(themeManager.accentYellow.opacity(0.7))
-                                        Spacer()
-                                        Image(systemName: "star.fill")
-                                            .font(.system(size: 10))
-                                            .foregroundColor(themeManager.accentYellow)
-                                    }
-                                    
-                                    Text(fortune.text)
-                                        .font(.system(size: 18, weight: .medium, design: .serif))
-                                        .lineSpacing(8)
-                                        .foregroundColor(themeManager.primaryTextColor)
-                                        .multilineTextAlignment(.leading)
-                                    
-                                    HStack {
-                                        Spacer()
-                                        Image(systemName: "sparkles")
-                                            .foregroundColor(themeManager.accentYellow.opacity(0.3))
-                                    }
-                                }
-                                .padding(30)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 24)
-                                        .fill(themeManager.cardBgColor)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 24)
-                                                .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1)
-                                        )
-                                )
-                                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
-                                .padding(.horizontal, 20)
-                                
-                                // Inspirational Quote
                                 Text("Evrenin fısıltılarını dinle, kalbinin sesini takip et.")
-                                    .font(.system(size: 13, design: .serif))
+                                    .font(.system(size: 14, weight: .medium, design: .serif))
                                     .italic()
                                     .foregroundColor(themeManager.secondaryTextColor)
-                                    .padding(.bottom, 40)
+                                    .multilineTextAlignment(.center)
                             }
+                            .padding(.bottom, 60)
+                            
+                            Spacer(minLength: 20)
                         }
+                        .frame(minHeight: geo.size.height - 100) // Ensure it fills space for centering
                     }
                 }
             }

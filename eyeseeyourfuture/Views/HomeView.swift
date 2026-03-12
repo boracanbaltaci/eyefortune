@@ -86,25 +86,25 @@ struct HomeView: View {
                             .padding(.top, 30)
                             
                             VStack(spacing: 8) {
+                                Text(dynamicGreeting)
+                                    .font(.system(size: 13, weight: .black))
+                                    .tracking(3)
+                                    .foregroundColor(themeManager.accentYellow.opacity(0.8))
+                                
                                 Text(userName.isEmpty ? "Oracle Seer" : userName)
-                                    .font(.system(size: 30, weight: .bold, design: .serif))
+                                    .font(.system(size: 32, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.accentYellow)
                                 
                                 Rectangle()
                                     .fill(themeManager.accentYellow.opacity(0.3))
                                     .frame(width: 48, height: 1)
                                 
-                                VStack(spacing: 4) {
-                                    Text(dynamicGreeting)
-                                        .font(.system(size: 14, weight: .bold))
-                                        .tracking(2)
-                                        .foregroundColor(themeManager.accentYellow.opacity(0.9))
-                                    
-                                    Text(mysticSentence)
-                                        .font(.system(size: 11, weight: .medium, design: .serif))
-                                        .foregroundColor(themeManager.secondaryTextColor)
-                                        .italic()
-                                }
+                                Text(mysticSentence)
+                                    .font(.system(size: 12, weight: .medium, design: .serif))
+                                    .foregroundColor(themeManager.secondaryTextColor)
+                                    .italic()
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
                             }
                             .padding(.top, 20)
                             .padding(.bottom, 24)
@@ -116,90 +116,97 @@ struct HomeView: View {
                                 selectedInsightType = .strengths
                                 showInsightModal = true
                             }) {
-                                HStack(spacing: 8) {
+                                HStack(spacing: 10) {
+                                    Image(systemName: "star.fill")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.green)
                                     Text(lm.t(.homeStrengths))
-                                        .font(.system(size: 14, weight: .bold, design: .serif))
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(themeManager.primaryTextColor)
                                 }
-                                .foregroundColor(.green)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.green.opacity(0.1))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                .background(themeManager.cardBgColor)
+                                .cornerRadius(12)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .stroke(Color.green.opacity(0.3), lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.green.opacity(0.2), lineWidth: 1)
                                 )
-                                .cornerRadius(14)
                             }
                             
                             Button(action: {
                                 selectedInsightType = .weaknesses
                                 showInsightModal = true
                             }) {
-                                HStack(spacing: 8) {
-                                    Image(systemName: "shield.exclamationmark.fill")
+                                HStack(spacing: 10) {
+                                    Image(systemName: "shield.fill")
                                         .font(.system(size: 14))
+                                        .foregroundColor(.red)
                                     Text(lm.t(.homeWeaknesses))
-                                        .font(.system(size: 14, weight: .bold, design: .serif))
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(themeManager.primaryTextColor)
                                 }
-                                .foregroundColor(.red)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.red.opacity(0.04))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                                .background(themeManager.cardBgColor)
+                                .cornerRadius(12)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 14)
+                                    RoundedRectangle(cornerRadius: 12)
                                         .stroke(Color.red.opacity(0.15), lineWidth: 1)
                                 )
-                                .cornerRadius(14)
                             }
                         }
                         .padding(.horizontal, 24)
                         
                         // MARK: CTA Buttons
-                        VStack(spacing: 12) {
+                        VStack(spacing: 16) {
                             Button(action: {
                                 showFortunePage = true
                             }) {
-                                HStack(spacing: 10) {
+                                HStack(spacing: 12) {
                                     Image(systemName: "sparkles")
-                                        .font(.system(size: 18, weight: .bold))
+                                        .font(.system(size: 20, weight: .bold))
                                     Text(lm.t(.homeDailyFortune))
-                                        .font(.system(size: 15, weight: .black))
+                                        .font(.system(size: 16, weight: .black))
                                         .tracking(2)
                                 }
-                                .foregroundColor(themeManager.bgColor)
+                                .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 18)
+                                .padding(.vertical, 20)
                                 .background(
                                     LinearGradient(
-                                        gradient: Gradient(colors: [Color(hex: "#f4c025"), Color(hex: "#ffd700"), Color(hex: "#f4c025")]),
+                                        gradient: Gradient(colors: themeManager.activeTheme == .aurora 
+                                                           ? [Color(hex: "#5D4037"), Color(hex: "#8B4513")] 
+                                                           : [Color(hex: "#f4c025"), Color(hex: "#ffd700")]),
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )
                                 )
-                                .cornerRadius(14)
-                                .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 15, x: 0, y: 5)
+                                .cornerRadius(18)
+                                .shadow(color: (themeManager.activeTheme == .aurora ? Color(hex: "#8B4513") : themeManager.accentYellow).opacity(0.35), radius: 12, x: 0, y: 6)
                             }
                             
                             Button(action: {
                                 personalityAnalysisText = "Yıldızların konumuna ve ruhsal frekansına göre yapılan derin analiz sonuçların hazır. İçsel dengen şu sıralar toprak elementinin ağırlığı altında, bu da senin için sağlam kararlar alma dönemine işaret ediyor. Kariyerinde sabırlı olman gereken bir evredesin, meyvelerini yakında toplayacaksın. İlişkilerinde ise daha şeffaf olman gereken bir dönem. Kendine olan güvenin arttıkça etrafındaki aura da parlayacak. Unutma, evren senin niyetine göre şekillenir."
                                 showPersonalityModal = true
                             }) {
-                                HStack(spacing: 10) {
+                                HStack(spacing: 12) {
                                     Image(systemName: "brain.head.profile")
-                                        .font(.system(size: 18, weight: .bold))
+                                        .font(.system(size: 20, weight: .bold))
                                     Text(lm.t(.homePersonality))
-                                        .font(.system(size: 15, weight: .black))
+                                        .font(.system(size: 16, weight: .black))
                                         .tracking(2)
                                 }
                                 .foregroundColor(themeManager.accentYellow)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 18)
-                                .background(themeManager.accentYellow.opacity(0.1))
+                                .padding(.vertical, 20)
+                                .background(themeManager.cardBgColor)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .stroke(themeManager.accentYellow.opacity(0.5), lineWidth: 1.5)
+                                    RoundedRectangle(cornerRadius: 18)
+                                        .stroke(themeManager.accentYellow.opacity(0.4), lineWidth: 2)
                                 )
-                                .cornerRadius(14)
+                                .cornerRadius(18)
+                                .shadow(color: themeManager.accentYellow.opacity(0.1), radius: 10, x: 0, y: 5)
                             }
                         }
                         .padding(.horizontal, 24)
@@ -274,10 +281,10 @@ struct HomeView: View {
     private var mysticSentence: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
-        case 5..<12: return "Güneşin doğuşuyla enerjin yenileniyor."
-        case 12..<18: return "Günün ışığı ruhundaki gizemleri aydınlatıyor."
-        case 18..<22: return "Yıldızlar belirmeye başlarken sezgilerin güçleniyor."
-        default: return "Gecenin sessizliği evrenin fısıltılarını taşıyor."
+        case 5..<12: return "Güneşin doğuşuyla evrenin kapıları aralanıyor, ruhun ışığa kavuşuyor."
+        case 12..<18: return "Günün en parlak anında kadim bilgiler zihnine akmaya başlıyor."
+        case 18..<22: return "Yıldızlar gökyüzüne yerleşirken gizemli mesajlar sezgilerine ulaşıyor."
+        default: return "Gecenin derinliğinde yıldızlar parlıyor, sana rehberlik eden mesajlar fısıldıyorlar."
         }
     }
 }

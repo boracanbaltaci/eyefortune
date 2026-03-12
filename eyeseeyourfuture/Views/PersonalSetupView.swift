@@ -121,8 +121,7 @@ struct PersonalSetupView: View {
                 }
             }
             .navigationDestination(isPresented: $navigateToScanner) {
-                EyeScannerCameraView(navigateToMainApp: $dismissToMain)
-                    .navigationBarHidden(true)
+                PersonalityQuizView(navigateToNextStep: $dismissToMain)
             }
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: dismissToMain) { _, newValue in

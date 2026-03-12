@@ -120,158 +120,165 @@ struct EyeScannerCameraView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var cameraVM = CameraViewModel()
     
-    @State private var scanAnimationOffset: CGFloat = -150
+    @State private var scanProgress: CGFloat = 0
+    @State private var isScanning = false
     @State private var scanCompleted = false
     
-    // Binding or state to navigate to main app
     @Binding var navigateToMainApp: Bool
     
     var body: some View {
         ZStack {
-            themeManager.bgColor.edgesIgnoringSafeArea(.all)
+            Color.black.edgesIgnoringSafeArea(.all)
             
-            // 1. Camera Feed / Captured Image
-            if let capturedImage = cameraVM.capturedImage {
-                // Show captured image
-                Image(uiImage: capturedImage)
-                    .resizable()
-                    .scaledToFill()
-                    .edgesIgnoringSafeArea(.all)
-            } else {
-                // Show live camera preview
-                CameraPreviewView(cameraVM: cameraVM)
-                    .edgesIgnoringSafeArea(.all)
-            }
-            
-            // 2. Translucent Overlay with Cutout (Optional, simplified by just drawing rings)
-            Color.black.opacity(0.6)
+            // 1. Camera Feed
+            CameraPreviewView(cameraVM: cameraVM)
                 .edgesIgnoringSafeArea(.all)
+                .opacity(scanCompleted ? 0.3 : 1.0)
             
-            // 3. UI Layer
-            VStack {
-                // Header
-                HStack {
-                    Spacer()
-                    Text("Eye Scanner")
-                        .font(.system(size: 18, weight: .bold, design: .serif))
-                        .foregroundColor(themeManager.primaryTextColor)
-                    Spacer()
-                }
-                .padding(.top, 50)
-                
-                Spacer()
-                
-                // Titles and Guidance
-                VStack(spacing: 8) {
-                    Text(scanCompleted ? "Analiz Tamamlandı" : "Ruhunun Aynası")
-                        .font(.system(size: 28, weight: .bold, design: .serif))
-                        .foregroundColor(themeManager.accentYellow)
-                        .multilineTextAlignment(.center)
-                    
-                    Text(scanCompleted ? "Kaderin yıldızlara kazındı." : "Gözünüzü ortadaki kılavuza hizalayın.")
-                        .font(.system(size: 14))
-                        .foregroundColor(themeManager.secondaryTextColor)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                }
-                
-                Spacer()
-                
-                // Scanner Target Area
+            // 2. Dark Overlay with Frame Cutout
+            GeometryReader { geo in
                 ZStack {
-                    // Outer dashed ring
-                    Circle()
-                        .stroke(style: StrokeStyle(lineWidth: 2, dash: [5]))
-                        .foregroundColor(cameraVM.isAligned ? .green : themeManager.accentYellow.opacity(0.4))
-                        .frame(width: 280, height: 280)
+                    // Dimmed background
+                    Color.black.opacity(0.6)
+                        .edgesIgnoringSafeArea(.all)
+                        .mask(
+                            Rectangle()
+                                .overlay(
+                                    Circle()
+                                        .frame(width: 280, height: 280)
+                                        .blendMode(.destinationOut)
+                                )
+                        )
                     
-                    // Inner solid ring
-                    Circle()
-                        .stroke(cameraVM.isAligned ? Color.green : themeManager.accentYellow.opacity(0.2), lineWidth: 4)
-                        .frame(width: 250, height: 250)
+                    // Main Scanning Frame
+                    ZStack {
+                        // Outer Ring with dash
+                        Circle()
+                            .stroke(themeManager.accentYellow.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [10, 5]))
+                            .frame(width: 320, height: 320)
                         
-                    // Box corners
-                    ScannerCorners(color: cameraVM.isAligned ? .green : themeManager.accentYellow)
-                        .frame(width: 300, height: 300)
-                    
-                    // Center Eye prompt
-                    if !cameraVM.isAligned && cameraVM.capturedImage == nil {
-                        Image(systemName: "eye")
-                            .font(.system(size: 60))
-                            .foregroundColor(themeManager.accentYellow.opacity(0.3))
-                    }
-                    
-                    // Scanning Animation (only visible during scanning phase)
-                    if cameraVM.capturedImage != nil && !scanCompleted {
-                        Rectangle()
-                            .fill(LinearGradient(gradient: Gradient(colors: [.clear, themeManager.accentYellow, .clear]), startPoint: .leading, endPoint: .trailing))
-                            .frame(width: 280, height: 2)
-                            .shadow(color: themeManager.accentYellow, radius: 10)
-                            .offset(y: scanAnimationOffset)
-                            .onAppear {
-                                withAnimation(Animation.easeInOut(duration: 1.5).repeatCount(3, autoreverses: true)) {
-                                    self.scanAnimationOffset = 150
-                                }
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
-                                    withAnimation {
-                                        scanCompleted = true
-                                    }
-                                }
+                        // Progress Ring
+                        Circle()
+                            .trim(from: 0, to: scanProgress)
+                            .stroke(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [themeManager.accentYellow, .white, themeManager.accentYellow]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                            )
+                            .frame(width: 280, height: 280)
+                            .rotationEffect(.degrees(-90))
+                            .animation(.linear(duration: 0.1), value: scanProgress)
+                        
+                        // Corner Guides (Bank style)
+                        ScannerCorners(color: isScanning ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.4))
+                            .frame(width: 280, height: 280)
+                        
+                        if !isScanning && !scanCompleted {
+                            VStack(spacing: 8) {
+                                Image(systemName: "face.dashed")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                                Text("HİZALANIYOR")
+                                    .font(.system(size: 10, weight: .black))
+                                    .foregroundColor(themeManager.accentYellow.opacity(0.6))
                             }
+                        }
+                        
+                        if isScanning && !scanCompleted {
+                            VStack(spacing: 4) {
+                                Text("\(Int(scanProgress * 100))%")
+                                    .font(.system(size: 38, weight: .bold, design: .serif))
+                                    .foregroundColor(.white)
+                                Text("TARIYOR")
+                                    .font(.system(size: 11, weight: .black))
+                                    .tracking(2)
+                                    .foregroundColor(themeManager.accentYellow)
+                            }
+                        }
+                        
+                        if scanCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 80))
+                                .foregroundColor(.green)
+                                .shadow(color: .green.opacity(0.5), radius: 10)
+                        }
                     }
                 }
+            }
+            .compositingGroup()
+            
+            // 3. Instruction Content
+            VStack {
+                Text(scanCompleted ? "Kozmik Bağlantı Kuruldu" : "Kozmik Tarama")
+                    .font(.system(size: 24, weight: .bold, design: .serif))
+                    .foregroundColor(themeManager.accentYellow)
+                    .padding(.top, 60)
+                
+                Text(scanCompleted ? "Yıldızlar ruhunuzu tanıdı." : "Gözünüzü dairenin içine getirin ve sabit tutun.")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.white.opacity(0.8))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+                    .padding(.top, 8)
                 
                 Spacer()
                 
-                // Bottom Button
-                VStack {
-                    if scanCompleted {
-                        Button(action: {
-                            // Navigate to MainTabView
-                            navigateToMainApp = true
-                        }) {
-                            Text("Devam et")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(themeManager.bgColor)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 18)
-                                .background(themeManager.accentYellow)
-                                .cornerRadius(15)
-                                .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10)
-                        }
-                    } else if cameraVM.capturedImage != nil {
-                        // Empty placeholder while scanning
-                        Text("Yıldızlar taranıyor...")
-                            .foregroundColor(themeManager.accentYellow)
-                            .padding(.vertical, 18)
-                    } else {
-                        Button(action: {
-                            if cameraVM.isAligned {
-                                cameraVM.takePhoto()
-                            }
-                        }) {
-                            HStack {
-                                Image(systemName: "viewfinder")
-                                Text(cameraVM.isAligned ? "Fotoğraf Çek" : "Hizalanıyor...")
-                            }
+                if scanCompleted {
+                    Button(action: {
+                        navigateToMainApp = true
+                    }) {
+                        Text("Yıldızlara Sor")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(cameraVM.isAligned ? themeManager.bgColor : themeManager.primaryTextColor)
+                            .foregroundColor(themeManager.bgColor)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 18)
-                            .background(cameraVM.isAligned ? themeManager.accentYellow : themeManager.cardBgColor)
-                            .cornerRadius(15)
-                            .shadow(color: cameraVM.isAligned ? themeManager.accentYellow.opacity(0.4) : .clear, radius: 10)
-                        }
-                        .disabled(!cameraVM.isAligned)
+                            .background(themeManager.accentYellow)
+                            .cornerRadius(16)
+                            .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10)
                     }
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 60)
+                } else {
+                    // Scanning status indicator
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(isScanning ? Color.green : Color.red)
+                            .frame(width: 8, height: 8)
+                        Text(isScanning ? "Tarama Devam Ediyor..." : "Yüzünüzü Yaklaştırın")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white.opacity(0.6))
+                    }
+                    .padding(.bottom, 80)
                 }
-                .padding(.horizontal, 30)
-                .padding(.bottom, 40)
             }
         }
         .onAppear {
             cameraVM.checkPermissions()
+            startAutomatedScanner()
+        }
+    }
+    
+    private func startAutomatedScanner() {
+        // Simulate detection and then progress
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            withAnimation { isScanning = true }
+            
+            Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+                if scanProgress < 1.0 {
+                    scanProgress += 0.01
+                } else {
+                    timer.invalidate()
+                    withAnimation {
+                        isScanning = false
+                        scanCompleted = true
+                    }
+                    // Optional: Take a photo for the profile at the end
+                    cameraVM.takePhoto()
+                }
+            }
         }
     }
 }

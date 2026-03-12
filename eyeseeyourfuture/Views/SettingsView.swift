@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var showSubscription = false
     @AppStorage("notificationsEnabled") var notificationsEnabled = true
     @State private var showHelpCenter = false
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -83,7 +84,9 @@ struct SettingsView: View {
 
                         // Delete Profile
                         VStack(spacing: 16) {
-                            Button(action: {}) {
+                            Button(action: {
+                                showDeleteConfirmation = true
+                            }) {
                                 Text(lm.t(.settingsDeleteProfile))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.red)
@@ -130,7 +133,28 @@ struct SettingsView: View {
             .sheet(isPresented: $showHelpCenter) {
                 HelpCenterView()
             }
+            .alert("Kozmik Profili Sil", isPresented: $showDeleteConfirmation) {
+                Button("Vazgeç", role: .cancel) { }
+                Button("Sil", role: .destructive) {
+                    deleteProfile()
+                }
+            } message: {
+                Text("Profilinizi silmek istediğinize emin misiniz? Tüm verileriniz kalıcı olarak silinecektir.")
+            }
         }
+    }
+
+    private func deleteProfile() {
+        // Clear all relevant @AppStorage keys
+        UserDefaults.standard.removeObject(forKey: "userName")
+        UserDefaults.standard.removeObject(forKey: "userZodiac")
+        UserDefaults.standard.removeObject(forKey: "userGender")
+        UserDefaults.standard.removeObject(forKey: "userBirthDate")
+        UserDefaults.standard.removeObject(forKey: "isSetupComplete")
+        UserDefaults.standard.removeObject(forKey: "onboardingStep")
+        
+        // This will trigger the app to return to LoginView
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
