@@ -16,7 +16,11 @@ class ScannerViewModel: ObservableObject {
         generatedFortune = nil
         
         // Simulate scan progress
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+            guard let self = self else {
+                timer.invalidate()
+                return
+            }
             if self.scanProgress >= 1.0 {
                 timer.invalidate()
                 self.processScanWithAI()

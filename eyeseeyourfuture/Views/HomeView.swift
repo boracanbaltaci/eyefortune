@@ -18,7 +18,10 @@ struct HomeView: View {
     @EnvironmentObject var lm: LocalizationManager
     
     @AppStorage("scannedEyeImagePath") var scannedEyeImagePath: String = ""
-    @AppStorage("userName") var userName: String = "Oracle Seer"
+    @AppStorage("userName") var userNameStore: String = ""
+    @AppStorage("irisHex") var irisHex: String = "#4A90E2"
+    @AppStorage("irisColorName") var irisColorName: String = "Deep Blue"
+    @AppStorage("irisReading") var irisReading: String = ""
     
     @State private var categories: [InsightCategory] = [
         InsightCategory(title: "Aşk & İlişkiler", subtitle: "Uyum: Yüksek Potansiyel", icon: "heart.fill", color: Color.pink, description: "Kalbinin derinliklerinde saklı olan duygular, bu dönemde gün yüzüne çıkacak. Partnerinle olan iletişimin güçleniyor, ancak küçük yanlış anlaşılmalara karşı dikkatli olmalısın."),
@@ -69,17 +72,30 @@ struct HomeView: View {
                                         .frame(width: 144, height: 144)
                                         .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 20)
                                     
-                                    if !scannedEyeImagePath.isEmpty,
-                                       let uiImage = UIImage(contentsOfFile: scannedEyeImagePath) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 134, height: 134)
-                                            .clipShape(Circle())
+                                    if !scannedEyeImagePath.isEmpty {
+                                        let url = URL(fileURLWithPath: scannedEyeImagePath)
+                                        if let downsampled = ImageUtils.downsample(imageAt: url, to: CGSize(width: 134, height: 134)) {
+                                            Image(uiImage: downsampled)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 134, height: 134)
+                                                .clipShape(Circle())
+                                        } else if let uiImage = UIImage(contentsOfFile: scannedEyeImagePath) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 134, height: 134)
+                                                .clipShape(Circle())
+                                        }
                                     } else {
-                                        Image(systemName: "eye.fill")
-                                            .font(.system(size: 55))
-                                            .foregroundColor(themeManager.accentYellow.opacity(0.6))
+                                        // Dynamic Eye View based on detected iris color
+                                        DynamicEyeView(
+                                            hexColor: irisHex,
+                                            colorName: irisColorName,
+                                            themeManager: themeManager
+                                        )
+                                        .frame(width: 134, height: 134)
+                                        .clipShape(Circle())
                                     }
                                 }
                             }
@@ -91,7 +107,7 @@ struct HomeView: View {
                                     .tracking(3)
                                     .foregroundColor(themeManager.accentYellow.opacity(0.8))
                                 
-                                Text(userName.isEmpty ? "Oracle Seer" : userName)
+                                Text(userNameStore.isEmpty ? "Oracle Seer" : userNameStore)
                                     .font(.system(size: 32, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.accentYellow)
                                 
@@ -170,7 +186,7 @@ struct HomeView: View {
                                         .font(.system(size: 16, weight: .black))
                                         .tracking(2)
                                 }
-                                .foregroundColor(.white)
+                                .foregroundColor(themeManager.activeTheme == .midnight ? themeManager.bgColor : .white)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 20)
                                 .background(
@@ -187,7 +203,15 @@ struct HomeView: View {
                             }
                             
                             Button(action: {
-                                personalityAnalysisText = "Yıldızların konumuna ve ruhsal frekansına göre yapılan derin analiz sonuçların hazır. İçsel dengen şu sıralar toprak elementinin ağırlığı altında, bu da senin için sağlam kararlar alma dönemine işaret ediyor. Kariyerinde sabırlı olman gereken bir evredesin, meyvelerini yakında toplayacaksın. İlişkilerinde ise daha şeffaf olman gereken bir dönem. Kendine olan güvenin arttıkça etrafındaki aura da parlayacak. Unutma, evren senin niyetine göre şekillenir."
+                                if irisReading.isEmpty {
+                                    personalityAnalysisText = """
+                                    Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor. Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi. Zihnin bir kuş kadar hür ve meraklıyken, kararların bir dağ kadar sarsılmaz.
+                                    
+                                    Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor. Bu hassasiyetin senin en büyük süper gücün. Ancak bu güç, bazen başkalarının ağırlıklarını da yüklenmene sebep olabilir.
+                                    """
+                                } else {
+                                    personalityAnalysisText = irisReading
+                                }
                                 showPersonalityModal = true
                             }) {
                                 HStack(spacing: 12) {
@@ -212,7 +236,6 @@ struct HomeView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 24)
                         
-                        // MARK: Insight Categories
                         VStack(spacing: 12) {
                             ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
                                 InsightCategoryCard(

@@ -32,8 +32,10 @@ enum LKey: String {
     case fortuneClose       = "fortune_close"
 
     // MARK: History
-    case historyTitle       = "history_title"
-    case historyEmpty       = "history_empty"
+    case historyTitle           = "history_title"
+    case historyEmpty           = "history_empty"
+    case historyHeaderTitle     = "history_header_title"
+    case historyHeaderSubtitle  = "history_header_subtitle"
 
     // MARK: Settings
     case settingsTitle          = "settings_title"
@@ -145,6 +147,8 @@ struct LocalizedStrings {
 
             .historyTitle:    "Beğenilenler",
             .historyEmpty:    "Henüz beğendiğiniz bir fal yok.",
+            .historyHeaderTitle: "Yıldızların Gizli Defteri",
+            .historyHeaderSubtitle: "Evrenin fısıldadığı her bir söz, kalbinde saklı birer mücevherdir.",
 
             .settingsTitle:           "Mistik Ayarlar",
             .settingsSectionGeneral:  "GENEL DENEYİM",
@@ -247,6 +251,8 @@ struct LocalizedStrings {
 
             .historyTitle:    "Fortune History",
             .historyEmpty:    "No saved fortunes yet.",
+            .historyHeaderTitle: "The Stars' Secret Journal",
+            .historyHeaderSubtitle: "Every word whispered by the universe is a jewel hidden in your heart.",
 
             .settingsTitle:           "Mystic Settings",
             .settingsSectionGeneral:  "GENERAL EXPERIENCE",
@@ -401,6 +407,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Bien-être",
             .readingEmpty:    "Aucun contenu dans cette catégorie aujourd'hui",
             .readingToday:    "Aujourd'hui",
+            .historyHeaderTitle: "Le Journal Secret des Étoiles",
+            .historyHeaderSubtitle: "Chaque mot murmuré par l'univers est un joyau caché dans votre cœur.",
+            .setupTitle:         "Cartographiez votre Destin",
+            .setupSubtitle:      "Nos anciens utilisent ces détails pour aligner vos étoiles.",
+            .setupFullName:      "Nom complet",
+            .setupFullNamePlaceholder: "Ex. Alexander Orion",
+            .setupBirthDate:     "Date de naissance",
+            .setupBirthTime:     "Heure exacte de naissance",
+            .setupPersonalityTest: "TEST DE PERSONNALITÉ",
+            .setupQuestion:      "De quel élément vous sentez-vous le plus proche ?",
+            .setupContinue:      "Continuer le voyage",
+            .setupStep:          "Étape 1 sur 3 : Alignement spirituel",
+            .setupNavTitle:      "Configuration de la carte du ciel",
+            .quizTitle:          "Analyse de personnalité",
+            .quizSubtitle:       "Aidez-nous à mieux vous connaître.",
+            .quizYes:            "Oui",
+            .quizNo:             "Non",
         ],
 
         // ──────────────────────────────────────────
@@ -484,6 +507,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Bienestar",
             .readingEmpty:    "No hay contenido en esta categoría hoy",
             .readingToday:    "Hoy",
+            .historyHeaderTitle: "El Diario Secreto de las Estrellas",
+            .historyHeaderSubtitle: "Cada palabra susurrada por el universo es una joya escondida en tu corazón.",
+            .setupTitle:         "Mapea tu Destino",
+            .setupSubtitle:      "Nuestros ancianos usan estos detalles para alinear tus estrellas.",
+            .setupFullName:      "Nombre completo",
+            .setupFullNamePlaceholder: "Ej. Alexander Orion",
+            .setupBirthDate:     "Fecha de nacimiento",
+            .setupBirthTime:     "Hora exacta de nacimiento",
+            .setupPersonalityTest: "TEST DE PERSONALIDAD",
+            .setupQuestion:      "¿Con qué elemento te sientes más conectado?",
+            .setupContinue:      "Continuar viaje",
+            .setupStep:          "Paso 1 de 3: Alineación espiritual",
+            .setupNavTitle:      "Configuración de la carta natal",
+            .quizTitle:          "Análisis de personalidad",
+            .quizSubtitle:       "Ayúdanos a conocerte mejor.",
+            .quizYes:            "Sí",
+            .quizNo:             "No",
         ],
 
         // ──────────────────────────────────────────
@@ -567,6 +607,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Wohlbefinden",
             .readingEmpty:    "Kein Inhalt in dieser Kategorie heute",
             .readingToday:    "Heute",
+            .historyHeaderTitle: "Das geheime Tagebuch der Sterne",
+            .historyHeaderSubtitle: "Jedes vom Universum geflüsterte Wort ist ein in deinem Herzen verborgenes Juwel.",
+            .setupTitle:         "Plane dein Schicksal",
+            .setupSubtitle:      "Unsere Ältesten nutzen diese Details, um deine Sterne auszurichten.",
+            .setupFullName:      "Vollständiger Name",
+            .setupFullNamePlaceholder: "Z.B. Alexander Orion",
+            .setupBirthDate:     "Geburtsdatum",
+            .setupBirthTime:     "Genaue Geburtszeit",
+            .setupPersonalityTest: "PERSÖNLICHKEITSTEST",
+            .setupQuestion:      "Mit welchem Element fühlst du dich am meisten verbunden?",
+            .setupContinue:      "Reise fortsetzen",
+            .setupStep:          "Schritt 1 von 3: Spirituelle Ausrichtung",
+            .setupNavTitle:      "Erstellung des Geburtshoroskops",
+            .quizTitle:          "Persönlichkeitsanalyse",
+            .quizSubtitle:       "Hilf uns, dich besser kennenzulernen.",
+            .quizYes:            "Ja",
+            .quizNo:             "Nein",
         ],
 
         // ──────────────────────────────────────────
@@ -650,6 +707,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Benessere",
             .readingEmpty:    "Nessun contenuto in questa categoria oggi",
             .readingToday:    "Oggi",
+            .historyHeaderTitle: "Il Diario Segreto delle Stelle",
+            .historyHeaderSubtitle: "Ogni parola sussurrata dall'universo è un gioiello nascosto nel tuo cuore.",
+            .setupTitle:         "Mappa il tuo Destino",
+            .setupSubtitle:      "I nostri anziani usano questi dettagli per allineare le tue stelle.",
+            .setupFullName:      "Nome completo",
+            .setupFullNamePlaceholder: "Es. Alexander Orion",
+            .setupBirthDate:     "Data di nascita",
+            .setupBirthTime:     "Ora esatta di nascita",
+            .setupPersonalityTest: "TEST DI PERSONALITÀ",
+            .setupQuestion:      "A quale elemento ti senti più legato?",
+            .setupContinue:      "Continua il viaggio",
+            .setupStep:          "Passaggio 1 di 3: Allineamento spirituale",
+            .setupNavTitle:      "Configurazione del tema natale",
+            .quizTitle:          "Analisi della personalità",
+            .quizSubtitle:       "Aiutaci a conoscerti meglio.",
+            .quizYes:            "Sì",
+            .quizNo:             "No",
         ],
     ]
 }

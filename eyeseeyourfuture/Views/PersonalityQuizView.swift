@@ -85,6 +85,7 @@ struct PersonalityQuizView: View {
     @Binding var navigateToNextStep: Bool
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var analysisProgress: CGFloat = 0
     @State private var navigateToScanner = false
     
     var body: some View {
@@ -119,15 +120,14 @@ struct PersonalityQuizView: View {
                         .font(.system(size: 20, weight: .regular))
                 }
             }
-            
-            ToolbarItem(placement: .principal) {
-                Text("İçsel Yıldız Yansıması")
-                    .font(.system(size: 17, weight: .bold, design: .serif))
-                    .foregroundColor(themeManager.primaryTextColor)
-            }
         }
         .toolbarBackground(themeManager.bgColor, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .onChange(of: viewModel.isAnalyzing) { _, newValue in
+            if newValue {
+                startAnalysisAnimation()
+            }
+        }
         .onChange(of: viewModel.analysisComplete) { _, newValue in
             if newValue {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -137,63 +137,87 @@ struct PersonalityQuizView: View {
         }
     }
     
+    private func startAnalysisAnimation() {
+        analysisProgress = 0
+        Timer.scheduledTimer(withTimeInterval: 0.03, repeats: true) { timer in
+            if analysisProgress < 1.0 {
+                analysisProgress += 0.01
+            } else {
+                timer.invalidate()
+            }
+        }
+    }
+    
     // MARK: - Subviews
     private var quizContent: some View {
         VStack(spacing: 0) {
+            // Stage Indicator (Synced with PersonalSetupView)
             HStack(spacing: 12) {
                 Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
                 Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
                 Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
             }
-            .padding(.top, 10)
+            .padding(.top, 20)
+            
+            Text("İçsel Hassasiyet")
+                .font(.system(size: 32, weight: .bold, design: .serif))
+                .foregroundColor(themeManager.primaryTextColor)
+                .multilineTextAlignment(.center)
+                .padding(.top, 40)
+                .padding(.bottom, 8)
             
             Text("Seni tanıyıp sana özel fallar bulmak ve yıldızları ona göre analiz etmek için bu testi yap.")
-                .font(.system(size: 13, weight: .medium))
+                .font(.system(size: 14))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
-                .padding(.top, 12)
+                .padding(.bottom, 24)
             
-            // Progress Text
-            HStack {
-                Text("Soru \(viewModel.currentIndex + 1) / \(viewModel.questions.count)")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(themeManager.secondaryTextColor)
-                Spacer()
-                Text(viewModel.currentQuestion.category)
-                    .font(.system(size: 12, weight: .bold))
-                    .tracking(1)
-                    .foregroundColor(themeManager.accentYellow)
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 30)
-            
-            // Progress Bar
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(themeManager.inputBgColor)
-                        .frame(height: 4)
-                        .cornerRadius(2)
-                    
-                    Rectangle()
-                        .fill(themeManager.accentYellow)
-                        .frame(width: geometry.size.width * CGFloat(viewModel.progress), height: 4)
-                        .cornerRadius(2)
-                        .animation(.spring(), value: viewModel.progress)
+            // Progress Section
+            VStack(spacing: 12) {
+                HStack {
+                    Text("Soru \(viewModel.currentIndex + 1) / \(viewModel.questions.count)")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(themeManager.secondaryTextColor)
+                    Spacer()
+                    Text(viewModel.currentQuestion.category.uppercased())
+                        .font(.system(size: 11, weight: .black))
+                        .tracking(2)
+                        .foregroundColor(themeManager.accentYellow)
                 }
+                
+                // Progress Bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(themeManager.inputBgColor)
+                            .frame(height: 6)
+                            .cornerRadius(3)
+                        
+                        Rectangle()
+                            .fill(themeManager.accentYellow)
+                            .frame(width: geometry.size.width * CGFloat(viewModel.progress), height: 6)
+                            .cornerRadius(3)
+                            .animation(.spring(), value: viewModel.progress)
+                    }
+                }
+                .frame(height: 6)
             }
-            .frame(height: 4)
             .padding(.horizontal, 24)
-            .padding(.top, 10)
             
             Spacer()
             
             // Question Center Piece
             VStack(spacing: 40) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 40))
-                    .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                ZStack {
+                    Circle()
+                        .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1)
+                        .frame(width: 100, height: 100)
+                    
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 40))
+                        .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                }
                 
                 Text(viewModel.currentQuestion.text)
                     .font(.system(size: 24, weight: .bold, design: .serif))
@@ -202,7 +226,7 @@ struct PersonalityQuizView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(themeManager.primaryTextColor)
                     .padding(.horizontal, 24)
-                    .frame(height: 160)
+                    .frame(height: 140)
                     .id(viewModel.currentIndex)
                     .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
             }
@@ -248,34 +272,46 @@ struct PersonalityQuizView: View {
     }
     
     private var analysisLoadingView: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 40) {
             ZStack {
                 Circle()
-                    .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 4)
-                    .frame(width: 120, height: 120)
+                    .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 2)
+                    .frame(width: 200, height: 200)
                 
                 Circle()
-                    .trim(from: 0.0, to: 0.7)
-                    .stroke(themeManager.accentYellow, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    .frame(width: 120, height: 120)
-                    .rotationEffect(Angle(degrees: viewModel.isAnalyzing ? 360 : 0))
-                    .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false), value: viewModel.isAnalyzing)
+                    .trim(from: 0.0, to: analysisProgress)
+                    .stroke(
+                        LinearGradient(gradient: Gradient(colors: [themeManager.accentYellow, .white]), startPoint: .top, endPoint: .bottom),
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    )
+                    .frame(width: 200, height: 200)
+                    .rotationEffect(Angle(degrees: -90))
+                    .animation(.linear(duration: 0.1), value: analysisProgress)
                 
-                Image(systemName: "brain.head.profile")
-                    .font(.system(size: 40))
-                    .foregroundColor(themeManager.primaryTextColor)
+                VStack(spacing: 8) {
+                    Text("\(Int(analysisProgress * 100))%")
+                        .font(.system(size: 48, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.primaryTextColor)
+                    
+                    Text("TAMAMLANIYOR")
+                        .font(.system(size: 10, weight: .black))
+                        .tracking(2)
+                        .foregroundColor(themeManager.accentYellow)
+                }
             }
             
-            VStack(spacing: 10) {
-                Text("Kişilik Analizi Yapılıyor")
-                    .font(.system(size: 22, weight: .bold, design: .serif))
+            VStack(spacing: 16) {
+                Text("Ruhun Analiz Ediliyor")
+                    .font(.system(size: 26, weight: .bold, design: .serif))
                     .foregroundColor(themeManager.primaryTextColor)
                 
-                Text("Cevaplarınız evrensel elementlerle eşleştiriliyor...")
-                    .font(.system(size: 14))
+                Text(analysisProgress < 0.5 ? "Cevaplarınız evrensel elementlerle eşleştiriliyor..." : "Kozmik frekansınız yıldızlarla senkronize ediliyor...")
+                    .font(.system(size: 15))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 40)
+                    .padding(.horizontal, 50)
+                    .id(analysisProgress < 0.5)
+                    .transition(.opacity)
             }
         }
     }

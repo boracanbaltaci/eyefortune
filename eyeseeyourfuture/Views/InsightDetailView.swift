@@ -23,35 +23,64 @@ struct InsightDetailView: View {
     }
     
     var body: some View {
-        NavigationView {
+        ZStack {
+            themeManager.bgColor.ignoresSafeArea()
+            
+            // Decorative backgrounds based on type
             ZStack {
-                themeManager.bgColor.ignoresSafeArea()
-                
-                // Decorative backgrounds based on type
-                ZStack {
-                    if type == .strengths {
-                        // Vibrant, energetic aura
-                        Circle()
-                            .fill(LinearGradient(
-                                gradient: Gradient(colors: [.green.opacity(0.15), .yellow.opacity(0.1)]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ))
-                            .frame(width: 400, height: 400)
-                            .blur(radius: 60)
-                            .offset(y: -100)
-                    } else {
-                        // Deep, serious atmospheric glow
-                        RadialGradient(
-                            gradient: Gradient(colors: [Color.red.opacity(0.12), .clear]),
-                            center: .top,
-                            startRadius: 0,
-                            endRadius: 500
-                        )
-                        .frame(height: 500)
-                        .ignoresSafeArea()
+                if type == .strengths {
+                    // Vibrant, energetic aura
+                    Circle()
+                        .fill(LinearGradient(
+                            gradient: Gradient(colors: [.green.opacity(0.15), .yellow.opacity(0.1)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ))
+                        .frame(width: 400, height: 400)
+                        .blur(radius: 60)
+                        .offset(y: -100)
+                } else {
+                    // Deep, serious atmospheric glow
+                    RadialGradient(
+                        gradient: Gradient(colors: [Color.red.opacity(0.12), .clear]),
+                        center: .top,
+                        startRadius: 0,
+                        endRadius: 500
+                    )
+                    .frame(height: 500)
+                    .ignoresSafeArea()
+                }
+            }
+            
+            VStack(spacing: 0) {
+                // Custom Header (Matching FortuneResultView)
+                HStack {
+                    Color.clear.frame(width: 44, height: 44)
+                    
+                    Spacer()
+                    
+                    Text(type.title)
+                        .font(.system(size: 18, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.accentYellow)
+                    
+                    Spacer()
+                    
+                    Button(action: { dismiss() }) {
+                        ZStack {
+                            Circle()
+                                .fill(themeManager.cardBgColor)
+                                .frame(width: 44, height: 44)
+                                .shadow(color: Color.black.opacity(0.2), radius: 4)
+                            
+                            Image(systemName: "xmark")
+                                .foregroundColor(themeManager.primaryTextColor)
+                                .font(.system(size: 18, weight: .bold))
+                        }
                     }
                 }
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
+                .zIndex(10)
                 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 32) {
@@ -87,7 +116,7 @@ struct InsightDetailView: View {
                         // Content Card
                         VStack(alignment: .leading, spacing: 28) {
                             HStack {
-                                Text(type.title.uppercased())
+                                Text(type == .strengths ? "GÜÇLÜ YÖNLER" : "ZAYIF YÖNLER")
                                     .font(.system(size: 13, weight: .black))
                                     .tracking(3)
                                     .foregroundColor(type.mainColor)
@@ -161,22 +190,6 @@ struct InsightDetailView: View {
                     }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .black))
-                            .foregroundColor(themeManager.secondaryTextColor)
-                            .padding(10)
-                            .background(themeManager.cardBgColor)
-                            .clipShape(Circle())
-                            .shadow(color: Color.black.opacity(0.1), radius: 4)
-                    }
-                }
-            }
-            .toolbarBackground(themeManager.bgColor, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
     

@@ -26,11 +26,11 @@ struct HistoryView: View {
                         VStack(spacing: 0) {
                             // Magical Header
                             VStack(spacing: 12) {
-                                Text("Yıldızların Hatırası")
-                                    .font(.system(size: 32, weight: .bold, design: .serif))
+                                Text(lm.t(.historyHeaderTitle)) // Updated header title
+                                    .font(.system(size: 28, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.accentYellow)
                                 
-                                Text("Evrenin fısıldadığı her bir söz, kalbinde saklı birer mücevherdir.")
+                                Text(lm.t(.historyHeaderSubtitle)) // Updated header subtitle
                                     .font(.system(size: 14, weight: .medium, design: .serif))
                                     .italic()
                                     .foregroundColor(themeManager.secondaryTextColor)
@@ -57,7 +57,7 @@ struct HistoryView: View {
                     }
                 }
             }
-            .navigationTitle(lm.t(.historyTitle))
+            .navigationTitle("Gizli Defter")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)

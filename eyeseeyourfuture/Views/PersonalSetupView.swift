@@ -5,9 +5,11 @@ struct PersonalSetupView: View {
     @EnvironmentObject var lm: LocalizationManager
     @Environment(\.presentationMode) var presentationMode
     
+    @AppStorage("userName") var userNameStore: String = ""
     @State private var fullName = ""
     @State private var birthDate = ""
     @State private var birthTime = ""
+    @State private var timePeriod = "AM"
     @State private var selectedElement: ElementType? = nil
     
     @State private var navigateToScanner = false
@@ -39,6 +41,13 @@ struct PersonalSetupView: View {
         }
     }
     
+    private var isFormValid: Bool {
+        !fullName.trimmingCharacters(in: .whitespaces).isEmpty &&
+        birthDate.count == 10 && // GG/AA/YYYY
+        !birthTime.isEmpty &&
+        selectedElement != nil
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -46,7 +55,7 @@ struct PersonalSetupView: View {
                 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        // Stage Indicator (Step 1 of 3)
+                        // Stage Indicator (Synced with other screens)
                         HStack(spacing: 12) {
                             Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
                             Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
@@ -55,35 +64,77 @@ struct PersonalSetupView: View {
                         .padding(.top, 20)
                         
                         // Header Texts
-                        Text("Kendini Tanıt")
+                        Text("Kozmik Kimlik")
                             .font(.system(size: 32, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.primaryTextColor)
                             .multilineTextAlignment(.center)
                             .padding(.top, 40)
                             .padding(.bottom, 8)
                         
-                        Text("Yıldız haritanı çizmek için seni biraz tanıyalım.")
+                        Text("Yıldız haritanı çizmek için temel bilgilerini gir.")
                             .font(.system(size: 14))
                             .foregroundColor(themeManager.secondaryTextColor)
                             .multilineTextAlignment(.center)
-                            .padding(.bottom, 30)
+                            .padding(.bottom, 20)
                         
                         // Form Fields
                         VStack(spacing: 24) {
                             // Full Name Input
-                            SetupTextField(title: lm.t(.setupFullName), placeholder: lm.t(.setupFullNamePlaceholder), text: $fullName, icon: nil, themeManager: themeManager)
+                            SetupTextField(title: lm.t(.setupFullName), placeholder: "Stella", text: $fullName, icon: nil, themeManager: themeManager, autocapitalization: .words)
+                                .onChange(of: fullName) { _, newValue in
+                                    userNameStore = newValue
+                                }
                             
-                            HStack(spacing: 16) {
+                            HStack(spacing: 12) {
                                 // Birth Date Input
-                                SetupTextField(title: lm.t(.setupBirthDate), placeholder: "MM / DD / YYYY", text: $birthDate, icon: "calendar", themeManager: themeManager)
+                                SetupTextField(title: lm.t(.setupBirthDate), placeholder: "GG / AA / YYYY", text: $birthDate, icon: "calendar", themeManager: themeManager, keyboardType: .numberPad)
+                                    .onChange(of: birthDate) { _, newValue in
+                                        formatDate(newValue)
+                                    }
                                 
                                 // Birth Time Input
-                                SetupTextField(title: lm.t(.setupBirthTime), placeholder: "12:00 PM", text: $birthTime, icon: "clock", themeManager: themeManager)
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(lm.t(.setupBirthTime))
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(themeManager.secondaryTextColor)
+                                        .padding(.leading, 4)
+                                    
+                                    HStack(spacing: 0) {
+                                        TextField("12:00", text: $birthTime, onEditingChanged: { isEditing in
+                                            if !isEditing {
+                                                completeBirthTime()
+                                            }
+                                        })
+                                        .foregroundColor(themeManager.primaryTextColor)
+                                        .keyboardType(.numbersAndPunctuation)
+                                        .frame(maxWidth: .infinity)
+                                        
+                                        Button(action: {
+                                            timePeriod = timePeriod == "AM" ? "PM" : "AM"
+                                        }) {
+                                            Text(timePeriod)
+                                                .font(.system(size: 12, weight: .bold))
+                                                .foregroundColor(themeManager.accentYellow)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(themeManager.accentYellow.opacity(0.1))
+                                                .cornerRadius(6)
+                                        }
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 16)
+                                    .background(themeManager.inputBgColor)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
+                                    )
+                                    .cornerRadius(15)
+                                }
                             }
                             
                             // Element Selection
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("Kendine en yakın hissettiğin element hangisi?")
+                                Text("Evrendeki elementini seç:")
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(themeManager.secondaryTextColor)
                                     .padding(.leading, 4)
@@ -105,17 +156,20 @@ struct PersonalSetupView: View {
                         // Submit Area
                         VStack(spacing: 16) {
                             Button(action: {
-                                navigateToScanner = true
+                                if isFormValid {
+                                    navigateToScanner = true
+                                }
                             }) {
                                 Text(lm.t(.setupContinue))
                                     .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(themeManager.bgColor)
+                                    .foregroundColor(isFormValid ? themeManager.bgColor : .white.opacity(0.5))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 18)
-                                    .background(themeManager.accentYellow)
+                                    .background(isFormValid ? themeManager.accentYellow : Color.gray.opacity(0.3))
                                     .cornerRadius(15)
-                                    .shadow(color: themeManager.accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
+                                    .shadow(color: isFormValid ? themeManager.accentYellow.opacity(0.3) : .clear, radius: 10, x: 0, y: 5)
                             }
+                            .disabled(!isFormValid)
                             
                             Text("Adım 1 / 3: Ruhsal Hizalanma")
                                 .font(.system(size: 12))
@@ -157,6 +211,52 @@ struct PersonalSetupView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }
+    
+    private func completeBirthTime() {
+        let cleaned = birthTime.filter { "0123456789:".contains($0) }
+        guard !cleaned.isEmpty else { return }
+        
+        let components = cleaned.split(separator: ":")
+        var hour: Int = 0
+        var minute: Int = 0
+        
+        if let h = Int(components[0]) {
+            hour = h
+        }
+        
+        if components.count >= 2, let m = Int(components[1]) {
+            minute = m
+        }
+        
+        // 24-hour logic: If user enters 15, it becomes 3:00 PM
+        if hour >= 24 {
+            hour = hour % 24
+        }
+        
+        if hour >= 12 {
+            if hour > 12 {
+                hour -= 12
+            }
+            timePeriod = "PM"
+        } else {
+            if hour == 0 { hour = 12 }
+            timePeriod = "AM"
+        }
+        
+        birthTime = String(format: "%d:%02d", hour, minute)
+    }
+    
+    private func formatDate(_ value: String) {
+        let clean = value.filter { "0123456789".contains($0) }
+        var result = ""
+        for (i, char) in clean.enumerated() {
+            if i == 2 || i == 4 { result.append("/") }
+            if i < 8 { result.append(char) }
+        }
+        if result != value {
+            birthDate = result
+        }
+    }
 }
 
 // MARK: - Reusable Setup Text Field
@@ -166,6 +266,8 @@ struct SetupTextField: View {
     @Binding var text: String
     var icon: String?
     @ObservedObject var themeManager: ThemeManager
+    var keyboardType: UIKeyboardType = .default
+    var autocapitalization: TextInputAutocapitalization = .never
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -177,6 +279,8 @@ struct SetupTextField: View {
             HStack {
                 TextField(placeholder, text: $text)
                     .foregroundColor(themeManager.primaryTextColor)
+                    .keyboardType(keyboardType)
+                    .textInputAutocapitalization(autocapitalization)
                 
                 if let icon = icon {
                     Image(systemName: icon)
