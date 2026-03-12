@@ -20,32 +20,11 @@ struct FortuneResultView: View {
                 VStack(spacing: 0) {
                     // Custom Header (Fixed at top)
                     HStack {
-                        if fortune.type != .aiScan {
-                            Button(action: {
-                                if isSaved {
-                                    fortuneViewModel.savedFortunes.removeAll(where: { $0.id == fortune.id })
-                                } else {
-                                    fortuneViewModel.savedFortunes.append(fortune)
-                                }
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(themeManager.cardBgColor)
-                                        .frame(width: 44, height: 44)
-                                        .shadow(color: Color.black.opacity(0.1), radius: 4)
-                                    
-                                    Image(systemName: isSaved ? "heart.fill" : "heart")
-                                        .foregroundColor(isSaved ? .red : themeManager.accentYellow)
-                                        .font(.system(size: 20, weight: .bold))
-                                }
-                            }
-                        } else {
-                            Color.clear.frame(width: 44, height: 44)
-                        }
+                        Color.clear.frame(width: 44, height: 44)
                         
                         Spacer()
                         
-                        Text(fortune.type == .aiScan ? "Kişilik Analizi" : "Günlük Fal")
+                        Text("Eye See : Fortune")
                             .font(.system(size: 18, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.accentYellow)
                         
@@ -69,8 +48,8 @@ struct FortuneResultView: View {
                     .zIndex(10)
                     
                     ScrollView(showsIndicators: false) {
-                        VStack(spacing: 40) {
-                            Spacer(minLength: 20)
+                        VStack(spacing: 24) {
+                            Spacer(minLength: 10)
                             
                             // Mystic Icon Header
                             ZStack {
@@ -95,10 +74,11 @@ struct FortuneResultView: View {
                                         .font(.system(size: 12, weight: .black))
                                         .tracking(2)
                                         .foregroundColor(themeManager.accentYellow.opacity(0.6))
-                                    Spacer()
-                                    Image(systemName: "sparkles")
-                                        .font(.system(size: 10))
-                                        .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                                    if fortune.type != .aiScan {
+                                        Image(systemName: "sparkles")
+                                            .font(.system(size: 10))
+                                            .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                                    }
                                 }
                                 
                                 Text(fortune.text)
@@ -108,16 +88,6 @@ struct FortuneResultView: View {
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
                                 
-                                HStack {
-                                    Spacer()
-                                    Circle()
-                                        .fill(themeManager.accentYellow.opacity(0.2))
-                                        .frame(width: 6, height: 6)
-                                    Circle()
-                                        .fill(themeManager.accentYellow.opacity(0.1))
-                                        .frame(width: 4, height: 4)
-                                }
-                                .padding(.top, 10)
                             }
                             .padding(32)
                             .background(

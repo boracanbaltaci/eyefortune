@@ -27,7 +27,7 @@ struct HistoryView: View {
                             // Magical Header
                             VStack(spacing: 12) {
                                 Text("Yıldızların Hatırası")
-                                    .font(.system(size: 28, weight: .bold, design: .serif))
+                                    .font(.system(size: 32, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.accentYellow)
                                 
                                 Text("Evrenin fısıldadığı her bir söz, kalbinde saklı birer mücevherdir.")

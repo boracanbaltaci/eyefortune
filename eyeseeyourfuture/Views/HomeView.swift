@@ -83,7 +83,7 @@ struct HomeView: View {
                                     }
                                 }
                             }
-                            .padding(.top, 30)
+                            .padding(.top, 10)
                             
                             VStack(spacing: 8) {
                                 Text(dynamicGreeting)
@@ -106,8 +106,8 @@ struct HomeView: View {
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 40)
                             }
-                            .padding(.top, 20)
-                            .padding(.bottom, 24)
+                            .padding(.top, 10)
+                            .padding(.bottom, 16)
                         }
                         
                         // MARK: Strengths / Weaknesses Buttons

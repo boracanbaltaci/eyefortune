@@ -209,25 +209,31 @@ struct CategoryCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: category.icon)
-                .font(.system(size: 20))
-                .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
+        HStack(spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(isSelected ? themeManager.bgColor.opacity(0.2) : themeManager.accentYellow.opacity(0.1))
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: category.icon)
+                    .font(.system(size: 16))
+                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
+            }
             
             Text(localizedName)
                 .font(.system(size: 14, weight: .bold, design: .serif))
                 .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
         }
-        .frame(width: 100, height: 100, alignment: .bottomLeading)
-        .padding(12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(
             isSelected
                 ? themeManager.accentYellow
                 : themeManager.cardBgColor
         )
-        .cornerRadius(16)
+        .cornerRadius(12)
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 12)
                 .stroke(
                     isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.15),
                     lineWidth: 1

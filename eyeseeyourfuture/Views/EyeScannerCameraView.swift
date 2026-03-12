@@ -212,6 +212,14 @@ struct EyeScannerCameraView: View {
             
             // 3. Instruction Content
             VStack {
+                // Stage Indicator (Step 3 of 3)
+                HStack(spacing: 12) {
+                    Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
+                    Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
+                    Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
+                }
+                .padding(.top, 10)
+                
                 Text(scanCompleted ? "Kozmik Bağlantı Kuruldu" : "Kozmik Tarama")
                     .font(.system(size: 24, weight: .bold, design: .serif))
                     .foregroundColor(themeManager.accentYellow)
@@ -251,7 +259,11 @@ struct EyeScannerCameraView: View {
                             .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.white.opacity(0.6))
                     }
-                    .padding(.bottom, 80)
+                    
+                    Text("Adım 3 / 3: Kozmik Tarama")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white.opacity(0.4))
+                        .padding(.top, 8)
                 }
             }
         }
@@ -262,21 +274,30 @@ struct EyeScannerCameraView: View {
     }
     
     private func startAutomatedScanner() {
-        // Simulate detection and then progress
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            withAnimation { isScanning = true }
+        Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+            if scanCompleted {
+                timer.invalidate()
+                return
+            }
             
-            Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+            if cameraVM.isAligned {
+                if !isScanning {
+                    withAnimation { isScanning = true }
+                }
+                
                 if scanProgress < 1.0 {
-                    scanProgress += 0.01
+                    scanProgress += 0.008
                 } else {
                     timer.invalidate()
                     withAnimation {
                         isScanning = false
                         scanCompleted = true
                     }
-                    // Optional: Take a photo for the profile at the end
                     cameraVM.takePhoto()
+                }
+            } else {
+                if isScanning {
+                    withAnimation { isScanning = false }
                 }
             }
         }

@@ -46,16 +46,23 @@ struct PersonalSetupView: View {
                 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
+                        // Stage Indicator (Step 1 of 3)
+                        HStack(spacing: 12) {
+                            Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
+                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
+                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
+                        }
+                        .padding(.top, 20)
                         
                         // Header Texts
-                        Text(lm.t(.setupTitle))
+                        Text("Kendini Tanıt")
                             .font(.system(size: 32, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.primaryTextColor)
                             .multilineTextAlignment(.center)
                             .padding(.top, 40)
                             .padding(.bottom, 8)
                         
-                        Text(lm.t(.setupSubtitle))
+                        Text("Yıldız haritanı çizmek için seni biraz tanıyalım.")
                             .font(.system(size: 14))
                             .foregroundColor(themeManager.secondaryTextColor)
                             .multilineTextAlignment(.center)
@@ -76,7 +83,7 @@ struct PersonalSetupView: View {
                             
                             // Element Selection
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("Select Your Element")
+                                Text("Kendine en yakın hissettiğin element hangisi?")
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(themeManager.secondaryTextColor)
                                     .padding(.leading, 4)
@@ -110,7 +117,7 @@ struct PersonalSetupView: View {
                                     .shadow(color: themeManager.accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
                             }
                             
-                            Text("Step 1 of 1: Spiritual Alignment")
+                            Text("Adım 1 / 3: Ruhsal Hizalanma")
                                 .font(.system(size: 12))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }

@@ -101,6 +101,7 @@ struct PersonalityQuizView: View {
             EyeScannerCameraView(navigateToMainApp: $navigateToNextStep)
                 .navigationBarHidden(true)
         }
+        .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -139,13 +140,19 @@ struct PersonalityQuizView: View {
     // MARK: - Subviews
     private var quizContent: some View {
         VStack(spacing: 0) {
-            // Stage Indicator (Step 2 of 3)
             HStack(spacing: 12) {
                 Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
                 Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
                 Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
             }
             .padding(.top, 10)
+            
+            Text("Seni tanıyıp sana özel fallar bulmak ve yıldızları ona göre analiz etmek için bu testi yap.")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(themeManager.secondaryTextColor)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .padding(.top, 12)
             
             // Progress Text
             HStack {
