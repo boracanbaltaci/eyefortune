@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // MARK: - Models
 struct QuizQuestion: Identifiable {
@@ -109,14 +110,10 @@ struct PersonalityQuizView: View {
             } else {
                 quizContent
             }
-            
-            // Invisible Navigation Link to Next Step
-            NavigationLink(
-                destination: EyeScannerCameraView(navigateToMainApp: $navigateToNextStep).navigationBarHidden(true),
-                isActive: $navigateToScanner
-            ) {
-                EmptyView()
-            }
+        }
+        .navigationDestination(isPresented: $navigateToScanner) {
+            EyeScannerCameraView(navigateToMainApp: $navigateToNextStep)
+                .navigationBarHidden(true)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -144,8 +141,8 @@ struct PersonalityQuizView: View {
         }
         .toolbarBackground(themeManager.bgColor, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .onChange(of: viewModel.analysisComplete) { isComplete in
-            if isComplete {
+        .onChange(of: viewModel.analysisComplete) { _, newValue in
+            if newValue {
                 // When analysis completes, move to next step automatically
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     navigateToScanner = true

@@ -7,7 +7,7 @@ struct InsightCategory: Identifiable {
     let subtitle: String
     let icon: String
     let color: Color
-    let extraInfo: [(String, String)]?  // (label, value) pairs for expanded view
+    let extraInfo: [(String, String)]? = nil // (label, value) pairs for expanded view
     var isExpanded: Bool = false
 }
 
@@ -21,10 +21,10 @@ struct HomeView: View {
     @AppStorage("userName") var userName: String = "Oracle Seer"
     
     @State private var categories: [InsightCategory] = [
-        InsightCategory(title: "Love & Connections", subtitle: "Harmony: High Alignment", icon: "heart.fill", color: Color.pink, extraInfo: nil),
-        InsightCategory(title: "Vitality & Health", subtitle: "Energy: Moon Phase Sensitive", icon: "cross.fill", color: Color.green, extraInfo: nil),
-        InsightCategory(title: "Wealth & Abundance", subtitle: "Status: Rising Fortune", icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025"), extraInfo: [("Luck Index", "8.4"), ("Manifesting", "Strong")]),
-        InsightCategory(title: "Career & Purpose", subtitle: "Path: Transitional Phase", icon: "briefcase.fill", color: Color.blue, extraInfo: nil)
+        InsightCategory(title: "Love & Connections", subtitle: "Harmony: High Alignment", icon: "heart.fill", color: Color.pink),
+        InsightCategory(title: "Vitality & Health", subtitle: "Energy: Moon Phase Sensitive", icon: "cross.fill", color: Color.green),
+        InsightCategory(title: "Wealth & Abundance", subtitle: "Status: Rising Fortune", icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025")),
+        InsightCategory(title: "Career & Purpose", subtitle: "Path: Transitional Phase", icon: "briefcase.fill", color: Color.blue)
     ]
     
     @State private var showFortunePage = false
@@ -40,14 +40,11 @@ struct HomeView: View {
                         
                         // MARK: Eye / Profile Section
                         VStack(spacing: 0) {
-                            // Circular Eye Image with outer ring
                             ZStack {
-                                // Outer decorative ring
                                 Circle()
                                     .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
                                     .frame(width: 280, height: 280)
                                 
-                                // Inner glow
                                 Circle()
                                     .fill(RadialGradient(
                                         gradient: Gradient(colors: [themeManager.accentYellow.opacity(0.15), Color.clear]),
@@ -57,7 +54,6 @@ struct HomeView: View {
                                     ))
                                     .frame(width: 280, height: 280)
                                 
-                                // Eye image circle
                                 ZStack {
                                     Circle()
                                         .fill(themeManager.cardBgColor)
@@ -68,7 +64,6 @@ struct HomeView: View {
                                         .frame(width: 144, height: 144)
                                         .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 20)
                                     
-                                    // Scanned Eye or placeholder
                                     if !scannedEyeImagePath.isEmpty,
                                        let uiImage = UIImage(contentsOfFile: scannedEyeImagePath) {
                                         Image(uiImage: uiImage)
@@ -77,7 +72,6 @@ struct HomeView: View {
                                             .frame(width: 134, height: 134)
                                             .clipShape(Circle())
                                     } else {
-                                        // Placeholder if no eye scan
                                         Image(systemName: "eye.fill")
                                             .font(.system(size: 55))
                                             .foregroundColor(themeManager.accentYellow.opacity(0.6))
@@ -86,7 +80,6 @@ struct HomeView: View {
                             }
                             .padding(.top, 30)
                             
-                            // Name + Tier
                             VStack(spacing: 8) {
                                 Text(userName.isEmpty ? "Oracle Seer" : userName)
                                     .font(.system(size: 30, weight: .bold, design: .serif))
@@ -96,7 +89,7 @@ struct HomeView: View {
                                     .fill(themeManager.accentYellow.opacity(0.3))
                                     .frame(width: 48, height: 1)
                                 
-                            Text("TIER IV MYSTIC")
+                                Text("TIER IV MYSTIC")
                                     .font(.system(size: 11, weight: .bold))
                                     .tracking(3)
                                     .foregroundColor(themeManager.accentYellow.opacity(0.8))
@@ -147,7 +140,6 @@ struct HomeView: View {
                         
                         // MARK: CTA Buttons
                         VStack(spacing: 12) {
-                            // Daily Fortune Button - Golden gradient
                             Button(action: {
                                 showFortunePage = true
                             }) {
@@ -172,7 +164,6 @@ struct HomeView: View {
                                 .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 15, x: 0, y: 5)
                             }
                             
-                            // Personality Analysis Button
                             Button(action: {
                                 showPersonalityAnalysis = true
                             }) {
@@ -242,6 +233,129 @@ struct HomeView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }
+}
+
+// MARK: - Subviews
+struct AnalysisButton: View {
+    let title: String
+    let icon: String
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                Text(title)
+                    .font(.system(size: 13, weight: .bold))
+            }
+            .foregroundColor(color)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 15)
+            .background(color.opacity(0.05))
+            .cornerRadius(14)
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(color.opacity(0.2), lineWidth: 1))
+        }
+    }
+}
+
+struct MainActionButton: View {
+    let title: String
+    let subtitle: String
+    let icon: String
+    let themeManager: ThemeManager
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 15) {
+                ZStack {
+                    Circle().fill(themeManager.accentYellow.opacity(0.1)).frame(width: 44, height: 44)
+                    Image(systemName: icon).foregroundColor(themeManager.accentYellow)
+                }
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 16, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.primaryTextColor)
+                    Text(subtitle)
+                        .font(.system(size: 11))
+                        .foregroundColor(themeManager.secondaryTextColor)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 14)).foregroundColor(themeManager.secondaryTextColor.opacity(0.3))
+            }
+            .padding(15)
+            .background(themeManager.cardBgColor)
+            .cornerRadius(16)
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1))
+        }
+    }
+}
+
+struct InsightBox: View {
+    let title: String
+    let info: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Image(systemName: icon).foregroundColor(color).font(.system(size: 14))
+                Text(title).font(.system(size: 10, weight: .black)).foregroundColor(color).tracking(1)
+            }
+            Text(info)
+                .font(.system(size: 12, weight: .medium, design: .serif))
+                .foregroundColor(.white.opacity(0.8))
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Color(white: 1, opacity: 0.03))
+        .cornerRadius(14)
+    }
+}
+
+struct AnalysisDetailView: View {
+    let title: String
+    let text: String
+    let themeManager: ThemeManager
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                themeManager.bgColor.edgesIgnoringSafeArea(.all)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text(text)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                            .lineSpacing(6)
+                            .foregroundColor(themeManager.primaryTextColor)
+                        
+                        Spacer()
+                    }
+                    .padding(30)
+                }
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Kapat") { dismiss() }.foregroundColor(themeManager.accentYellow)
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    HomeView()
+        .environmentObject(FortuneViewModel())
+        .environmentObject(ThemeManager())
+        .environmentObject(LocalizationManager())
 }
 
 // MARK: - Insight Category Card

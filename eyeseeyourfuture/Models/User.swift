@@ -4,6 +4,9 @@ import Foundation
 struct User: Identifiable, Codable {
     var id: UUID = UUID()
     var name: String?
+    var birthDate: Date?
+    var element: String?
+    
     var lastScanDate: Date?
     var savedFortunes: [Fortune] = []
     

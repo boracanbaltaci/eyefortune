@@ -90,6 +90,24 @@ enum LKey: String {
     case readingCatWell     = "reading_cat_well"
     case readingEmpty       = "reading_empty"
     case readingToday       = "reading_today"
+    
+    // MARK: Setup
+    case setupTitle         = "setup_title"
+    case setupSubtitle      = "setup_subtitle"
+    case setupFullName      = "setup_full_name"
+    case setupFullNamePlaceholder = "setup_full_name_placeholder"
+    case setupBirthDate     = "setup_birth_date"
+    case setupBirthTime     = "setup_birth_time"
+    case setupPersonalityTest = "setup_personality_test"
+    case setupQuestion      = "setup_question"
+    case setupContinue      = "setup_continue"
+    case setupStep          = "setup_step"
+    case setupNavTitle      = "setup_nav_title"
+    
+    case quizTitle          = "quiz_title"
+    case quizSubtitle       = "quiz_subtitle"
+    case quizYes           = "quiz_yes"
+    case quizNo            = "quiz_no"
 }
 
 // MARK: - Translations Dictionary
@@ -177,6 +195,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Sağlık",
             .readingEmpty:    "Bu kategoride bugün içerik yok",
             .readingToday:    "Bugün",
+            
+            .setupTitle:         "Kader Haritanı Çiz",
+            .setupSubtitle:      "Büyüklerimiz bu detayları yıldızlarını hizalamak için kullanır.",
+            .setupFullName:      "Tam Ad",
+            .setupFullNamePlaceholder: "Örn. Alexander Orion",
+            .setupBirthDate:     "Doğum Tarihi",
+            .setupBirthTime:     "Tam Doğum Saati",
+            .setupPersonalityTest: "KİŞİLİK TESTİ",
+            .setupQuestion:      "Hangi elemente kendinizi en yakın hissediyorsunuz?",
+            .setupContinue:      "Yolculuğa Devam Et",
+            .setupStep:          "Adım 1 / 3: Ruhsal Hizalanma",
+            .setupNavTitle:      "Yıldız Haritası Kurulumu",
+            
+            .quizTitle:          "Kişilik Analizi",
+            .quizSubtitle:       "Seni daha yakından tanımamıza yardımcı ol.",
+            .quizYes:            "Evet",
+            .quizNo:             "Hayır",
         ],
 
         // ──────────────────────────────────────────
@@ -260,6 +295,23 @@ struct LocalizedStrings {
             .readingCatWell:  "Wellness",
             .readingEmpty:    "No content in this category today",
             .readingToday:    "Today",
+            
+            .setupTitle:         "Map Your Destiny",
+            .setupSubtitle:      "Our elders use these details to align your stars.",
+            .setupFullName:      "Full Name",
+            .setupFullNamePlaceholder: "E.g. Alexander Orion",
+            .setupBirthDate:     "Birth Date",
+            .setupBirthTime:     "Exact Birth Time",
+            .setupPersonalityTest: "PERSONALITY TEST",
+            .setupQuestion:      "Which element do you feel most connected to?",
+            .setupContinue:      "Continue Journey",
+            .setupStep:          "Step 1 of 3: Spiritual Alignment",
+            .setupNavTitle:      "Birth Chart Setup",
+            
+            .quizTitle:          "Personality Analysis",
+            .quizSubtitle:       "Help us get to know you better.",
+            .quizYes:            "Yes",
+            .quizNo:             "No",
         ],
 
         // ──────────────────────────────────────────

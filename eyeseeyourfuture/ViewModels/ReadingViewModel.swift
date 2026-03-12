@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 // MARK: - Reading ViewModel
 class ReadingViewModel: ObservableObject {

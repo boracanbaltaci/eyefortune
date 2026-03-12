@@ -1,10 +1,11 @@
 import SwiftUI
 import AVFoundation
+import Combine
 
 class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var session = AVCaptureSession()
     @Published var output = AVCapturePhotoOutput()
-    @Published var previewLayer: AVCaptureVideoPreviewLayer!
+    var previewLayer: AVCaptureVideoPreviewLayer!
     
     @Published var isCameraSetup = false
     @Published var isAligned = false
@@ -100,7 +101,7 @@ struct CameraPreviewView: UIViewRepresentable {
     @ObservedObject var cameraVM: CameraViewModel
     
     func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: UIScreen.main.bounds)
+        let view = UIView()
         cameraVM.previewLayer = AVCaptureVideoPreviewLayer(session: cameraVM.session)
         cameraVM.previewLayer.frame = view.bounds
         cameraVM.previewLayer.videoGravity = .resizeAspectFill
@@ -108,7 +109,11 @@ struct CameraPreviewView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        if let layer = cameraVM.previewLayer {
+            layer.frame = uiView.bounds
+        }
+    }
 }
 
 struct EyeScannerCameraView: View {
@@ -247,7 +252,7 @@ struct EyeScannerCameraView: View {
                             }
                         }) {
                             HStack {
-                                Image(systemName: "center.focus.strong")
+                                Image(systemName: "viewfinder")
                                 Text(cameraVM.isAligned ? "Fotoğraf Çek" : "Hizalanıyor...")
                             }
                             .font(.system(size: 18, weight: .bold))

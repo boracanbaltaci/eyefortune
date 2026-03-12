@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PersonalSetupView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     @Environment(\.presentationMode) var presentationMode
     
     @State private var fullName = ""
@@ -39,84 +40,48 @@ struct PersonalSetupView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
-                
-                // Background Glow effects from HTML
-                Circle()
-                    .fill(themeManager.accentYellow.opacity(0.05))
-                    .frame(width: 400, height: 400)
-                    .blur(radius: 100)
-                    .position(x: 400, y: 0)
-                
-                Circle()
-                    .fill(themeManager.accentYellow.opacity(0.05))
-                    .frame(width: 300, height: 300)
-                    .blur(radius: 80)
-                    .position(x: 0, y: UIScreen.main.bounds.height)
                 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
                         
-                        // Progress Indicator
-                        HStack(spacing: 12) {
-                            Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
-                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
-                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
-                        }
-                        .padding(.top, 10)
-                        .padding(.bottom, 30)
-                        
                         // Header Texts
-                        Text("Map Your Destiny")
+                        Text(lm.t(.setupTitle))
                             .font(.system(size: 32, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.primaryTextColor)
                             .multilineTextAlignment(.center)
+                            .padding(.top, 40)
                             .padding(.bottom, 8)
                         
-                        Text("Our elders use these details to align your stars.")
+                        Text(lm.t(.setupSubtitle))
                             .font(.system(size: 14))
                             .foregroundColor(themeManager.secondaryTextColor)
+                            .multilineTextAlignment(.center)
                             .padding(.bottom, 30)
                         
                         // Form Fields
                         VStack(spacing: 24) {
                             // Full Name Input
-                            SetupTextField(title: "Full Name", placeholder: "E.g. Alexander Orion", text: $fullName, icon: nil, themeManager: themeManager)
+                            SetupTextField(title: lm.t(.setupFullName), placeholder: lm.t(.setupFullNamePlaceholder), text: $fullName, icon: nil, themeManager: themeManager)
                             
                             HStack(spacing: 16) {
                                 // Birth Date Input
-                                SetupTextField(title: "Birth Date", placeholder: "MM / DD / YYYY", text: $birthDate, icon: "calendar", themeManager: themeManager)
+                                SetupTextField(title: lm.t(.setupBirthDate), placeholder: "MM / DD / YYYY", text: $birthDate, icon: "calendar", themeManager: themeManager)
                                 
                                 // Birth Time Input
-                                SetupTextField(title: "Exact Birth Time", placeholder: "12:00 PM", text: $birthTime, icon: "clock", themeManager: themeManager)
+                                SetupTextField(title: lm.t(.setupBirthTime), placeholder: "12:00 PM", text: $birthTime, icon: "clock", themeManager: themeManager)
                             }
-                        }
-                        .padding(.horizontal, 24)
-                        
-                        // Personality Quiz Section
-                        VStack(spacing: 20) {
-                            // Section Divider
-                            HStack(spacing: 12) {
-                                Rectangle().fill(themeManager.accentYellow.opacity(0.2)).frame(height: 1)
-                                Text("PERSONALITY TEST")
-                                    .font(.system(size: 11, weight: .semibold, design: .serif))
-                                    .foregroundColor(themeManager.accentYellow)
-                                    .tracking(2)
-                                Rectangle().fill(themeManager.accentYellow.opacity(0.2)).frame(height: 1)
-                            }
-                            .padding(.top, 40)
                             
-                            // Quiz Card
-                            VStack(spacing: 24) {
-                                Text("Which element do you feel most connected to?")
-                                    .font(.system(size: 20, weight: .bold, design: .serif))
-                                    .foregroundColor(themeManager.primaryTextColor)
-                                    .multilineTextAlignment(.center)
+                            // Element Selection
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Select Your Element")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(themeManager.secondaryTextColor)
+                                    .padding(.leading, 4)
                                 
-                                // Elements Grid
-                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                                     ForEach(ElementType.allCases, id: \.self) { element in
                                         ElementCard(
                                             element: element,
@@ -127,33 +92,25 @@ struct PersonalSetupView: View {
                                     }
                                 }
                             }
-                            .padding(24)
-                            .background(themeManager.cardBgColor)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1)
-                            )
-                            .cornerRadius(15)
                         }
                         .padding(.horizontal, 24)
                         
                         // Submit Area
                         VStack(spacing: 16) {
                             Button(action: {
-                                // Save profile logic
                                 navigateToScanner = true
                             }) {
-                                Text("Continue Journey")
+                                Text(lm.t(.setupContinue))
                                     .font(.system(size: 18, weight: .bold))
                                     .foregroundColor(themeManager.bgColor)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 18)
                                     .background(themeManager.accentYellow)
                                     .cornerRadius(15)
-                                    .shadow(color: themeManager.accentYellow.opacity(0.2), radius: 10, x: 0, y: 5)
+                                    .shadow(color: themeManager.accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
                             }
                             
-                            Text("Step 1 of 3: Spiritual Alignment")
+                            Text("Step 1 of 1: Spiritual Alignment")
                                 .font(.system(size: 12))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }
@@ -162,15 +119,14 @@ struct PersonalSetupView: View {
                         .padding(.bottom, 50)
                     }
                 }
-                
-                NavigationLink(destination: EyeScannerCameraView(navigateToMainApp: $dismissToMain).navigationBarHidden(true), isActive: $navigateToScanner) {
-                    EmptyView()
-                }
+            }
+            .navigationDestination(isPresented: $navigateToScanner) {
+                EyeScannerCameraView(navigateToMainApp: $dismissToMain)
+                    .navigationBarHidden(true)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: dismissToMain) { newValue in
+            .onChange(of: dismissToMain) { _, newValue in
                 if newValue {
-                    // Update app state to show MainTabView
                     isSetupComplete = true
                     presentationMode.wrappedValue.dismiss()
                 }
@@ -182,12 +138,11 @@ struct PersonalSetupView: View {
                     }) {
                         Image(systemName: "arrow.left")
                             .foregroundColor(themeManager.primaryTextColor)
-                            .font(.system(size: 20, weight: .regular))
                     }
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    Text("Birth Chart Setup")
+                    Text(lm.t(.setupNavTitle))
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
@@ -216,8 +171,6 @@ struct SetupTextField: View {
             HStack {
                 TextField(placeholder, text: $text)
                     .foregroundColor(themeManager.primaryTextColor)
-                    // Custom placeholder color hack
-                    .colorMultiply(text.isEmpty ? themeManager.secondaryTextColor : themeManager.primaryTextColor)
                 
                 if let icon = icon {
                     Image(systemName: icon)
@@ -232,13 +185,6 @@ struct SetupTextField: View {
                     .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
             )
             .cornerRadius(15)
-            // Focused state boundary visualization
-            .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(themeManager.accentYellow, lineWidth: 1)
-                    .opacity(text.isEmpty ? 0 : 1)
-                    .animation(.easeInOut, value: text.isEmpty)
-            )
         }
     }
 }
@@ -275,15 +221,7 @@ struct ElementCard: View {
                     .stroke(isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.1), lineWidth: isSelected ? 2 : 1)
             )
             .cornerRadius(15)
-            // Scaling effect for selected
-            .scaleEffect(isSelected ? 1.05 : 1.0)
-            .animation(.spring(), value: isSelected)
         }
         .buttonStyle(PlainButtonStyle())
     }
-}
-
-#Preview {
-    PersonalSetupView()
-        .environmentObject(ThemeManager())
 }

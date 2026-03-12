@@ -6,7 +6,7 @@ struct ScannerView: View {
     @EnvironmentObject var lm: LocalizationManager
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
 
@@ -83,14 +83,10 @@ struct ScannerView: View {
                     Spacer()
                 }
                 .padding(.vertical)
-            }
-            .background(
-                NavigationLink(
-                    destination: FortuneResultView(fortune: scannerViewModel.generatedFortune ?? Fortune(text: "", dateGenerated: Date(), type: .aiScan)),
-                    isActive: $scannerViewModel.scanComplete,
-                    label: { EmptyView() }
-                )
-            )
+        }
+        .navigationDestination(isPresented: $scannerViewModel.scanComplete) {
+            FortuneResultView(fortune: scannerViewModel.generatedFortune ?? Fortune(text: "", dateGenerated: Date(), type: .aiScan))
+        }
         }
     }
 }
