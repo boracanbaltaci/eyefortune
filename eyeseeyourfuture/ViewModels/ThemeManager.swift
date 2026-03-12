@@ -15,7 +15,7 @@ class ThemeManager: ObservableObject {
     var bgColor: Color {
         activeTheme == .midnight ?
             Color(red: 34.0/255.0, green: 30.0/255.0, blue: 16.0/255.0) : // Updated to match #221e10 background-dark
-            Color(red: 248.0/255.0, green: 248.0/255.0, blue: 245.0/255.0) // Matches #f8f8f5 background-light
+            Color(red: 242.0/255.0, green: 238.0/255.0, blue: 228.0/255.0) // Matches #F2EEE4 (Broken Beige)
     }
     
     var accentYellow: Color {

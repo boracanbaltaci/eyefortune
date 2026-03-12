@@ -12,7 +12,7 @@ struct HistoryView: View {
 
                 if fortuneViewModel.savedFortunes.isEmpty {
                     VStack {
-                        Image(systemName: "tray")
+                        Image(systemName: "heart.fill")
                             .font(.system(size: 50))
                             .foregroundColor(themeManager.secondaryTextColor)
                             .padding(.bottom, 10)

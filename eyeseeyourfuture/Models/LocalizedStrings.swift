@@ -121,7 +121,7 @@ struct LocalizedStrings {
             .tabHome:        "Ana Sayfa",
             .tabReading:     "Okuma",
             .tabScan:        "Göz Tara",
-            .tabHistory:     "Geçmiş",
+            .tabHistory:     "Beğenilenler",
             .tabSettings:    "Ayarlar",
 
             .homeTitle:       "Oracle Profili",
@@ -141,8 +141,8 @@ struct LocalizedStrings {
             .fortuneSaveClose:"Kaydet ve Kapat",
             .fortuneClose:    "Kapat",
 
-            .historyTitle:    "Geçmiş Fallar",
-            .historyEmpty:    "Henüz kaydedilmiş falınız yok.",
+            .historyTitle:    "Beğenilenler",
+            .historyEmpty:    "Henüz beğendiğiniz bir fal yok.",
 
             .settingsTitle:           "Mistik Ayarlar",
             .settingsSectionGeneral:  "GENEL DENEYİM",

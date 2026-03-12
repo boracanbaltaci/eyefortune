@@ -24,14 +24,10 @@ struct MainTabView: View {
                     Label(lm.t(.tabReading), systemImage: "book.fill")
                 }
 
-            ScannerView()
-                .tabItem {
-                    Label(lm.t(.tabScan), systemImage: "eye.circle.fill")
-                }
 
             HistoryView()
                 .tabItem {
-                    Label(lm.t(.tabHistory), systemImage: "clock.arrow.circlepath")
+                    Label(lm.t(.tabHistory), systemImage: "heart.fill")
                 }
 
             SettingsView()

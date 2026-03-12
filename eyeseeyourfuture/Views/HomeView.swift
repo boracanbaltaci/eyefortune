@@ -7,7 +7,7 @@ struct InsightCategory: Identifiable {
     let subtitle: String
     let icon: String
     let color: Color
-    let extraInfo: [(String, String)]? = nil // (label, value) pairs for expanded view
+    let description: String
     var isExpanded: Bool = false
 }
 
@@ -21,14 +21,16 @@ struct HomeView: View {
     @AppStorage("userName") var userName: String = "Oracle Seer"
     
     @State private var categories: [InsightCategory] = [
-        InsightCategory(title: "Love & Connections", subtitle: "Harmony: High Alignment", icon: "heart.fill", color: Color.pink),
-        InsightCategory(title: "Vitality & Health", subtitle: "Energy: Moon Phase Sensitive", icon: "cross.fill", color: Color.green),
-        InsightCategory(title: "Wealth & Abundance", subtitle: "Status: Rising Fortune", icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025")),
-        InsightCategory(title: "Career & Purpose", subtitle: "Path: Transitional Phase", icon: "briefcase.fill", color: Color.blue)
+        InsightCategory(title: "Aşk & İlişkiler", subtitle: "Uyum: Yüksek Potansiyel", icon: "heart.fill", color: Color.pink, description: "Kalbinin derinliklerinde saklı olan duygular, bu dönemde gün yüzüne çıkacak. Partnerinle olan iletişimin güçleniyor, ancak küçük yanlış anlaşılmalara karşı dikkatli olmalısın."),
+        InsightCategory(title: "Canlılık & Sağlık", subtitle: "Enerji: Ay Fazına Duyarlı", icon: "bolt.fill", color: Color.green, description: "Fiziksel enerjin şu sıralar dalgalı seyredebilir. Dinlenmeye ve meditasyona vakit ayırarak iç dengeni korumaya odaklanmalısın. Doğal taşların enerjisinden faydalanabilirsin."),
+        InsightCategory(title: "Refah & Bolluk", subtitle: "Durum: Yükselen Şans", icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025"), description: "Maddi konularda beklenmedik kapılar aralanabilir. Harcamalarını kontrol altında tutarsan, ay sonuna doğru bütçende gözle görülür bir rahatlama hissedebilirsin."),
+        InsightCategory(title: "Kariyer & Hedefler", subtitle: "Yol: Geçiş Evresi", icon: "briefcase.fill", color: Color.blue, description: "İş hayatında yeni sorumluluklar seni bekliyor olabilir. Yeteneklerini sergilemek için harika bir fırsat dönemi. Cesur adımlar atmaktan çekinme, yıldızlar seni destekliyor.")
     ]
     
+    @State private var showSettings = false
     @State private var showFortunePage = false
-    @State private var showPersonalityAnalysis = false
+    @State private var personalityAnalysisText: String = ""
+    @State private var showPersonalityModal = false
     
     var body: some View {
         NavigationView {
@@ -102,8 +104,6 @@ struct HomeView: View {
                         HStack(spacing: 12) {
                             Button(action: {}) {
                                 HStack(spacing: 8) {
-                                    Image(systemName: "star.fill")
-                                        .font(.system(size: 14))
                                     Text(lm.t(.homeStrengths))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
                                 }
@@ -120,7 +120,7 @@ struct HomeView: View {
                             
                             Button(action: {}) {
                                 HStack(spacing: 8) {
-                                    Image(systemName: "exclamationmark.circle")
+                                    Image(systemName: "shield.exclamationmark.fill")
                                         .font(.system(size: 14))
                                     Text(lm.t(.homeWeaknesses))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
@@ -165,7 +165,8 @@ struct HomeView: View {
                             }
                             
                             Button(action: {
-                                showPersonalityAnalysis = true
+                                personalityAnalysisText = "Yıldızların konumuna ve ruhsal frekansına göre yapılan derin analiz sonuçların hazır. İçsel dengen şu sıralar toprak elementinin ağırlığı altında, bu da senin için sağlam kararlar alma dönemine işaret ediyor. Kariyerinde sabırlı olman gereken bir evredesin, meyvelerini yakında toplayacaksın. İlişkilerinde ise daha şeffaf olman gereken bir dönem. Kendine olan güvenin arttıkça etrafındaki aura da parlayacak. Unutma, evren senin niyetine göre şekillenir."
+                                showPersonalityModal = true
                             }) {
                                 HStack(spacing: 10) {
                                     Image(systemName: "brain.head.profile")
@@ -211,19 +212,13 @@ struct HomeView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {}) {
-                        Image(systemName: "arrow.left")
-                            .foregroundColor(themeManager.primaryTextColor)
-                    }
-                }
                 ToolbarItem(placement: .principal) {
                     Text("Oracle Profile")
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {}) {
+                    Button(action: { showSettings = true }) {
                         Image(systemName: "gearshape")
                             .foregroundColor(themeManager.primaryTextColor)
                     }
@@ -231,6 +226,19 @@ struct HomeView: View {
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+            }
+            .sheet(isPresented: $showFortunePage) {
+                if let fortune = fortuneViewModel.dailyFortune {
+                    FortuneResultView(fortune: fortune)
+                } else {
+                    FortuneResultView(fortune: Fortune(text: "Yıldızlar şu an fısıldıyor... Birazdan hazır olacak.", dateGenerated: Date(), type: .daily))
+                }
+            }
+            .sheet(isPresented: $showPersonalityModal) {
+                FortuneResultView(fortune: Fortune(text: personalityAnalysisText, dateGenerated: Date(), type: .aiScan))
+            }
         }
     }
 }
@@ -418,38 +426,20 @@ struct InsightCategoryCard: View {
             .buttonStyle(PlainButtonStyle())
             
             // Expandable Content
-            if isExpanded, let extraInfo = category.extraInfo {
+            if isExpanded {
                 VStack(spacing: 0) {
                     Divider()
                         .background(themeManager.secondaryTextColor.opacity(0.1))
                     
                     VStack(spacing: 12) {
-                        HStack(spacing: 12) {
-                            ForEach(extraInfo, id: \.0) { item in
-                                VStack(spacing: 4) {
-                                    Text(item.0.uppercased())
-                                        .font(.system(size: 10, weight: .bold))
-                                        .foregroundColor(themeManager.secondaryTextColor)
-                                    
-                                    Text(item.1)
-                                        .font(.system(size: 18, weight: .bold, design: .serif))
-                                        .foregroundColor(themeManager.accentYellow)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(12)
-                                .background(themeManager.inputBgColor)
-                                .cornerRadius(10)
-                            }
-                        }
-                        
-                        Text("\"Financial winds blow from the east this week. Prepare for a surprise bounty.\"")
-                            .font(.system(size: 12, design: .serif))
-                            .italic()
-                            .foregroundColor(themeManager.secondaryTextColor)
-                            .multilineTextAlignment(.center)
+                        Text(category.description)
+                            .font(.system(size: 14, weight: .medium, design: .serif))
+                            .foregroundColor(themeManager.primaryTextColor)
+                            .lineSpacing(4)
+                            .multilineTextAlignment(.leading)
                     }
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 16)
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }

@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State private var showLanguagePicker = false
+    @State private var showSubscription = false
 
     var body: some View {
         NavigationView {
@@ -16,7 +17,9 @@ struct SettingsView: View {
                     VStack(spacing: 24) {
 
                         // Premium Banner
-                        PremiumBanner(themeManager: themeManager, lm: lm)
+                        PremiumBanner(themeManager: themeManager, lm: lm) {
+                            showSubscription = true
+                        }
 
                         // General Experience Section
                         VStack(alignment: .leading, spacing: 12) {
@@ -61,12 +64,15 @@ struct SettingsView: View {
                                 .padding(.leading, 16)
 
                             VStack(spacing: 8) {
-                                SettingsRow(
-                                    icon: "sparkles.rectangle.stack.fill",
-                                    title: lm.t(.settingsSubscription),
-                                    subtitle: lm.t(.settingsSubscriptionSub),
-                                    themeManager: themeManager
-                                )
+                                Button(action: { showSubscription = true }) {
+                                    SettingsRow(
+                                        icon: "sparkles.rectangle.stack.fill",
+                                        title: lm.t(.settingsSubscription),
+                                        subtitle: lm.t(.settingsSubscriptionSub),
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
 
                                 SettingsRow(
                                     icon: "questionmark.circle.fill",
@@ -119,6 +125,9 @@ struct SettingsView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerSheet(themeManager: themeManager, lm: lm)
+            }
+            .fullScreenCover(isPresented: $showSubscription) {
+                SubscriptionView(shouldShowPersonalSetup: .constant(false))
             }
         }
     }
@@ -253,6 +262,7 @@ struct LanguagePickerSheet: View {
 struct PremiumBanner: View {
     @ObservedObject var themeManager: ThemeManager
     @ObservedObject var lm: LocalizationManager
+    let onUpgrade: () -> Void
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -266,7 +276,7 @@ struct PremiumBanner: View {
                     .foregroundColor(themeManager.primaryTextColor.opacity(0.8))
                     .padding(.bottom, 8)
 
-                Button(action: {}) {
+                Button(action: onUpgrade) {
                     Text(lm.t(.premiumUpgrade))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(themeManager.bgColor)
