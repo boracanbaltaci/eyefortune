@@ -9,11 +9,12 @@ struct LoginView: View {
     @State private var password = ""
     @State private var showSubscription = false
     @State private var showPersonalSetup = false
+    @State private var navigateToRegister = false
     
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
                 
@@ -42,22 +43,22 @@ struct LoginView: View {
                             .opacity(0.8)
                             
                             VStack(spacing: 8) {
-                                Text(lm.t(.loginTitle))
+                                Text("Giriş Yap")
                                     .font(.system(size: 28, weight: .bold, design: .serif))
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .multilineTextAlignment(.center)
                                 
-                                Text(lm.t(.loginSubtitle))
+                                Text("Hikayeni öğren")
                                     .font(.system(size: 14, weight: .regular))
                                     .foregroundColor(themeManager.accentYellow)
                                     .multilineTextAlignment(.center)
                                     .padding(.top, 5)
                             }
                         }
-                        .frame(height: 180)
+                        .frame(height: 160)
                         .padding(.horizontal, 20)
-                        .padding(.top, 20)
-                        .padding(.bottom, 30)
+                        .padding(.top, 10)
+                        .padding(.bottom, 20)
                         
                         // Form Fields
                         VStack(spacing: 20) {
@@ -113,7 +114,7 @@ struct LoginView: View {
                             showSubscription = true
                         }) {
                             HStack {
-                                Text(lm.t(.loginButton))
+                                Text("Giriş Yap")
                                     .font(.system(size: 17, weight: .bold))
                                 Image(systemName: "sparkles")
                             }
@@ -126,7 +127,7 @@ struct LoginView: View {
                             .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10, x: 0, y: 0)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.top, 30)
+                        .padding(.top, 20)
                         
                         // OR CONNECT VIA Divider
                         HStack {
@@ -134,7 +135,7 @@ struct LoginView: View {
                                 .fill(themeManager.inputBgColor)
                                 .frame(height: 1)
                             
-                            Text(lm.t(.loginOrConnect))
+                            Text("Veya")
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundColor(themeManager.secondaryTextColor)
                                 .padding(.horizontal, 10)
@@ -144,8 +145,8 @@ struct LoginView: View {
                                 .frame(height: 1)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.top, 30)
-                        .padding(.bottom, 25)
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
                         
                         // Login Social Buttons
                         VStack(spacing: 15) {
@@ -157,42 +158,41 @@ struct LoginView: View {
                         
                         // Register Link
                         HStack(spacing: 5) {
-                            Text(lm.t(.loginNewUser))
+                            Text("Burada yeni misin?")
                                 .font(.system(size: 14))
                                 .foregroundColor(themeManager.secondaryTextColor)
-                            Button(action: {}) {
+                            Button(action: {
+                                navigateToRegister = true
+                            }) {
                                 Text(lm.t(.loginRegister))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(themeManager.accentYellow)
                             }
                         }
-                        .padding(.top, 35)
-                        .padding(.bottom, 40)
+                        .padding(.top, 25)
+                        .padding(.bottom, 30)
                     }
                 }
             }
+            .navigationDestination(isPresented: $navigateToRegister) {
+                RegisterView()
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Image(systemName: "star.fill")
-                        .foregroundColor(themeManager.accentYellow)
-                        .font(.system(size: 18))
-                }
-                
                 ToolbarItem(placement: .principal) {
-                    Text(lm.t(.loginTitle))
+                    Text("Giriş Yap")
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .fullScreenCover(isPresented: $showSubscription) {
-                SubscriptionView(shouldShowPersonalSetup: $showPersonalSetup)
-            }
-            .fullScreenCover(isPresented: $showPersonalSetup) {
-                PersonalSetupView()
-            }
+        }
+        .fullScreenCover(isPresented: $showSubscription) {
+            SubscriptionView(shouldShowPersonalSetup: $showPersonalSetup)
+        }
+        .fullScreenCover(isPresented: $showPersonalSetup) {
+            PersonalSetupView()
         }
     }
 }

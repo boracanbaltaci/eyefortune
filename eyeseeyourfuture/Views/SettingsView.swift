@@ -10,6 +10,9 @@ struct SettingsView: View {
     @AppStorage("notificationsEnabled") var notificationsEnabled = true
     @State private var showHelpCenter = false
     @State private var showDeleteConfirmation = false
+    @State private var showInfoPopup = false
+    @State private var navigateToInfoDetail = false
+    @State private var showContactUs = false
 
     var body: some View {
         NavigationView {
@@ -19,9 +22,29 @@ struct SettingsView: View {
                 ScrollView {
                     VStack(spacing: 24) {
 
-                        // Premium Banner
                         PremiumBanner(themeManager: themeManager, lm: lm) {
                             showSubscription = true
+                        }
+
+                        // Account Section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("HESAP VE VERİ")
+                                .font(.system(size: 11, weight: .bold))
+                                .tracking(2)
+                                .foregroundColor(themeManager.accentYellow.opacity(0.7))
+                                .padding(.leading, 16)
+
+                            VStack(spacing: 8) {
+                                Button(action: { showInfoPopup = true }) {
+                                    SettingsRow(
+                                        icon: "person.text.rectangle.fill",
+                                        title: "Kişisel Bilgiler",
+                                        subtitle: "Ad, doğum tarihi ve kişilik verileri",
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
                         }
 
                         // General Experience Section
@@ -79,6 +102,34 @@ struct SettingsView: View {
                                     )
                                 }
                                 .buttonStyle(PlainButtonStyle())
+
+                                Button(action: { 
+                                    if let url = URL(string: "https://example.com/privacy") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }) {
+                                    SettingsRow(
+                                        icon: "shield.lefthalf.filled",
+                                        title: "Gizlilik Politikası",
+                                        subtitle: "Verilerinizin nasıl korunduğunu görün",
+                                        showExternalIcon: true,
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
+
+                                Button(action: {
+                                    // Rate us link
+                                }) {
+                                    SettingsRow(
+                                        icon: "star.bubble.fill",
+                                        title: "Bizi Değerlendir",
+                                        subtitle: "App Store'da yorum bırakın",
+                                        showExternalIcon: true,
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
 
@@ -87,7 +138,7 @@ struct SettingsView: View {
                             Button(action: {
                                 showDeleteConfirmation = true
                             }) {
-                                Text(lm.t(.settingsDeleteProfile))
+                                Text("Hesabı Sil")
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.red)
                             }
@@ -133,7 +184,24 @@ struct SettingsView: View {
             .sheet(isPresented: $showHelpCenter) {
                 HelpCenterView()
             }
-            .alert("Kozmik Profili Sil", isPresented: $showDeleteConfirmation) {
+            .sheet(isPresented: $showContactUs) {
+                ContactUsView()
+            }
+            .fullScreenCover(isPresented: $navigateToInfoDetail) {
+                PersonalInformationDetailView()
+            }
+            .alert("Kişisel Bilgiler", isPresented: $showInfoPopup) {
+                Button("Bilgileri Gör") {
+                    navigateToInfoDetail = true
+                }
+                Button("Göz rengi yanlış") {
+                    showContactUs = true
+                }
+                Button("Kapat", role: .cancel) { }
+            } message: {
+                Text("Kişisel verileriniz ve test cevaplarınız kilitlidir. Bilgileri görüntülemek veya düzeltme talebi oluşturmak için seçiminizi yapın.")
+            }
+            .alert("Hesabı Sil", isPresented: $showDeleteConfirmation) {
                 Button("Vazgeç", role: .cancel) { }
                 Button("Sil", role: .destructive) {
                     deleteProfile()

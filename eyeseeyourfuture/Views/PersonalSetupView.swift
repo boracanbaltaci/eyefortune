@@ -3,7 +3,7 @@ import SwiftUI
 struct PersonalSetupView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var lm: LocalizationManager
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     
     @AppStorage("userName") var userNameStore: String = ""
     @State private var fullName = ""
@@ -43,7 +43,7 @@ struct PersonalSetupView: View {
     
     private var isFormValid: Bool {
         !fullName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        birthDate.count == 10 && // GG/AA/YYYY
+        birthDate.count == 10 && 
         !birthTime.isEmpty &&
         selectedElement != nil
     }
@@ -53,148 +53,140 @@ struct PersonalSetupView: View {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
                 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        // Stage Indicator (Synced with other screens)
-                        HStack(spacing: 12) {
-                            Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
-                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
-                            Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
-                        }
+                VStack(spacing: 0) {
+                    // Stage Indicator
+                    HStack(spacing: 12) {
+                        Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
+                        Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
+                        Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
+                    }
+                    .padding(.top, 10)
+                    .padding(.bottom, 10)
+                        
+                    // Header Texts
+                    Text("Kozmik Kimlik")
+                        .font(.system(size: 32, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.primaryTextColor)
+                        .multilineTextAlignment(.center)
                         .padding(.top, 20)
+                        .padding(.bottom, 4)
+                    
+                    Text("Yıldız haritanı çizmek için temel bilgilerini gir.")
+                        .font(.system(size: 14))
+                        .foregroundColor(themeManager.secondaryTextColor)
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom, 15)
+                    
+                    // Form Fields
+                    VStack(spacing: 24) {
+                        SetupTextField(title: lm.t(.setupFullName), placeholder: "Adınızı giriniz", text: $fullName, icon: nil, autocapitalization: .words)
                         
-                        // Header Texts
-                        Text("Kozmik Kimlik")
-                            .font(.system(size: 32, weight: .bold, design: .serif))
-                            .foregroundColor(themeManager.primaryTextColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 40)
-                            .padding(.bottom, 8)
-                        
-                        Text("Yıldız haritanı çizmek için temel bilgilerini gir.")
-                            .font(.system(size: 14))
-                            .foregroundColor(themeManager.secondaryTextColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.bottom, 20)
-                        
-                        // Form Fields
-                        VStack(spacing: 24) {
-                            // Full Name Input
-                            SetupTextField(title: lm.t(.setupFullName), placeholder: "Stella", text: $fullName, icon: nil, themeManager: themeManager, autocapitalization: .words)
-                                .onChange(of: fullName) { _, newValue in
-                                    userNameStore = newValue
+                        HStack(spacing: 12) {
+                            SetupTextField(title: lm.t(.setupBirthDate), placeholder: "GG / AA / YYYY", text: $birthDate, icon: "calendar", keyboardType: .numberPad)
+                                .onChange(of: birthDate) { _, newValue in
+                                    formatDate(newValue)
                                 }
                             
-                            HStack(spacing: 12) {
-                                // Birth Date Input
-                                SetupTextField(title: lm.t(.setupBirthDate), placeholder: "GG / AA / YYYY", text: $birthDate, icon: "calendar", themeManager: themeManager, keyboardType: .numberPad)
-                                    .onChange(of: birthDate) { _, newValue in
-                                        formatDate(newValue)
-                                    }
-                                
-                                // Birth Time Input
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(lm.t(.setupBirthTime))
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(themeManager.secondaryTextColor)
-                                        .padding(.leading, 4)
-                                    
-                                    HStack(spacing: 0) {
-                                        TextField("12:00", text: $birthTime, onEditingChanged: { isEditing in
-                                            if !isEditing {
-                                                completeBirthTime()
-                                            }
-                                        })
-                                        .foregroundColor(themeManager.primaryTextColor)
-                                        .keyboardType(.numbersAndPunctuation)
-                                        .frame(maxWidth: .infinity)
-                                        
-                                        Button(action: {
-                                            timePeriod = timePeriod == "AM" ? "PM" : "AM"
-                                        }) {
-                                            Text(timePeriod)
-                                                .font(.system(size: 12, weight: .bold))
-                                                .foregroundColor(themeManager.accentYellow)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(themeManager.accentYellow.opacity(0.1))
-                                                .cornerRadius(6)
-                                        }
-                                    }
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 16)
-                                    .background(themeManager.inputBgColor)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 15)
-                                            .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
-                                    )
-                                    .cornerRadius(15)
-                                }
-                            }
-                            
-                            // Element Selection
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("Evrendeki elementini seç:")
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(lm.t(.setupBirthTime))
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(themeManager.secondaryTextColor)
                                     .padding(.leading, 4)
                                 
-                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                                    ForEach(ElementType.allCases, id: \.self) { element in
-                                        ElementCard(
-                                            element: element,
-                                            isSelected: selectedElement == element,
-                                            themeManager: themeManager,
-                                            action: { selectedElement = element }
-                                        )
+                                HStack(spacing: 0) {
+                                    TextField("12:00", text: $birthTime, onEditingChanged: { isEditing in
+                                        if !isEditing {
+                                            completeBirthTime()
+                                        }
+                                    })
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                    .keyboardType(.numbersAndPunctuation)
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    Button(action: {
+                                        timePeriod = timePeriod == "AM" ? "PM" : "AM"
+                                    }) {
+                                        Text(timePeriod)
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(themeManager.accentYellow)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(themeManager.accentYellow.opacity(0.1))
+                                            .cornerRadius(6)
                                     }
                                 }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 16)
+                                .background(themeManager.inputBgColor)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
+                                )
+                                .cornerRadius(15)
                             }
                         }
-                        .padding(.horizontal, 24)
                         
-                        // Submit Area
-                        VStack(spacing: 16) {
-                            Button(action: {
-                                if isFormValid {
-                                    navigateToScanner = true
-                                }
-                            }) {
-                                Text(lm.t(.setupContinue))
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(isFormValid ? themeManager.bgColor : .white.opacity(0.5))
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 18)
-                                    .background(isFormValid ? themeManager.accentYellow : Color.gray.opacity(0.3))
-                                    .cornerRadius(15)
-                                    .shadow(color: isFormValid ? themeManager.accentYellow.opacity(0.3) : .clear, radius: 10, x: 0, y: 5)
-                            }
-                            .disabled(!isFormValid)
-                            
-                            Text("Adım 1 / 3: Ruhsal Hizalanma")
-                                .font(.system(size: 12))
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Evrendeki elementini seç:")
+                                .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(themeManager.secondaryTextColor)
+                                .padding(.leading, 4)
+                            
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                                ForEach(ElementType.allCases, id: \.self) { element in
+                                    ElementCard(
+                                        element: element,
+                                        isSelected: selectedElement == element,
+                                        action: { selectedElement = element }
+                                    )
+                                }
+                            }
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.top, 40)
-                        .padding(.bottom, 50)
                     }
+                    .padding(.horizontal, 24)
+                    
+                    Spacer()
+                    
+                    VStack(spacing: 16) {
+                        Button(action: {
+                            if isFormValid {
+                                // Save name to AppStorage before moving forward
+                                userNameStore = fullName
+                                navigateToScanner = true
+                            }
+                        }) {
+                            Text(lm.t(.setupContinue))
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(isFormValid ? themeManager.bgColor : .white.opacity(0.5))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(isFormValid ? themeManager.accentYellow : Color.gray.opacity(0.3))
+                                .cornerRadius(15)
+                                .shadow(color: isFormValid ? themeManager.accentYellow.opacity(0.3) : .clear, radius: 10, x: 0, y: 5)
+                        }
+                        .disabled(!isFormValid)
+                        
+                        Text("Adım 1 / 3: Ruhsal Hizalanma")
+                            .font(.system(size: 12))
+                            .foregroundColor(themeManager.secondaryTextColor)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 20)
                 }
             }
             .navigationDestination(isPresented: $navigateToScanner) {
                 PersonalityQuizView(navigateToNextStep: $dismissToMain)
             }
-            .navigationBarTitleDisplayMode(.inline)
             .onChange(of: dismissToMain) { _, newValue in
                 if newValue {
                     isSetupComplete = true
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }) {
                         Image(systemName: "arrow.left")
                             .foregroundColor(themeManager.primaryTextColor)
@@ -209,6 +201,12 @@ struct PersonalSetupView: View {
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+        }
+        .onAppear {
+            // Pre-fill if name already exists
+            if fullName.isEmpty && !userNameStore.isEmpty {
+                fullName = userNameStore
+            }
         }
     }
     
@@ -228,7 +226,6 @@ struct PersonalSetupView: View {
             minute = m
         }
         
-        // 24-hour logic: If user enters 15, it becomes 3:00 PM
         if hour >= 24 {
             hour = hour % 24
         }
@@ -253,7 +250,7 @@ struct PersonalSetupView: View {
             if i == 2 || i == 4 { result.append("/") }
             if i < 8 { result.append(char) }
         }
-        if result != value {
+        if result != value || value.contains(where: { !$0.isNumber && $0 != "/" }) {
             birthDate = result
         }
     }
@@ -261,11 +258,11 @@ struct PersonalSetupView: View {
 
 // MARK: - Reusable Setup Text Field
 struct SetupTextField: View {
+    @EnvironmentObject var themeManager: ThemeManager
     var title: String
     var placeholder: String
     @Binding var text: String
     var icon: String?
-    @ObservedObject var themeManager: ThemeManager
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .never
     
@@ -301,9 +298,9 @@ struct SetupTextField: View {
 
 // MARK: - Element Selection Card
 struct ElementCard: View {
+    @EnvironmentObject var themeManager: ThemeManager
     var element: PersonalSetupView.ElementType
     var isSelected: Bool
-    @ObservedObject var themeManager: ThemeManager
     var action: () -> Void
     
     var body: some View {

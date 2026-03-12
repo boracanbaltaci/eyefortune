@@ -233,9 +233,12 @@ struct CategoryCard: View {
                     lineWidth: 1
                 )
         )
-        .onTapGesture {
-            onTap()
-        }
+        .contentShape(Rectangle())
+        .highPriorityGesture(
+            TapGesture().onEnded {
+                onTap()
+            }
+        )
     }
 }
 

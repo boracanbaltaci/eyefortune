@@ -11,7 +11,7 @@ struct RegisterView: View {
     @State private var confirmPassword = ""
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
                 
@@ -113,7 +113,6 @@ struct RegisterView: View {
                         .padding(.top, 30)
                         
                         // Social Buttons removed as requested
-
                         
                         // Login Link
                         HStack(spacing: 5) {
@@ -121,7 +120,7 @@ struct RegisterView: View {
                                 .font(.system(size: 14))
                                 .foregroundColor(themeManager.secondaryTextColor)
                             Button(action: {
-                                // Action to login view or dismiss
+                                presentationMode.wrappedValue.dismiss()
                             }) {
                                 Text("Log In")
                                     .font(.system(size: 14, weight: .bold))

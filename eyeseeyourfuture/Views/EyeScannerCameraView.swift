@@ -16,6 +16,8 @@ class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     @Published var isCountdownActive = false
     @Published var capturedImage: UIImage? = nil
     
+    private var cameraPosition: AVCaptureDevice.Position = .front
+    
     private var countdownTimer: Timer?
     private var sequenceHandler = VNSequenceRequestHandler()
     
@@ -52,8 +54,8 @@ class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
         do {
             self.session.beginConfiguration()
             
-            // front camera
-            let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) ?? 
+            // Camera Selection
+            let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: cameraPosition) ?? 
                                AVCaptureDevice.default(for: .video)
             
             guard let camera = cameraDevice else { return }
@@ -86,6 +88,23 @@ class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func switchCamera() {
+        session.beginConfiguration()
+        
+        // Remove current input
+        if let currentInput = session.inputs.first {
+            session.removeInput(currentInput)
+        }
+        
+        // Toggle position
+        cameraPosition = (cameraPosition == .front) ? .back : .front
+        
+        // Setup new input
+        setupCamera()
+        
+        session.commitConfiguration()
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -139,7 +158,8 @@ class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             }
         }
         
-        try? sequenceHandler.perform([request], on: pixelBuffer, orientation: .leftMirrored)
+        let orientation: CGImagePropertyOrientation = (cameraPosition == .front) ? .leftMirrored : .right
+        try? sequenceHandler.perform([request], on: pixelBuffer, orientation: orientation)
     }
 
     private func calculateLuminosity(_ pixelBuffer: CVPixelBuffer) -> Double {
@@ -455,27 +475,50 @@ struct EyeScannerCameraView: View {
                         .foregroundColor(.white.opacity(0.4))
                         .padding(.top, 8)
                         .padding(.bottom, 60)
-                }
-            }
-        }
-        .onAppear {
-            cameraVM.checkPermissions()
-        }
-        .onDisappear {
-            cameraVM.stopSession()
-        }
-        .onChange(of: cameraVM.capturedImage) { _, newImage in
-            if let img = newImage {
-                // Perform Iris Analysis right after capture
-                if let irisInfo = IrisAnalysisUtils.detectIrisInfo(from: img) {
-                    irisHex = irisInfo.hexColor
-                    irisColorName = irisInfo.colorName
-                    
-                    // Generate AI Reading
-                    irisReading = PersonalityAnalysisService.generateReading(for: irisInfo, userName: userNameStoreForReading)
+                    }
                 }
                 
-                startScanningAnimation()
+                // Camera Flip Button
+                if !scanCompleted {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                cameraVM.switchCamera()
+                            }) {
+                                Image(systemName: "camera.rotate")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(12)
+                                    .background(Color.black.opacity(0.5))
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(themeManager.accentYellow.opacity(0.3), lineWidth: 1))
+                            }
+                            .padding(.trailing, 20)
+                            .padding(.bottom, 100)
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                cameraVM.checkPermissions()
+            }
+            .onDisappear {
+                cameraVM.stopSession()
+            }
+            .onChange(of: cameraVM.capturedImage) { _, newImage in
+                if let img = newImage {
+                    // Perform Iris Analysis right after capture
+                    if let irisInfo = IrisAnalysisUtils.detectIrisInfo(from: img) {
+                        irisHex = irisInfo.hexColor
+                        irisColorName = irisInfo.colorName
+                        
+                        // Generate AI Reading
+                        irisReading = PersonalityAnalysisService.generateReading(for: irisInfo, userName: userNameStoreForReading)
+                    }
+                    
+                    startScanningAnimation()
             }
         }
     }

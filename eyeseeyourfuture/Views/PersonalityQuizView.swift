@@ -67,6 +67,12 @@ class PersonalityQuizViewModel: ObservableObject {
     
     func startAnalysis() {
         isAnalyzing = true
+        
+        // Save answers to UserDefaults for later retrieval
+        if let encoded = try? JSONEncoder().encode(answers) {
+            UserDefaults.standard.set(encoded, forKey: "quizAnswers")
+        }
+        
         // Simulate AI analysis delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             withAnimation {
