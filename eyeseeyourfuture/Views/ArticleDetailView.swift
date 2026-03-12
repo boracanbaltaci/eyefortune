@@ -157,6 +157,10 @@ struct ArticleHeroImage: View {
             return [Color(hex: "#1a2a0d"), Color(hex: "#2d4a1a"), Color(hex: "#221e10")]
         case .wellness:
             return [Color(hex: "#3d0d0d"), Color(hex: "#6e1a1a"), Color(hex: "#221e10")]
+        case .spiritualism:
+            return [Color(hex: "#1a0b2e"), Color(hex: "#2e1a4d"), Color(hex: "#221e10")]
+        case .astrology:
+            return [Color(hex: "#0b1a2e"), Color(hex: "#1a3d6e"), Color(hex: "#221e10")]
         case .all:
             return [Color(hex: "#221e10"), Color(hex: "#3d3510"), Color(hex: "#221e10")]
         }
@@ -169,6 +173,8 @@ struct ArticleHeroImage: View {
         case .development:  return "chart.line.uptrend.xyaxis"
         case .mindfulness:  return "leaf.fill"
         case .wellness:     return "heart.fill"
+        case .spiritualism: return "moon.stars.fill"
+        case .astrology:    return "sparkles.rectangle.stack"
         case .all:          return "star.fill"
         }
     }

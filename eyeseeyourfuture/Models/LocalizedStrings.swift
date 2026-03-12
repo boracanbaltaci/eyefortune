@@ -88,6 +88,8 @@ enum LKey: String {
     case readingCatDev      = "reading_cat_dev"
     case readingCatMind     = "reading_cat_mind"
     case readingCatWell     = "reading_cat_well"
+    case readingCatSpir     = "reading_cat_spir"
+    case readingCatAstro    = "reading_cat_astro"
     case readingEmpty       = "reading_empty"
     case readingToday       = "reading_today"
     
@@ -192,7 +194,9 @@ struct LocalizedStrings {
             .readingCatPers:  "Kişilik",
             .readingCatDev:   "Gelişim",
             .readingCatMind:  "Mindfulness",
-            .readingCatWell:  "Sağlık",
+            .readingCatWell:    "Sağlık",
+            .readingCatSpir:    "Spiritüalizm",
+            .readingCatAstro:   "Astroloji",
             .readingEmpty:    "Bu kategoride bugün içerik yok",
             .readingToday:    "Bugün",
             
@@ -292,7 +296,9 @@ struct LocalizedStrings {
             .readingCatPers:  "Personality",
             .readingCatDev:   "Development",
             .readingCatMind:  "Mindfulness",
-            .readingCatWell:  "Wellness",
+            .readingCatWell:    "Wellness",
+            .readingCatSpir:    "Spiritualism",
+            .readingCatAstro:   "Astrology",
             .readingEmpty:    "No content in this category today",
             .readingToday:    "Today",
             

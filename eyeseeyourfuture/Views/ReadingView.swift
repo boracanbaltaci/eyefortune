@@ -62,23 +62,10 @@ struct ReadingView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(themeManager.accentYellow)
-                        Text(lm.t(.readingTitle))
-                            .font(.system(size: 18, weight: .bold, design: .serif))
-                            .foregroundColor(themeManager.primaryTextColor)
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        withAnimation { viewModel.loadTodaysArticles() }
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(themeManager.secondaryTextColor)
-                    }
+                ToolbarItem(placement: .principal) {
+                    Text(lm.t(.readingTitle))
+                        .font(.system(size: 18, weight: .bold, design: .serif))
+                        .foregroundColor(themeManager.primaryTextColor)
                 }
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
@@ -183,7 +170,7 @@ struct CategoryFilterRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(ReadingCategory.allCases) { category in
-                    CategoryPill(
+                    CategoryCard(
                         category: category,
                         isSelected: selected == category,
                         themeManager: themeManager,
@@ -201,7 +188,7 @@ struct CategoryFilterRow: View {
     }
 }
 
-struct CategoryPill: View {
+struct CategoryCard: View {
     let category: ReadingCategory
     let isSelected: Bool
     @ObservedObject var themeManager: ThemeManager
@@ -216,33 +203,38 @@ struct CategoryPill: View {
         case .development: return lm.t(.readingCatDev)
         case .mindfulness: return lm.t(.readingCatMind)
         case .wellness:    return lm.t(.readingCatWell)
+        case .spiritualism: return lm.t(.readingCatSpir)
+        case .astrology:    return lm.t(.readingCatAstro)
         }
     }
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 6) {
+            VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: category.icon)
-                    .font(.system(size: 11))
+                    .font(.system(size: 20))
+                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
+                
                 Text(localizedName)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: 14, weight: .bold, design: .serif))
+                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
             }
-            .foregroundColor(isSelected ? themeManager.bgColor : themeManager.secondaryTextColor)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .frame(width: 100, height: 100, alignment: .bottomLeading)
+            .padding(12)
             .background(
                 isSelected
                     ? themeManager.accentYellow
-                    : themeManager.accentYellow.opacity(0.08)
+                    : themeManager.cardBgColor
             )
+            .cornerRadius(16)
             .overlay(
-                Capsule()
+                RoundedRectangle(cornerRadius: 16)
                     .stroke(
-                        isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.2),
+                        isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.15),
                         lineWidth: 1
                     )
             )
-            .clipShape(Capsule())
+            .shadow(color: isSelected ? themeManager.accentYellow.opacity(0.3) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
         }
         .buttonStyle(PlainButtonStyle())
     }

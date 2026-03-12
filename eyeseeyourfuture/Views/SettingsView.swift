@@ -7,6 +7,8 @@ struct SettingsView: View {
 
     @State private var showLanguagePicker = false
     @State private var showSubscription = false
+    @AppStorage("notificationsEnabled") var notificationsEnabled = true
+    @State private var showHelpCenter = false
 
     var body: some View {
         NavigationView {
@@ -30,18 +32,10 @@ struct SettingsView: View {
                                 .padding(.leading, 16)
 
                             VStack(spacing: 8) {
-                                SettingsRow(
-                                    icon: "bell.badge.fill",
-                                    title: lm.t(.settingsNotifications),
-                                    subtitle: lm.t(.settingsNotifSub),
-                                    themeManager: themeManager
-                                )
-
-                                SettingsRow(
-                                    icon: "eye.slash.fill",
-                                    title: lm.t(.settingsPrivacy),
-                                    subtitle: lm.t(.settingsPrivacySub),
-                                    themeManager: themeManager
+                                NotificationToggleRow(
+                                    isEnabled: $notificationsEnabled,
+                                    themeManager: themeManager,
+                                    lm: lm
                                 )
 
                                 ThemeToggleRow(themeManager: themeManager, lm: lm)
@@ -74,13 +68,16 @@ struct SettingsView: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
 
-                                SettingsRow(
-                                    icon: "questionmark.circle.fill",
-                                    title: lm.t(.settingsHelp),
-                                    subtitle: lm.t(.settingsHelpSub),
-                                    showExternalIcon: true,
-                                    themeManager: themeManager
-                                )
+                                Button(action: { showHelpCenter = true }) {
+                                    SettingsRow(
+                                        icon: "questionmark.circle.fill",
+                                        title: lm.t(.settingsHelp),
+                                        subtitle: lm.t(.settingsHelpSub),
+                                        showExternalIcon: false,
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
 
@@ -121,15 +118,59 @@ struct SettingsView: View {
                         .foregroundColor(themeManager.primaryTextColor)
                 }
             }
+            .navigationBarBackButtonHidden(true)
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerSheet(themeManager: themeManager, lm: lm)
             }
-            .fullScreenCover(isPresented: $showSubscription) {
+            .sheet(isPresented: $showSubscription) {
                 SubscriptionView(shouldShowPersonalSetup: .constant(false))
             }
+            .sheet(isPresented: $showHelpCenter) {
+                HelpCenterView()
+            }
         }
+    }
+}
+
+// MARK: - Notification Toggle Row
+struct NotificationToggleRow: View {
+    @Binding var isEnabled: Bool
+    @ObservedObject var themeManager: ThemeManager
+    @ObservedObject var lm: LocalizationManager
+
+    var body: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(themeManager.accentYellow.opacity(0.2))
+                    .frame(width: 40, height: 40)
+
+                Image(systemName: "bell.badge.fill")
+                    .foregroundColor(themeManager.accentYellow)
+                    .font(.system(size: 18))
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(lm.t(.settingsNotifications))
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(themeManager.primaryTextColor)
+
+                Text(lm.t(.settingsNotifSub))
+                    .font(.system(size: 11))
+                    .foregroundColor(themeManager.secondaryTextColor)
+            }
+
+            Spacer()
+
+            Toggle("", isOn: $isEnabled)
+                .labelsHidden()
+                .tint(themeManager.accentYellow)
+        }
+        .padding(16)
+        .background(themeManager.cardBgColor)
+        .cornerRadius(12)
     }
 }
 

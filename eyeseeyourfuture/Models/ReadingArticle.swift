@@ -8,6 +8,8 @@ enum ReadingCategory: String, CaseIterable, Identifiable {
     case development   = "Gelişim"
     case mindfulness   = "Mindfulness"
     case wellness      = "Sağlık"
+    case spiritualism  = "Spiritüalizm"
+    case astrology     = "Astroloji"
 
     var id: String { self.rawValue }
 
@@ -19,6 +21,8 @@ enum ReadingCategory: String, CaseIterable, Identifiable {
         case .development:  return "chart.line.uptrend.xyaxis"
         case .mindfulness:  return "leaf"
         case .wellness:     return "heart.fill"
+        case .spiritualism: return "moon.stars.fill"
+        case .astrology:    return "sparkles.rectangle.stack"
         }
     }
 }

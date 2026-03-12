@@ -26,23 +26,28 @@ struct FortuneResultView: View {
                     VStack(spacing: 0) {
                         // Custom Header
                         HStack {
-                            Button(action: {
-                                if isSaved {
-                                    fortuneViewModel.savedFortunes.removeAll(where: { $0.id == fortune.id })
-                                } else {
-                                    fortuneViewModel.savedFortunes.append(fortune)
+                            if fortune.type != .aiScan {
+                                Button(action: {
+                                    if isSaved {
+                                        fortuneViewModel.savedFortunes.removeAll(where: { $0.id == fortune.id })
+                                    } else {
+                                        fortuneViewModel.savedFortunes.append(fortune)
+                                    }
+                                }) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(themeManager.cardBgColor)
+                                            .frame(width: 40, height: 40)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 4)
+                                        
+                                        Image(systemName: isSaved ? "heart.fill" : "heart")
+                                            .foregroundColor(isSaved ? .red : themeManager.accentYellow)
+                                            .font(.system(size: 18, weight: .bold))
+                                    }
                                 }
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(themeManager.cardBgColor)
-                                        .frame(width: 40, height: 40)
-                                        .shadow(color: Color.black.opacity(0.2), radius: 4)
-                                    
-                                    Image(systemName: isSaved ? "heart.fill" : "heart")
-                                        .foregroundColor(isSaved ? .red : themeManager.accentYellow)
-                                        .font(.system(size: 18, weight: .bold))
-                                }
+                            } else {
+                                // Transparent placeholder to keep title centered
+                                Color.clear.frame(width: 40, height: 40)
                             }
                             
                             Spacer()

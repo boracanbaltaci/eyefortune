@@ -32,6 +32,9 @@ struct HomeView: View {
     @State private var personalityAnalysisText: String = ""
     @State private var showPersonalityModal = false
     
+    @State private var showInsightModal = false
+    @State private var selectedInsightType: InsightDetailView.InsightType = .strengths
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -91,10 +94,17 @@ struct HomeView: View {
                                     .fill(themeManager.accentYellow.opacity(0.3))
                                     .frame(width: 48, height: 1)
                                 
-                                Text("TIER IV MYSTIC")
-                                    .font(.system(size: 11, weight: .bold))
-                                    .tracking(3)
-                                    .foregroundColor(themeManager.accentYellow.opacity(0.8))
+                                VStack(spacing: 4) {
+                                    Text(dynamicGreeting)
+                                        .font(.system(size: 14, weight: .bold))
+                                        .tracking(2)
+                                        .foregroundColor(themeManager.accentYellow.opacity(0.9))
+                                    
+                                    Text(mysticSentence)
+                                        .font(.system(size: 11, weight: .medium, design: .serif))
+                                        .foregroundColor(themeManager.secondaryTextColor)
+                                        .italic()
+                                }
                             }
                             .padding(.top, 20)
                             .padding(.bottom, 24)
@@ -102,36 +112,42 @@ struct HomeView: View {
                         
                         // MARK: Strengths / Weaknesses Buttons
                         HStack(spacing: 12) {
-                            Button(action: {}) {
+                            Button(action: {
+                                selectedInsightType = .strengths
+                                showInsightModal = true
+                            }) {
                                 HStack(spacing: 8) {
                                     Text(lm.t(.homeStrengths))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
                                 }
-                                .foregroundColor(themeManager.accentYellow)
+                                .foregroundColor(.green)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
-                                .background(themeManager.accentYellow.opacity(0.1))
+                                .background(Color.green.opacity(0.1))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 14)
-                                        .stroke(themeManager.accentYellow.opacity(0.3), lineWidth: 1)
+                                        .stroke(Color.green.opacity(0.3), lineWidth: 1)
                                 )
                                 .cornerRadius(14)
                             }
                             
-                            Button(action: {}) {
+                            Button(action: {
+                                selectedInsightType = .weaknesses
+                                showInsightModal = true
+                            }) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "shield.exclamationmark.fill")
                                         .font(.system(size: 14))
                                     Text(lm.t(.homeWeaknesses))
                                         .font(.system(size: 14, weight: .bold, design: .serif))
                                 }
-                                .foregroundColor(themeManager.secondaryTextColor)
+                                .foregroundColor(.red)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
-                                .background(themeManager.accentYellow.opacity(0.04))
+                                .background(Color.red.opacity(0.04))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 14)
-                                        .stroke(themeManager.secondaryTextColor.opacity(0.15), lineWidth: 1)
+                                        .stroke(Color.red.opacity(0.15), lineWidth: 1)
                                 )
                                 .cornerRadius(14)
                             }
@@ -239,6 +255,29 @@ struct HomeView: View {
             .sheet(isPresented: $showPersonalityModal) {
                 FortuneResultView(fortune: Fortune(text: personalityAnalysisText, dateGenerated: Date(), type: .aiScan))
             }
+            .sheet(isPresented: $showInsightModal) {
+                InsightDetailView(type: selectedInsightType)
+            }
+        }
+    }
+    
+    private var dynamicGreeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12: return "GÜNAYDIN"
+        case 12..<18: return "İYİ GÜNLER"
+        case 18..<22: return "İYİ AKŞAMLAR"
+        default: return "İYİ GECELER"
+        }
+    }
+    
+    private var mysticSentence: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12: return "Güneşin doğuşuyla enerjin yenileniyor."
+        case 12..<18: return "Günün ışığı ruhundaki gizemleri aydınlatıyor."
+        case 18..<22: return "Yıldızlar belirmeye başlarken sezgilerin güçleniyor."
+        default: return "Gecenin sessizliği evrenin fısıltılarını taşıyor."
         }
     }
 }
