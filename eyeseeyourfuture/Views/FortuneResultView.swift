@@ -20,19 +20,23 @@ struct FortuneResultView: View {
                 VStack(spacing: 0) {
                     // Custom Header (Fixed at top)
                     HStack {
-                        Button(action: {
-                            fortuneViewModel.toggleFavorite(fortune)
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(themeManager.cardBgColor)
-                                    .frame(width: 44, height: 44)
-                                    .shadow(color: Color.black.opacity(0.2), radius: 4)
-                                
-                                Image(systemName: isSaved ? "heart.fill" : "heart")
-                                    .foregroundColor(isSaved ? .red : themeManager.primaryTextColor)
-                                    .font(.system(size: 18, weight: .bold))
+                        if fortune.type != .aiScan {
+                            Button(action: {
+                                fortuneViewModel.toggleFavorite(fortune)
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(themeManager.cardBgColor)
+                                        .frame(width: 44, height: 44)
+                                        .shadow(color: Color.black.opacity(0.2), radius: 4)
+                                    
+                                    Image(systemName: isSaved ? "heart.fill" : "heart")
+                                        .foregroundColor(isSaved ? .red : themeManager.primaryTextColor)
+                                        .font(.system(size: 18, weight: .bold))
+                                }
                             }
+                        } else {
+                            Color.clear.frame(width: 44, height: 44)
                         }
                         
                         Spacer()

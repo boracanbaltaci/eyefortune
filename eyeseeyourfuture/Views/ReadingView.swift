@@ -22,15 +22,10 @@ struct ReadingView: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.top, 16)
-                        }
-
-                        // MARK: Category Filter Tabs
-                        CategoryFilterRow(
-                            selected: $viewModel.selectedCategory,
-                            themeManager: themeManager,
-                            lm: lm
-                        )
-                        .padding(.top, 20)
+                        }                        // MARK: Category Selectors
+                        CategoryFilterRow(selected: $viewModel.selectedCategory, themeManager: themeManager, lm: lm)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
 
                         // MARK: Article Cards
                         if viewModel.nonFeaturedFiltered.isEmpty {
@@ -209,36 +204,39 @@ struct CategoryCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: category.icon)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
-            
-            Text(localizedName)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(
-            isSelected
-                ? themeManager.accentYellow
-                : themeManager.cardBgColor.opacity(0.6)
-        )
-        .cornerRadius(20)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(
-                    isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.1),
-                    lineWidth: 1
-                )
-        )
-        .contentShape(Rectangle())
-        .highPriorityGesture(
-            TapGesture().onEnded {
-                onTap()
+        Button(action: onTap) {
+            HStack(spacing: 8) {
+                Image(systemName: category.icon)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.accentYellow)
+                
+                Text(localizedName)
+                    .font(.system(size: 13, weight: .black))
+                    .foregroundColor(isSelected ? themeManager.bgColor : themeManager.primaryTextColor)
+                    .tracking(0.5)
             }
-        )
+            .padding(.horizontal, 18)
+            .padding(.vertical, 12)
+            .background(
+                ZStack {
+                    if isSelected {
+                        themeManager.accentYellow
+                    } else {
+                        themeManager.cardBgColor.opacity(0.8)
+                    }
+                }
+            )
+            .cornerRadius(25)
+            .overlay(
+                RoundedRectangle(cornerRadius: 25)
+                    .stroke(
+                        isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.15),
+                        lineWidth: 1.5
+                    )
+            )
+            .shadow(color: isSelected ? themeManager.accentYellow.opacity(0.3) : Color.clear, radius: 8, x: 0, y: 4)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

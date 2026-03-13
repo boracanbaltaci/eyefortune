@@ -51,7 +51,8 @@ struct ContactUsView: View {
                                 
                                 TextEditor(text: $message)
                                     .frame(height: 150)
-                                    .padding(12)
+                                    .padding(8)
+                                    .scrollContentBackground(.hidden)
                                     .background(themeManager.inputBgColor)
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .cornerRadius(15)

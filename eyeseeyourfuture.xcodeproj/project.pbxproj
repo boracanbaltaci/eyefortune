@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		846C8C642F6311160068BB1C /* eyeseeyourfuture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = eyeseeyourfuture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		846C8C642F6311160068BB1C /* eyeseeyourfuture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = eyeseeyourfuture.app; path = "Eye See.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -254,6 +254,7 @@
 				DEVELOPMENT_TEAM = C5DJRY2DZT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Eye See";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This part is needed to scan your Iris to analyse your fortune.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -266,7 +267,6 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boradev.eyeseeyourfuture;
-				INFOPLIST_KEY_CFBundleDisplayName = "Eye See";
 				PRODUCT_NAME = "Eye See";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -288,6 +288,7 @@
 				DEVELOPMENT_TEAM = C5DJRY2DZT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Eye See";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This part is needed to scan your Iris to analyse your fortune.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -300,7 +301,6 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boradev.eyeseeyourfuture;
-				INFOPLIST_KEY_CFBundleDisplayName = "Eye See";
 				PRODUCT_NAME = "Eye See";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

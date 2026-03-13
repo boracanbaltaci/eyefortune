@@ -134,16 +134,6 @@ struct RegisterView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .foregroundColor(themeManager.accentYellow)
-                            .font(.system(size: 16, weight: .bold))
-                    }
-                }
-                
                 ToolbarItem(placement: .principal) {
                     Text("Celestial Guidance")
                         .font(.system(size: 17, weight: .bold, design: .serif))

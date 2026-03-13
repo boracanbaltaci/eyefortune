@@ -9,10 +9,16 @@ struct EyeFortuneApp: App {
     @StateObject private var localizationManager = LocalizationManager()
     
     @AppStorage("isSetupComplete") var isSetupComplete: Bool = false
+    @State private var isSplashFinished = false
     
     var body: some Scene {
         WindowGroup {
-            if isSetupComplete {
+            if !isSplashFinished {
+                SplashScreenView(onFinished: {
+                    isSplashFinished = true
+                })
+                .environmentObject(themeManager)
+            } else if isSetupComplete {
                 MainTabView()
                     .environmentObject(fortuneViewModel)
                     .environmentObject(scannerViewModel)

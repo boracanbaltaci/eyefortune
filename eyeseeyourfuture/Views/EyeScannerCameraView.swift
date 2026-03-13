@@ -338,17 +338,18 @@ struct EyeScannerCameraView: View {
                             .frame(width: 320, height: 200)
                         
                         if !isScanning && !scanCompleted {
-                            VStack(spacing: 8) {
+                            HStack(spacing: 24) {
                                 Image(systemName: "eye")
-                                    .font(.system(size: 40))
+                                    .font(.system(size: 44))
                                     .foregroundColor(cameraVM.isAligned ? .green : themeManager.accentYellow.opacity(0.5))
                                     .scaleEffect(cameraVM.isAligned ? 1.1 : 1.0)
-                                    .animation(.spring(), value: cameraVM.isAligned)
                                 
-                                Text(cameraVM.isAligned ? "SABİT TUTUN" : "GÖZÜNÜZÜ HİZALAYIN")
-                                    .font(.system(size: 10, weight: .black))
-                                    .foregroundColor(cameraVM.isAligned ? .green : themeManager.accentYellow.opacity(0.6))
+                                Image(systemName: "eye")
+                                    .font(.system(size: 44))
+                                    .foregroundColor(cameraVM.isAligned ? .green : themeManager.accentYellow.opacity(0.5))
+                                    .scaleEffect(cameraVM.isAligned ? 1.1 : 1.0)
                             }
+                            .animation(.spring(), value: cameraVM.isAligned)
                         }
                         
                         
@@ -397,13 +398,8 @@ struct EyeScannerCameraView: View {
 
             // 3. Instruction Content
             VStack {
-                // Stage Indicator (Synced padding)
-                HStack(spacing: 12) {
-                    Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
-                    Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
-                    Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
-                }
-                .padding(.top, 20)
+                // 3-Step Navigator
+                StepNavigator(currentStep: 3, themeManager: themeManager)
                 
                 Text(scanCompleted ? "Kozmik Bağlantı Kuruldu" : "Gözünü Tarat")
                     .font(.system(size: 32, weight: .bold, design: .serif))
@@ -411,7 +407,7 @@ struct EyeScannerCameraView: View {
                     .padding(.top, 40)
                     .padding(.bottom, 8)
                 
-                Text(scanCompleted ? "Yıldızlar ruhunuzu tanıdı." : "İki gözünüz de ovalin içerisinde görünecek şekilde yaklaşın ve bekleyin")
+                Text(scanCompleted ? "Yıldızlar ruhunuzu tanıdı." : "İki gözünüz de ovalin içerisinde görünecek şekilde yaklaşın")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
                     .multilineTextAlignment(.center)
@@ -464,7 +460,7 @@ struct EyeScannerCameraView: View {
                             Circle()
                                 .fill(cameraVM.isAligned ? Color.green : Color.red)
                                 .frame(width: 8, height: 8)
-                            Text(cameraVM.isAligned ? "Hizalama Başarılı" : "Hizalama Bekleniyor...")
+                            Text(cameraVM.isAligned ? "Hazır" : "Haritalanıyor...")
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundColor(.white.opacity(0.6))
                         }

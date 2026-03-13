@@ -282,7 +282,7 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $showPersonalityModal) {
-                FortuneResultView(fortune: Fortune(text: personalityAnalysisText, dateGenerated: Date(), type: .aiScan))
+                PersonalityAnalysisView(text: personalityAnalysisText)
             }
             .sheet(item: $selectedInsightType) { type in
                 InsightDetailView(type: type)

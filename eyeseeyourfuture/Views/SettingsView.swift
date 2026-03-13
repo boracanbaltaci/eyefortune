@@ -35,11 +35,21 @@ struct SettingsView: View {
                                 .padding(.leading, 16)
 
                             VStack(spacing: 8) {
-                                Button(action: { showInfoPopup = true }) {
+                                NavigationLink(destination: PersonalInformationDetailView()) {
                                     SettingsRow(
                                         icon: "person.text.rectangle.fill",
                                         title: "Kişisel Bilgiler",
                                         subtitle: "Ad, doğum tarihi ve kişilik verileri",
+                                        themeManager: themeManager
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                Button(action: { showContactUs = true }) {
+                                    SettingsRow(
+                                        icon: "eye.fill",
+                                        title: "Göz Rengimi Düzelt",
+                                        subtitle: "Yanlış belirlendiyse talep oluşturun",
                                         themeManager: themeManager
                                     )
                                 }
@@ -187,20 +197,7 @@ struct SettingsView: View {
             .sheet(isPresented: $showContactUs) {
                 ContactUsView()
             }
-            .fullScreenCover(isPresented: $navigateToInfoDetail) {
-                PersonalInformationDetailView()
-            }
-            .alert("Kişisel Bilgiler", isPresented: $showInfoPopup) {
-                Button("Bilgileri Gör") {
-                    navigateToInfoDetail = true
-                }
-                Button("Göz rengi yanlış") {
-                    showContactUs = true
-                }
-                Button("Kapat", role: .cancel) { }
-            } message: {
-                Text("Kişisel verileriniz ve test cevaplarınız kilitlidir. Bilgileri görüntülemek veya düzeltme talebi oluşturmak için seçiminizi yapın.")
-            }
+
             .alert("Hesabı Sil", isPresented: $showDeleteConfirmation) {
                 Button("Vazgeç", role: .cancel) { }
                 Button("Sil", role: .destructive) {

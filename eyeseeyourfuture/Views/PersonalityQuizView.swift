@@ -101,7 +101,9 @@ struct PersonalityQuizView: View {
             if viewModel.isAnalyzing {
                 analysisLoadingView
             } else {
-                quizContent
+                GeometryReader { geometry in
+                    quizContent(geometry: geometry)
+                }
             }
         }
         .navigationDestination(isPresented: $navigateToScanner) {
@@ -155,125 +157,125 @@ struct PersonalityQuizView: View {
     }
     
     // MARK: - Subviews
-    private var quizContent: some View {
-        VStack(spacing: 0) {
-            // Stage Indicator (Synced with PersonalSetupView)
-            HStack(spacing: 12) {
-                Capsule().fill(themeManager.accentYellow.opacity(0.4)).frame(width: 40, height: 6)
-                Capsule().fill(themeManager.accentYellow).frame(width: 40, height: 6)
-                Capsule().fill(themeManager.accentYellow.opacity(0.2)).frame(width: 40, height: 6)
-            }
-            .padding(.top, 20)
-            
-            Text("İçsel Hassasiyet")
-                .font(.system(size: 32, weight: .bold, design: .serif))
-                .foregroundColor(themeManager.primaryTextColor)
-                .multilineTextAlignment(.center)
-                .padding(.top, 40)
-                .padding(.bottom, 8)
-            
-            Text("Seni tanıyıp sana özel fallar bulmak ve yıldızları ona göre analiz etmek için bu testi yap.")
-                .font(.system(size: 14))
-                .foregroundColor(themeManager.secondaryTextColor)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
-                .padding(.bottom, 24)
-            
-            // Progress Section
-            VStack(spacing: 12) {
-                HStack {
-                    Text("Soru \(viewModel.currentIndex + 1) / \(viewModel.questions.count)")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(themeManager.secondaryTextColor)
-                    Spacer()
-                    Text(viewModel.currentQuestion.category.uppercased())
-                        .font(.system(size: 11, weight: .black))
-                        .tracking(2)
-                        .foregroundColor(themeManager.accentYellow)
-                }
+    private func quizContent(geometry: GeometryProxy) -> some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 0) {
+                // 3-Step Navigator
+                StepNavigator(currentStep: 2, themeManager: themeManager)
                 
-                // Progress Bar
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        Rectangle()
-                            .fill(themeManager.inputBgColor)
-                            .frame(height: 6)
-                            .cornerRadius(3)
+                Spacer(minLength: 30)
+                
+                VStack(spacing: 32) {
+                    // Header Group
+                    VStack(spacing: 12) {
+                        Text("İçsel Hassasiyet")
+                            .font(.system(size: 32, weight: .bold, design: .serif))
+                            .foregroundColor(themeManager.primaryTextColor)
+                            .multilineTextAlignment(.center)
                         
-                        Rectangle()
-                            .fill(themeManager.accentYellow)
-                            .frame(width: geometry.size.width * CGFloat(viewModel.progress), height: 6)
-                            .cornerRadius(3)
-                            .animation(.spring(), value: viewModel.progress)
+                        Text("Seni tanıyıp sana özel fallar bulmak ve yıldızları ona göre analiz etmek için bu testi yap.")
+                            .font(.system(size: 14))
+                            .foregroundColor(themeManager.secondaryTextColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
                     }
-                }
-                .frame(height: 6)
-            }
-            .padding(.horizontal, 24)
-            
-            Spacer()
-            
-            // Question Center Piece
-            VStack(spacing: 40) {
-                ZStack {
-                    Circle()
-                        .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1)
-                        .frame(width: 100, height: 100)
                     
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 40))
-                        .foregroundColor(themeManager.accentYellow.opacity(0.5))
-                }
-                
-                Text(viewModel.currentQuestion.text)
-                    .font(.system(size: 24, weight: .bold, design: .serif))
-                    .lineLimit(5)
-                    .minimumScaleFactor(0.7)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(themeManager.primaryTextColor)
-                    .padding(.horizontal, 24)
-                    .frame(height: 140)
-                    .id(viewModel.currentIndex)
-                    .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
-            }
-            
-            Spacer()
-            
-            // Interaction Buttons
-            VStack(spacing: 20) {
-                if viewModel.isLastQuestion && viewModel.answers[viewModel.currentQuestion.id] != nil {
-                    Button(action: {
-                        viewModel.startAnalysis()
-                    }) {
-                        Text("Cevaplarımı Kaydet")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(themeManager.bgColor)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 18)
-                            .background(themeManager.accentYellow)
-                            .cornerRadius(15)
-                            .shadow(color: themeManager.accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
-                    }
-                    .transition(.opacity)
-                } else {
-                    HStack(spacing: 20) {
-                        AnswerButton(themeManager: themeManager, answer: .no, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .no) {
-                            viewModel.answerCurrentQuestion(with: .no)
+                    // Progress Section
+                    VStack(spacing: 16) {
+                        HStack {
+                            Text("Soru \(viewModel.currentIndex + 1) / \(viewModel.questions.count)")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(themeManager.secondaryTextColor)
+                            Spacer()
+                            Text(viewModel.currentQuestion.category.uppercased())
+                                .font(.system(size: 11, weight: .black))
+                                .tracking(2)
+                                .foregroundColor(themeManager.accentYellow)
                         }
                         
-                        AnswerButton(themeManager: themeManager, answer: .yes, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .yes) {
-                            viewModel.answerCurrentQuestion(with: .yes)
+                        // Progress Bar
+                        GeometryReader { barGeometry in
+                            ZStack(alignment: .leading) {
+                                Rectangle()
+                                    .fill(themeManager.inputBgColor)
+                                    .frame(height: 6)
+                                    .cornerRadius(3)
+                                
+                                Rectangle()
+                                    .fill(themeManager.accentYellow)
+                                    .frame(width: barGeometry.size.width * CGFloat(viewModel.progress), height: 6)
+                                    .cornerRadius(3)
+                                    .animation(.spring(), value: viewModel.progress)
+                            }
                         }
+                        .frame(height: 6)
+                    }
+                    .padding(.horizontal, 24)
+                    
+                    // Question Center Piece
+                    VStack(spacing: 40) {
+                        ZStack {
+                            Circle()
+                                .stroke(themeManager.accentYellow.opacity(0.1), lineWidth: 1)
+                                .frame(width: 80, height: 80)
+                            
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 30))
+                                .foregroundColor(themeManager.accentYellow.opacity(0.5))
+                        }
+                        
+                        Text(viewModel.currentQuestion.text)
+                            .font(.system(size: 24, weight: .bold, design: .serif))
+                            .lineLimit(5)
+                            .minimumScaleFactor(0.7)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(themeManager.primaryTextColor)
+                            .padding(.horizontal, 24)
+                            .frame(height: 120)
+                            .id(viewModel.currentIndex)
+                            .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
                     }
                 }
                 
-                Text("Adım 2 / 3: İçsel Yansıma")
-                    .font(.system(size: 12))
-                    .foregroundColor(themeManager.secondaryTextColor)
-                    .padding(.top, 10)
+                Spacer(minLength: 40)
+                
+                // Interaction Buttons
+                VStack(spacing: 20) {
+                    if viewModel.isLastQuestion && viewModel.answers[viewModel.currentQuestion.id] != nil {
+                        Button(action: {
+                            viewModel.startAnalysis()
+                        }) {
+                            Text("Cevaplarımı Kaydet")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(themeManager.bgColor)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(themeManager.accentYellow)
+                                .cornerRadius(15)
+                                .shadow(color: themeManager.accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
+                        }
+                        .transition(.opacity)
+                    } else {
+                        HStack(spacing: 20) {
+                            AnswerButton(themeManager: themeManager, answer: .no, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .no) {
+                                viewModel.answerCurrentQuestion(with: .no)
+                            }
+                            
+                            AnswerButton(themeManager: themeManager, answer: .yes, isSelected: viewModel.answers[viewModel.currentQuestion.id] == .yes) {
+                                viewModel.answerCurrentQuestion(with: .yes)
+                            }
+                        }
+                    }
+                    
+                    Text("Adım 2 / 3: İçsel Yansıma")
+                        .font(.system(size: 12))
+                        .foregroundColor(themeManager.secondaryTextColor)
+                        .padding(.top, 10)
+                }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 30)
             }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 50)
+            .frame(minHeight: geometry.size.height)
         }
     }
     
