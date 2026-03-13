@@ -20,11 +20,24 @@ struct FortuneResultView: View {
                 VStack(spacing: 0) {
                     // Custom Header (Fixed at top)
                     HStack {
-                        Color.clear.frame(width: 44, height: 44)
+                        Button(action: {
+                            fortuneViewModel.toggleFavorite(fortune)
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(themeManager.cardBgColor)
+                                    .frame(width: 44, height: 44)
+                                    .shadow(color: Color.black.opacity(0.2), radius: 4)
+                                
+                                Image(systemName: isSaved ? "heart.fill" : "heart")
+                                    .foregroundColor(isSaved ? .red : themeManager.primaryTextColor)
+                                    .font(.system(size: 18, weight: .bold))
+                            }
+                        }
                         
                         Spacer()
                         
-                        Text("Eye See : Fortune")
+                        Text(fortune.type == .aiScan ? "Kişilik Analizin" : "Günlük Falın")
                             .font(.system(size: 18, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.accentYellow)
                         

@@ -54,4 +54,12 @@ class FortuneViewModel: ObservableObject {
             self.isLoading = false
         }
     }
+    
+    func toggleFavorite(_ fortune: Fortune) {
+        if let index = savedFortunes.firstIndex(where: { $0.id == fortune.id }) {
+            savedFortunes.remove(at: index)
+        } else {
+            savedFortunes.append(fortune)
+        }
+    }
 }

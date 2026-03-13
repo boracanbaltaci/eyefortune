@@ -5,9 +5,11 @@ struct InsightDetailView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
     
-    enum InsightType {
+    enum InsightType: String, Identifiable {
         case strengths
         case weaknesses
+        
+        var id: String { rawValue }
         
         var title: String {
             self == .strengths ? "Güçlü Yönlerin" : "Zayıf Yönlerin"

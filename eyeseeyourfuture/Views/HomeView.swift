@@ -35,8 +35,7 @@ struct HomeView: View {
     @State private var personalityAnalysisText: String = ""
     @State private var showPersonalityModal = false
     
-    @State private var showInsightModal = false
-    @State private var selectedInsightType: InsightDetailView.InsightType = .strengths
+    @State private var selectedInsightType: InsightDetailView.InsightType? = nil
     
     var body: some View {
         NavigationView {
@@ -130,7 +129,6 @@ struct HomeView: View {
                         HStack(spacing: 12) {
                             Button(action: {
                                 selectedInsightType = .strengths
-                                showInsightModal = true
                             }) {
                                 HStack(spacing: 10) {
                                     Image(systemName: "star.fill")
@@ -152,7 +150,6 @@ struct HomeView: View {
                             
                             Button(action: {
                                 selectedInsightType = .weaknesses
-                                showInsightModal = true
                             }) {
                                 HStack(spacing: 10) {
                                     Image(systemName: "shield.fill")
@@ -205,9 +202,11 @@ struct HomeView: View {
                             Button(action: {
                                 if irisReading.isEmpty {
                                     personalityAnalysisText = """
-                                    Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor. Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi. Zihnin bir kuş kadar hür ve meraklıyken, kararların bir dağ kadar sarsılmaz.
-                                    
-                                    Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor. Bu hassasiyetin senin en büyük süper gücün. Ancak bu güç, bazen başkalarının ağırlıklarını da yüklenmene sebep olabilir.
+                                    Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor.
+                                    Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi.
+                                    Zihnin bir kuş kadar hür ve meraklıyken, kararların bir dağ kadar sarsılmaz.
+                                    Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor.
+                                    Bu hassasiyetin senin en büyük süper gücün ve gelişim yolculuğundaki rehberin.
                                     """
                                 } else {
                                     personalityAnalysisText = irisReading
@@ -259,7 +258,7 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Oracle Profile")
+                    Text("Ana Sayfan")
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
@@ -285,8 +284,8 @@ struct HomeView: View {
             .sheet(isPresented: $showPersonalityModal) {
                 FortuneResultView(fortune: Fortune(text: personalityAnalysisText, dateGenerated: Date(), type: .aiScan))
             }
-            .sheet(isPresented: $showInsightModal) {
-                InsightDetailView(type: selectedInsightType)
+            .sheet(item: $selectedInsightType) { type in
+                InsightDetailView(type: type)
             }
         }
     }
@@ -443,9 +442,9 @@ struct InsightCategoryCard: View {
     let onToggle: () -> Void
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Header Row
-            Button(action: onToggle) {
+        Button(action: onToggle) {
+            VStack(spacing: 0) {
+                // Header Row
                 HStack(spacing: 16) {
                     // Icon
                     ZStack {
@@ -491,35 +490,34 @@ struct InsightCategoryCard: View {
                         .cornerRadius(8)
                 }
                 .padding(16)
-            }
-            .buttonStyle(PlainButtonStyle())
-            
-            // Expandable Content
-            if isExpanded {
-                VStack(spacing: 0) {
-                    Divider()
-                        .background(themeManager.secondaryTextColor.opacity(0.1))
-                    
-                    VStack(spacing: 12) {
-                        Text(category.description)
-                            .font(.system(size: 14, weight: .medium, design: .serif))
-                            .foregroundColor(themeManager.primaryTextColor)
-                            .lineSpacing(4)
-                            .multilineTextAlignment(.leading)
+                
+                // Expandable Content
+                if isExpanded {
+                    VStack(spacing: 0) {
+                        Divider()
+                            .background(themeManager.secondaryTextColor.opacity(0.1))
+                        
+                        VStack(spacing: 12) {
+                            Text(category.description)
+                                .font(.system(size: 14, weight: .medium, design: .serif))
+                                .foregroundColor(themeManager.primaryTextColor)
+                                .lineSpacing(4)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 16)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 16)
                 }
-                .transition(.opacity.combined(with: .move(edge: .top)))
             }
+            .background(themeManager.cardBgColor)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(isExpanded ? themeManager.accentYellow.opacity(0.4) : themeManager.accentYellow.opacity(0.1), lineWidth: isExpanded ? 1.5 : 1)
+            )
+            .cornerRadius(14)
+            .shadow(color: isExpanded ? themeManager.accentYellow.opacity(0.05) : .clear, radius: 10)
         }
-        .background(themeManager.cardBgColor)
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(isExpanded ? themeManager.accentYellow.opacity(0.4) : themeManager.accentYellow.opacity(0.1), lineWidth: isExpanded ? 1.5 : 1)
-        )
-        .cornerRadius(14)
-        .shadow(color: isExpanded ? themeManager.accentYellow.opacity(0.05) : .clear, radius: 10)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
