@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - Localization Key Enum
 // One case per unique UI string across the entire app.
-enum LKey: String {
+enum LKey: String, Codable {
 
     // MARK: Tab Bar
     case tabHome        = "tab_home"
@@ -112,6 +112,30 @@ enum LKey: String {
     case quizSubtitle       = "quiz_subtitle"
     case quizYes           = "quiz_yes"
     case quizNo            = "quiz_no"
+    
+    // MARK: Notifications
+    case notifTitle        = "notif_title"
+    case notifDaily        = "notif_daily"
+    case notifInactivity   = "notif_inactivity"
+    case notifMonthly      = "notif_monthly"
+    
+    // MARK: Widget & Themes
+    case widgetHeader      = "widget_header"
+    case themeLove         = "theme_love"
+    case themeFriendship   = "theme_friendship"
+    case themeFamily       = "theme_family"
+    case themePeace        = "theme_peace"
+    case themeAnxiety      = "theme_anxiety"
+    case themeExcitement   = "theme_excitement"
+    case themeSports       = "theme_sports"
+    case themeEntertainment = "theme_entertainment"
+    case themeWork         = "theme_work"
+    case themeEducation    = "theme_education"
+    
+    // MARK: Developer
+    case settingsDevSection = "settings_dev_section"
+    case settingsTestNotif  = "settings_test_notif"
+    case settingsTestWidget = "settings_test_widget"
 }
 
 // MARK: - Translations Dictionary
@@ -220,6 +244,27 @@ struct LocalizedStrings {
             .quizSubtitle:       "Seni daha yakından tanımamıza yardımcı ol.",
             .quizYes:            "Evet",
             .quizNo:             "Hayır",
+            
+            .notifTitle:         "Gelecekten Haber Var",
+            .notifDaily:         "Bakalım bugün seni neler bekliyor 👁️",
+            .notifInactivity:    "Merak ediyorum. Sen etmiyor musun? ✨",
+            .notifMonthly:       "Bu ay seni nelerin beklediğini sana söylemeliyim. 👁️",
+            
+            .widgetHeader:       "Günün Teması:",
+            .themeLove:          "AŞK",
+            .themeFriendship:    "ARKADAŞLIK",
+            .themeFamily:        "AİLE",
+            .themePeace:         "HUZUR",
+            .themeAnxiety:       "ENDİŞE",
+            .themeExcitement:    "HEYECAN",
+            .themeSports:        "SPOR",
+            .themeEntertainment:  "EĞLENCE",
+            .themeWork:          "İŞ",
+            .themeEducation:     "EĞİTİM",
+            
+            .settingsDevSection: "GELİŞTİRİCİ TESTLERİ",
+            .settingsTestNotif:  "Bildirimleri Test Et",
+            .settingsTestWidget: "Widget Temasını Değiştir",
         ],
 
         // ──────────────────────────────────────────
@@ -324,6 +369,27 @@ struct LocalizedStrings {
             .quizSubtitle:       "Help us get to know you better.",
             .quizYes:            "Yes",
             .quizNo:             "No",
+            
+            .notifTitle:         "News from the Future",
+            .notifDaily:         "Let's see what awaits you today 👁️",
+            .notifInactivity:    "I'm curious. Aren't you? ✨",
+            .notifMonthly:       "I must tell you what awaits you this month. 👁️",
+            
+            .widgetHeader:       "Daily Theme:",
+            .themeLove:          "LOVE",
+            .themeFriendship:    "FRIENDSHIP",
+            .themeFamily:        "FAMILY",
+            .themePeace:         "PEACE",
+            .themeAnxiety:       "ANXIETY",
+            .themeExcitement:    "EXCITEMENT",
+            .themeSports:        "SPORTS",
+            .themeEntertainment:  "ENTERTAINMENT",
+            .themeWork:          "WORK",
+            .themeEducation:     "EDUCATION",
+            
+            .settingsDevSection: "DEVELOPER TESTS",
+            .settingsTestNotif:  "Test Notifications",
+            .settingsTestWidget: "Change Widget Theme",
         ],
 
         // ──────────────────────────────────────────

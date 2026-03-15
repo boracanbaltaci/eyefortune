@@ -13,23 +13,29 @@ struct EyeFortuneApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if !isSplashFinished {
-                SplashScreenView(onFinished: {
-                    isSplashFinished = true
-                })
-                .environmentObject(themeManager)
-            } else if isSetupComplete {
-                MainTabView()
-                    .environmentObject(fortuneViewModel)
-                    .environmentObject(scannerViewModel)
+            Group {
+                if !isSplashFinished {
+                    SplashScreenView(onFinished: {
+                        isSplashFinished = true
+                    })
                     .environmentObject(themeManager)
-                    .environmentObject(localizationManager)
-                    .preferredColorScheme(themeManager.systemColorScheme)
-            } else {
-                LoginView()
-                    .environmentObject(themeManager)
-                    .environmentObject(localizationManager)
-                    .preferredColorScheme(themeManager.systemColorScheme)
+                } else if isSetupComplete {
+                    MainTabView()
+                        .environmentObject(fortuneViewModel)
+                        .environmentObject(scannerViewModel)
+                        .environmentObject(themeManager)
+                        .environmentObject(localizationManager)
+                        .preferredColorScheme(themeManager.systemColorScheme)
+                } else {
+                    LoginView()
+                        .environmentObject(themeManager)
+                        .environmentObject(localizationManager)
+                        .preferredColorScheme(themeManager.systemColorScheme)
+                }
+            }
+            .onAppear {
+                NotificationManager.shared.requestAuthorization()
+                NotificationManager.shared.updateLastOpenDate()
             }
         }
     }

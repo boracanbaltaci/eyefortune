@@ -143,6 +143,47 @@ struct SettingsView: View {
                             }
                         }
 
+                        // Developer Test Section (Temporary)
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(lm.t(.settingsDevSection))
+                                .font(.system(size: 11, weight: .bold))
+                                .tracking(2)
+                                .foregroundColor(.red.opacity(0.7))
+                                .padding(.leading, 16)
+                            
+                            VStack(spacing: 8) {
+                                Button(action: {
+                                    NotificationManager.shared.triggerTestNotifications()
+                                }) {
+                                    HStack {
+                                        Image(systemName: "bell.badge.fill")
+                                        Text(lm.t(.settingsTestNotif))
+                                        Spacer()
+                                        Image(systemName: "play.fill")
+                                            .font(.system(size: 12))
+                                    }
+                                    .padding()
+                                    .background(themeManager.cardBgColor)
+                                    .cornerRadius(12)
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                }
+                                
+                                NavigationLink(destination: WidgetThemeTestView(themeManager: themeManager, lm: lm)) {
+                                    HStack {
+                                        Image(systemName: "square.grid.2x2.fill")
+                                        Text(lm.t(.settingsTestWidget))
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 12))
+                                    }
+                                    .padding()
+                                    .background(themeManager.cardBgColor)
+                                    .cornerRadius(12)
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                }
+                            }
+                        }
+
                         // Delete Profile
                         VStack(spacing: 16) {
                             Button(action: {
