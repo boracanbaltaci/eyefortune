@@ -6,7 +6,11 @@ struct SubscriptionView: View {
     // Binding to tell parent view to show the Personal Setup after dismissal
     @Binding var shouldShowPersonalSetup: Bool
     
+    @AppStorage("isPremium") var isPremium = false
     @State private var selectedPlan: PlanType = .annual
+    @State private var showApplePay = false
+    @State private var isProcessing = false
+    @State private var showSuccess = false
     
     // Theme Colors
     let bgColor = Color(red: 21.0/255.0, green: 20.0/255.0, blue: 15.0/255.0)
@@ -143,9 +147,7 @@ struct SubscriptionView: View {
                     Divider().background(accentYellow.opacity(0.1))
                     
                     Button(action: {
-                        // Handle Subscription then present setup
-                        shouldShowPersonalSetup = true
-                        presentationMode.wrappedValue.dismiss()
+                        showApplePay = true
                     }) {
                         Text("Subscribe Now")
                             .font(.system(size: 18, weight: .bold))
@@ -167,7 +169,214 @@ struct SubscriptionView: View {
                 }
                 .background(bgColor)
             }
+            
+            if showApplePay {
+                ApplePaySimulationOverlay(
+                    isProcessing: $isProcessing,
+                    selectedPlan: selectedPlan == .monthly ? "Monthly Mystic ($3)" : "Annual Oracle ($25)",
+                    onCancel: { showApplePay = false },
+                    onConfirm: {
+                        isProcessing = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            isProcessing = false
+                            isPremium = true
+                            showApplePay = false
+                            withAnimation {
+                                showSuccess = true
+                            }
+                        }
+                    }
+                )
+                .transition(.move(edge: .bottom))
+                .zIndex(100)
+            }
+            
+            if showSuccess {
+                SuccessOverlay(onDismiss: {
+                    showSuccess = false
+                    shouldShowPersonalSetup = true
+                    presentationMode.wrappedValue.dismiss()
+                })
+                .zIndex(101)
+            }
         }
+    }
+}
+
+// MARK: - Apple Pay Simulation
+struct ApplePaySimulationOverlay: View {
+    @Binding var isProcessing: Bool
+    let selectedPlan: String
+    let onCancel: () -> Void
+    let onConfirm: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.5).ignoresSafeArea()
+                .onTapGesture { if !isProcessing { onCancel() } }
+            
+            VStack(spacing: 0) {
+                Spacer()
+                
+                VStack(spacing: 20) {
+                    // Header
+                    HStack {
+                        Image(systemName: "applelogo")
+                            .font(.system(size: 20))
+                        Text("Pay")
+                            .font(.system(size: 20, weight: .semibold))
+                        Spacer()
+                        if !isProcessing {
+                            Button("Cancel", action: onCancel)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    
+                    Divider().background(Color.gray.opacity(0.3))
+                    
+                    // Transaction Details
+                    VStack(spacing: 16) {
+                        HStack {
+                            Text("CARD")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.gray)
+                            Spacer()
+                            HStack {
+                                Image(systemName: "creditcard.fill")
+                                Text("Apple Card (•••• 1234)")
+                                    .font(.system(size: 14))
+                            }
+                        }
+                        
+                        Divider().background(Color.gray.opacity(0.1))
+                        
+                        HStack {
+                            Text("PLAN")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.gray)
+                            Spacer()
+                            Text(selectedPlan)
+                                .font(.system(size: 14, weight: .semibold))
+                        }
+                        
+                        Divider().background(Color.gray.opacity(0.1))
+                        
+                        HStack {
+                            Text("PAY TO")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.gray)
+                            Spacer()
+                            Text("EyeFortune App")
+                                .font(.system(size: 14))
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    // Confirmation Button
+                    if isProcessing {
+                        VStack(spacing: 12) {
+                            ProgressView()
+                                .padding()
+                            Text("Processing...")
+                                .font(.system(size: 14))
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.bottom, 30)
+                    } else {
+                        VStack(spacing: 12) {
+                            Image(systemName: "faceid")
+                                .font(.system(size: 44))
+                                .foregroundColor(.blue)
+                            
+                            Text("Double Click to Pay")
+                                .font(.system(size: 12))
+                                .foregroundColor(.gray)
+                            
+                            Button(action: onConfirm) {
+                                HStack {
+                                    Image(systemName: "applelogo")
+                                    Text("Pay with Touch ID / Face ID")
+                                }
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.black)
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 30)
+                    }
+                }
+                .background(Color(white: 0.12))
+                .cornerRadius(20, corners: [.topLeft, .topRight])
+                .shadow(radius: 10)
+            }
+        }
+    }
+}
+
+struct SuccessOverlay: View {
+    let onDismiss: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.8).ignoresSafeArea()
+            
+            VStack(spacing: 24) {
+                ZStack {
+                    Circle()
+                        .fill(Color.green.opacity(0.2))
+                        .frame(width: 100, height: 100)
+                    
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.green)
+                }
+                .scaleEffect(1.2)
+                
+                VStack(spacing: 12) {
+                    Text("Welcome to Premium!")
+                        .font(.system(size: 28, weight: .bold, design: .serif))
+                        .foregroundColor(.white)
+                    
+                    Text("Your cosmic journey has been upgraded. All restricted insights and daily readings are now unlocked.")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                }
+                
+                Button(action: onDismiss) {
+                    Text("Start Exploring")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.white)
+                        .cornerRadius(15)
+                        .padding(.horizontal, 40)
+                }
+            }
+        }
+    }
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape( RoundedCorner(radius: radius, corners: corners) )
+    }
+}
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
 

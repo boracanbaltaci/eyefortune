@@ -5,6 +5,10 @@ struct PersonalityAnalysisView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
     
+    @AppStorage("isPremium") var isPremium = false
+    @State private var showSubscription = false
+    @EnvironmentObject var lm: LocalizationManager
+
     var body: some View {
         ZStack {
             themeManager.bgColor.ignoresSafeArea()
@@ -90,6 +94,7 @@ struct PersonalityAnalysisView: View {
                                 .font(.system(size: 19, weight: .medium, design: .serif))
                                 .lineSpacing(10)
                                 .foregroundColor(themeManager.primaryTextColor)
+                                .blur(radius: isPremium ? 0 : 12)
                             
                             // Advice / Guidance Section
                             VStack(alignment: .leading, spacing: 16) {
@@ -116,6 +121,7 @@ struct PersonalityAnalysisView: View {
                                                     .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
                                             )
                                     )
+                                    .blur(radius: isPremium ? 0 : 4)
                             }
                         }
                         .padding(32)
@@ -150,6 +156,17 @@ struct PersonalityAnalysisView: View {
                     }
                 }
             }
+            
+            if !isPremium {
+                PremiumLockOverlay(onSubscribe: {
+                    showSubscription = true
+                })
+            }
+        }
+        .sheet(isPresented: $showSubscription) {
+            SubscriptionView(shouldShowPersonalSetup: .constant(false))
+                .environmentObject(themeManager)
+                .environmentObject(lm)
         }
     }
 }

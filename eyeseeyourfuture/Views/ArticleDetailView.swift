@@ -8,8 +8,9 @@ struct ArticleDetailView: View {
     @ObservedObject var lm: LocalizationManager
     @Environment(\.dismiss) private var dismiss
 
-    @State private var scrollOffset: CGFloat = 0
-    @State private var headerOpacity: Double = 0
+    @AppStorage("isPremium") var isPremium = false
+    @State private var showSubscription = false
+    @EnvironmentObject var globalLm: LocalizationManager // Renamed to avoid name collision with Observables if any
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -96,18 +97,31 @@ struct ArticleDetailView: View {
                             .foregroundColor(themeManager.secondaryTextColor)
                             .lineSpacing(4)
                             .fixedSize(horizontal: false, vertical: true)
+                            .blur(radius: isPremium ? 0 : 4)
 
                         // Article body — rendered as styled paragraphs
                         ArticleBodyText(content: article.content, themeManager: themeManager)
+                            .blur(radius: isPremium ? 0 : 12)
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, -24)
                     .padding(.bottom, 60)
                 }
             }
+            
+            if !isPremium {
+                PremiumLockOverlay(onSubscribe: {
+                    showSubscription = true
+                })
+            }
         }
         .navigationBarHidden(true)
         .statusBar(hidden: false)
+        .sheet(isPresented: $showSubscription) {
+            SubscriptionView(shouldShowPersonalSetup: .constant(false))
+                .environmentObject(themeManager)
+                .environmentObject(lm)
+        }
     }
 }
 

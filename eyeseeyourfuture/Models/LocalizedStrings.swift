@@ -136,6 +136,11 @@ enum LKey: String, Codable {
     case settingsDevSection = "settings_dev_section"
     case settingsTestNotif  = "settings_test_notif"
     case settingsTestWidget = "settings_test_widget"
+    
+    // MARK: Premium Locks
+    case premiumLockedTitle = "premium_locked_title"
+    case premiumLockedDesc  = "premium_locked_desc"
+    case premiumLockedButton = "premium_locked_button"
 }
 
 // MARK: - Translations Dictionary
@@ -265,6 +270,10 @@ struct LocalizedStrings {
             .settingsDevSection: "GELİŞTİRİCİ TESTLERİ",
             .settingsTestNotif:  "Bildirimleri Test Et",
             .settingsTestWidget: "Widget Temasını Değiştir",
+            
+            .premiumLockedTitle:  "Celestial Erişim Kilitli",
+            .premiumLockedDesc:   "Bu özel analizi ve kozmik rehberliği görüntülemek için Premium'a yükseltin.",
+            .premiumLockedButton: "Kilidi Hemen Aç",
         ],
 
         // ──────────────────────────────────────────
@@ -390,6 +399,10 @@ struct LocalizedStrings {
             .settingsDevSection: "DEVELOPER TESTS",
             .settingsTestNotif:  "Test Notifications",
             .settingsTestWidget: "Change Widget Theme",
+            
+            .premiumLockedTitle:  "Celestial Access Locked",
+            .premiumLockedDesc:   "Upgrade to Premium to view this detailed analysis and cosmic guidance.",
+            .premiumLockedButton: "Unlock Now",
         ],
 
         // ──────────────────────────────────────────

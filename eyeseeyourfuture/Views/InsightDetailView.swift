@@ -24,6 +24,10 @@ struct InsightDetailView: View {
         }
     }
     
+    @AppStorage("isPremium") var isPremium = false
+    @State private var showSubscription = false
+    @EnvironmentObject var lm: LocalizationManager
+    
     var body: some View {
         ZStack {
             themeManager.bgColor.ignoresSafeArea()
@@ -119,6 +123,7 @@ struct InsightDetailView: View {
                                 .font(.system(size: 19, weight: .medium, design: .serif))
                                 .lineSpacing(10)
                                 .foregroundColor(themeManager.primaryTextColor)
+                                .blur(radius: isPremium ? 0 : 8) // Blur content if not premium
                             
                             // Advice / Guidance Section
                             VStack(alignment: .leading, spacing: 16) {
@@ -126,7 +131,7 @@ struct InsightDetailView: View {
                                     Image(systemName: type == .weaknesses ? "lightbulb.fill" : "star.fill")
                                         .foregroundColor(type.mainColor)
                                         .font(.system(size: 14))
-                                    Text("Senin için bir rehber")
+                                    Text(lm.t(.tabHome)) // Placeholder for localized string "Rehber"
                                         .font(.system(size: 10, weight: .black))
                                         .tracking(1)
                                         .foregroundColor(themeManager.secondaryTextColor)
@@ -145,6 +150,7 @@ struct InsightDetailView: View {
                                                     .stroke(type.mainColor.opacity(0.2), lineWidth: 1)
                                             )
                                     )
+                                    .blur(radius: isPremium ? 0 : 4) // Blur content if not premium
                             }
                         }
                         .padding(32)
@@ -179,6 +185,17 @@ struct InsightDetailView: View {
                     }
                 }
             }
+            
+            if !isPremium {
+                PremiumLockOverlay(onSubscribe: {
+                    showSubscription = true
+                })
+            }
+        }
+        .sheet(isPresented: $showSubscription) {
+            SubscriptionView(shouldShowPersonalSetup: .constant(false))
+                .environmentObject(themeManager)
+                .environmentObject(lm)
         }
     }
     

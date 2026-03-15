@@ -6,14 +6,74 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		84EE1B732F66CEC800D2BDE9 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84EE1B722F66CEC800D2BDE9 /* WidgetKit.framework */; };
+		84EE1B752F66CEC800D2BDE9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84EE1B742F66CEC800D2BDE9 /* SwiftUI.framework */; };
+		84EE1B842F66CEC900D2BDE9 /* DailyThemeWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 84EE1B702F66CEC800D2BDE9 /* DailyThemeWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		84EE1B822F66CEC900D2BDE9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 846C8C5C2F6311160068BB1C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 84EE1B6F2F66CEC800D2BDE9;
+			remoteInfo = DailyThemeWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		84EE1B892F66CEC900D2BDE9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				84EE1B842F66CEC900D2BDE9 /* DailyThemeWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		846C8C642F6311160068BB1C /* eyeseeyourfuture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = eyeseeyourfuture.app; path = "Eye See.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		846C8C642F6311160068BB1C /* Eye See.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Eye See.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		84EE1B702F66CEC800D2BDE9 /* DailyThemeWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DailyThemeWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		84EE1B722F66CEC800D2BDE9 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		84EE1B742F66CEC800D2BDE9 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		84EE1B8F2F66DC7500D2BDE9 /* DailyThemeWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DailyThemeWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		84EE1B852F66CEC900D2BDE9 /* Exceptions for "DailyThemeWidget" folder in "DailyThemeWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 84EE1B6F2F66CEC800D2BDE9 /* DailyThemeWidgetExtension */;
+		};
+		84EE1B8B2F66D0BC00D2BDE9 /* Exceptions for "DailyThemeWidget" folder in "eyeseeyourfuture" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DailyThemeWidget.swift,
+			);
+			target = 846C8C632F6311160068BB1C /* eyeseeyourfuture */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		846C8C662F6311160068BB1C /* eyeseeyourfuture */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = eyeseeyourfuture;
+			sourceTree = "<group>";
+		};
+		84EE1B762F66CEC800D2BDE9 /* DailyThemeWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				84EE1B8B2F66D0BC00D2BDE9 /* Exceptions for "DailyThemeWidget" folder in "eyeseeyourfuture" target */,
+				84EE1B852F66CEC900D2BDE9 /* Exceptions for "DailyThemeWidget" folder in "DailyThemeWidgetExtension" target */,
+			);
+			path = DailyThemeWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,13 +86,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		84EE1B6D2F66CEC800D2BDE9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84EE1B752F66CEC800D2BDE9 /* SwiftUI.framework in Frameworks */,
+				84EE1B732F66CEC800D2BDE9 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		846C8C5B2F6311160068BB1C = {
 			isa = PBXGroup;
 			children = (
+				84EE1B8F2F66DC7500D2BDE9 /* DailyThemeWidgetExtension.entitlements */,
 				846C8C662F6311160068BB1C /* eyeseeyourfuture */,
+				84EE1B762F66CEC800D2BDE9 /* DailyThemeWidget */,
+				84EE1B712F66CEC800D2BDE9 /* Frameworks */,
 				846C8C652F6311160068BB1C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,9 +112,19 @@
 		846C8C652F6311160068BB1C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				846C8C642F6311160068BB1C /* eyeseeyourfuture.app */,
+				846C8C642F6311160068BB1C /* Eye See.app */,
+				84EE1B702F66CEC800D2BDE9 /* DailyThemeWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		84EE1B712F66CEC800D2BDE9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				84EE1B722F66CEC800D2BDE9 /* WidgetKit.framework */,
+				84EE1B742F66CEC800D2BDE9 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +137,12 @@
 				846C8C602F6311160068BB1C /* Sources */,
 				846C8C612F6311160068BB1C /* Frameworks */,
 				846C8C622F6311160068BB1C /* Resources */,
+				84EE1B892F66CEC900D2BDE9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				84EE1B832F66CEC900D2BDE9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				846C8C662F6311160068BB1C /* eyeseeyourfuture */,
@@ -67,8 +151,30 @@
 			packageProductDependencies = (
 			);
 			productName = eyeseeyourfuture;
-			productReference = 846C8C642F6311160068BB1C /* eyeseeyourfuture.app */;
+			productReference = 846C8C642F6311160068BB1C /* Eye See.app */;
 			productType = "com.apple.product-type.application";
+		};
+		84EE1B6F2F66CEC800D2BDE9 /* DailyThemeWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84EE1B862F66CEC900D2BDE9 /* Build configuration list for PBXNativeTarget "DailyThemeWidgetExtension" */;
+			buildPhases = (
+				84EE1B6C2F66CEC800D2BDE9 /* Sources */,
+				84EE1B6D2F66CEC800D2BDE9 /* Frameworks */,
+				84EE1B6E2F66CEC800D2BDE9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				84EE1B762F66CEC800D2BDE9 /* DailyThemeWidget */,
+			);
+			name = DailyThemeWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = DailyThemeWidgetExtension;
+			productReference = 84EE1B702F66CEC800D2BDE9 /* DailyThemeWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +187,9 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					846C8C632F6311160068BB1C = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					84EE1B6F2F66CEC800D2BDE9 = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
@@ -100,12 +209,20 @@
 			projectRoot = "";
 			targets = (
 				846C8C632F6311160068BB1C /* eyeseeyourfuture */,
+				84EE1B6F2F66CEC800D2BDE9 /* DailyThemeWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		846C8C622F6311160068BB1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84EE1B6E2F66CEC800D2BDE9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +239,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		84EE1B6C2F66CEC800D2BDE9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		84EE1B832F66CEC900D2BDE9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 84EE1B6F2F66CEC800D2BDE9 /* DailyThemeWidgetExtension */;
+			targetProxy = 84EE1B822F66CEC900D2BDE9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		846C8C6D2F6311170068BB1C /* Debug */ = {
@@ -249,6 +381,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = eyeseeyourfuture/eyeseeyourfuture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C5DJRY2DZT;
@@ -283,6 +416,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = eyeseeyourfuture/eyeseeyourfuture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C5DJRY2DZT;
@@ -312,6 +446,68 @@
 			};
 			name = Release;
 		};
+		84EE1B872F66CEC900D2BDE9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DailyThemeWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C5DJRY2DZT;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DailyThemeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DailyThemeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.boradev.eyeseeyourfuture.DailyThemeWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		84EE1B882F66CEC900D2BDE9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DailyThemeWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C5DJRY2DZT;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DailyThemeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DailyThemeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.boradev.eyeseeyourfuture.DailyThemeWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -329,6 +525,15 @@
 			buildConfigurations = (
 				846C8C702F6311170068BB1C /* Debug */,
 				846C8C712F6311170068BB1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84EE1B862F66CEC900D2BDE9 /* Build configuration list for PBXNativeTarget "DailyThemeWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84EE1B872F66CEC900D2BDE9 /* Debug */,
+				84EE1B882F66CEC900D2BDE9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

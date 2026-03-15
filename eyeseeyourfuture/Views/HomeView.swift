@@ -23,6 +23,9 @@ struct HomeView: View {
     @AppStorage("irisColorName") var irisColorName: String = "Deep Blue"
     @AppStorage("irisReading") var irisReading: String = ""
     
+    @AppStorage("isPremium") var isPremium = false
+    @State private var showSubscription = false
+    
     @State private var categories: [InsightCategory] = [
         InsightCategory(title: "Aşk & İlişkiler", subtitle: "Uyum: Yüksek Potansiyel", icon: "heart.fill", color: Color.pink, description: "Kalbinin derinliklerinde saklı olan duygular, bu dönemde gün yüzüne çıkacak. Partnerinle olan iletişimin güçleniyor, ancak küçük yanlış anlaşılmalara karşı dikkatli olmalısın."),
         InsightCategory(title: "Canlılık & Sağlık", subtitle: "Enerji: Ay Fazına Duyarlı", icon: "bolt.fill", color: Color.green, description: "Fiziksel enerjin şu sıralar dalgalı seyredebilir. Dinlenmeye ve meditasyona vakit ayırarak iç dengeni korumaya odaklanmalısın. Doğal taşların enerjisinden faydalanabilirsin."),
@@ -240,10 +243,15 @@ struct HomeView: View {
                                 InsightCategoryCard(
                                     category: category,
                                     isExpanded: category.isExpanded,
+                                    isPremium: isPremium,
                                     themeManager: themeManager,
                                     onToggle: {
-                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                            categories[index].isExpanded.toggle()
+                                        if isPremium {
+                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                categories[index].isExpanded.toggle()
+                                            }
+                                        } else {
+                                            showSubscription = true
                                         }
                                     }
                                 )
@@ -273,19 +281,34 @@ struct HomeView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .sheet(isPresented: $showSettings) {
                 SettingsView()
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
             }
             .sheet(isPresented: $showFortunePage) {
                 if let fortune = fortuneViewModel.dailyFortune {
                     FortuneResultView(fortune: fortune)
+                        .environmentObject(themeManager)
+                        .environmentObject(lm)
                 } else {
                     FortuneResultView(fortune: Fortune(text: "Yıldızlar şu an fısıldıyor... Birazdan hazır olacak.", dateGenerated: Date(), type: .daily))
+                        .environmentObject(themeManager)
+                        .environmentObject(lm)
                 }
             }
             .sheet(isPresented: $showPersonalityModal) {
                 PersonalityAnalysisView(text: personalityAnalysisText)
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
             }
             .sheet(item: $selectedInsightType) { type in
                 InsightDetailView(type: type)
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
+            }
+            .sheet(isPresented: $showSubscription) {
+                SubscriptionView(shouldShowPersonalSetup: .constant(false))
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
             }
         }
     }
@@ -299,7 +322,6 @@ struct HomeView: View {
         default: return "İYİ GECELER"
         }
     }
-    
     private var mysticSentence: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
@@ -438,6 +460,7 @@ struct AnalysisDetailView: View {
 struct InsightCategoryCard: View {
     let category: InsightCategory
     let isExpanded: Bool
+    let isPremium: Bool
     @ObservedObject var themeManager: ThemeManager
     let onToggle: () -> Void
     
@@ -449,18 +472,18 @@ struct InsightCategoryCard: View {
                     // Icon
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(category.color.opacity(0.2))
-                            .frame(width: 40, height: 40)
+                            .fill(category.color.opacity(0.12))
+                            .frame(width: 44, height: 44)
                         
                         Image(systemName: category.icon)
                             .foregroundColor(category.color)
-                            .font(.system(size: 16))
+                            .font(.system(size: 18))
                     }
                     
                     // Text
                     VStack(alignment: .leading, spacing: 2) {
                         Text(category.title)
-                            .font(.system(size: 15, weight: .bold, design: .serif))
+                            .font(.system(size: 16, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.primaryTextColor)
                         
                         Text(category.subtitle)
@@ -470,19 +493,37 @@ struct InsightCategoryCard: View {
                     
                     Spacer()
                     
-                    // Expand chevron
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 14))
-                        .foregroundColor(isExpanded ? themeManager.accentYellow : themeManager.secondaryTextColor.opacity(0.4))
+                    if !isPremium {
+                        // Lock icon for non-premium
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 12))
+                            .foregroundColor(themeManager.accentYellow)
+                            .padding(6)
+                            .background(themeManager.accentYellow.opacity(0.1))
+                            .clipShape(Circle())
+                    } else {
+                        // Expand chevron for premium
+                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                            .font(.system(size: 14))
+                            .foregroundColor(isExpanded ? themeManager.accentYellow : themeManager.secondaryTextColor.opacity(0.4))
+                    }
                     
-                    // See Insights pill button
-                    Text("See Insights")
+                    // Action pill
+                    Text(isPremium ? "See Insights" : "Unlock")
                         .font(.system(size: 10, weight: .bold))
                         .tracking(0.5)
-                        .foregroundColor(themeManager.accentYellow)
-                        .padding(.horizontal, 10)
+                        .foregroundColor(isPremium ? themeManager.accentYellow : themeManager.bgColor)
+                        .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(themeManager.accentYellow.opacity(0.1))
+                        .background(
+                            ZStack {
+                                if isPremium {
+                                    themeManager.accentYellow.opacity(0.1)
+                                } else {
+                                    themeManager.accentYellow
+                                }
+                            }
+                        )
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
@@ -492,7 +533,7 @@ struct InsightCategoryCard: View {
                 .padding(16)
                 
                 // Expandable Content
-                if isExpanded {
+                if isExpanded && isPremium {
                     VStack(spacing: 0) {
                         Divider()
                             .background(themeManager.secondaryTextColor.opacity(0.1))
@@ -512,10 +553,10 @@ struct InsightCategoryCard: View {
             .background(themeManager.cardBgColor)
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(isExpanded ? themeManager.accentYellow.opacity(0.4) : themeManager.accentYellow.opacity(0.1), lineWidth: isExpanded ? 1.5 : 1)
+                    .stroke(isExpanded && isPremium ? themeManager.accentYellow.opacity(0.4) : themeManager.accentYellow.opacity(0.1), lineWidth: (isExpanded && isPremium) ? 1.5 : 1)
             )
             .cornerRadius(14)
-            .shadow(color: isExpanded ? themeManager.accentYellow.opacity(0.05) : .clear, radius: 10)
+            .shadow(color: isExpanded && isPremium ? themeManager.accentYellow.opacity(0.05) : .clear, radius: 10)
         }
         .buttonStyle(PlainButtonStyle())
     }
