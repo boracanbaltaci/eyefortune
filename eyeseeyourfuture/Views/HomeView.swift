@@ -238,23 +238,34 @@ struct HomeView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 24)
                         
-                        VStack(spacing: 12) {
-                            ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
-                                InsightCategoryCard(
-                                    category: category,
-                                    isExpanded: category.isExpanded,
-                                    isPremium: isPremium,
-                                    themeManager: themeManager,
-                                    onToggle: {
-                                        if isPremium {
-                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                categories[index].isExpanded.toggle()
+                        ZStack {
+                            VStack(spacing: 12) {
+                                ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
+                                    InsightCategoryCard(
+                                        category: category,
+                                        isExpanded: category.isExpanded,
+                                        isPremium: isPremium,
+                                        themeManager: themeManager,
+                                        onToggle: {
+                                            if isPremium {
+                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                    categories[index].isExpanded.toggle()
+                                                }
+                                            } else {
+                                                showSubscription = true
                                             }
-                                        } else {
-                                            showSubscription = true
                                         }
-                                    }
-                                )
+                                    )
+                                }
+                            }
+                            .blur(radius: isPremium ? 0 : 4)
+                            .allowsHitTesting(isPremium)
+                            
+                            if !isPremium {
+                                PremiumLockOverlay(onSubscribe: {
+                                    showSubscription = true
+                                })
+                                .padding(.top, -10) // Align better with the title
                             }
                         }
                         .padding(.horizontal, 24)
@@ -494,13 +505,10 @@ struct InsightCategoryCard: View {
                     Spacer()
                     
                     if !isPremium {
-                        // Lock icon for non-premium
+                        // Small lock icon for non-premium (subtle indicator)
                         Image(systemName: "lock.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(themeManager.accentYellow)
-                            .padding(6)
-                            .background(themeManager.accentYellow.opacity(0.1))
-                            .clipShape(Circle())
+                            .font(.system(size: 10))
+                            .foregroundColor(themeManager.secondaryTextColor.opacity(0.4))
                     } else {
                         // Expand chevron for premium
                         Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -509,21 +517,13 @@ struct InsightCategoryCard: View {
                     }
                     
                     // Action pill
-                    Text(isPremium ? "See Insights" : "Unlock")
+                    Text("See Insights")
                         .font(.system(size: 10, weight: .bold))
                         .tracking(0.5)
-                        .foregroundColor(isPremium ? themeManager.accentYellow : themeManager.bgColor)
-                        .padding(.horizontal, 12)
+                        .foregroundColor(themeManager.accentYellow)
+                        .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(
-                            ZStack {
-                                if isPremium {
-                                    themeManager.accentYellow.opacity(0.1)
-                                } else {
-                                    themeManager.accentYellow
-                                }
-                            }
-                        )
+                        .background(themeManager.accentYellow.opacity(0.1))
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)

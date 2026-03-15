@@ -210,109 +210,145 @@ struct ApplePaySimulationOverlay: View {
     let onCancel: () -> Void
     let onConfirm: () -> Void
     
+    @State private var showConfirmButton = false
+    
     var body: some View {
         ZStack {
-            Color.black.opacity(0.5).ignoresSafeArea()
+            Color.black.opacity(0.4).ignoresSafeArea()
                 .onTapGesture { if !isProcessing { onCancel() } }
             
             VStack(spacing: 0) {
                 Spacer()
                 
-                VStack(spacing: 20) {
+                VStack(spacing: 0) {
+                    // System-like Indicator
+                    Capsule()
+                        .fill(Color.gray.opacity(0.5))
+                        .frame(width: 36, height: 5)
+                        .padding(.top, 8)
+                        .padding(.bottom, 12)
+                    
                     // Header
                     HStack {
                         Image(systemName: "applelogo")
-                            .font(.system(size: 20))
+                            .font(.system(size: 20, weight: .semibold))
                         Text("Pay")
                             .font(.system(size: 20, weight: .semibold))
                         Spacer()
                         if !isProcessing {
-                            Button("Cancel", action: onCancel)
-                                .foregroundColor(.blue)
+                            Button(action: onCancel) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.system(size: 24))
+                                    .foregroundColor(.gray.opacity(0.5))
+                            }
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.top, 20)
+                    .padding(.bottom, 20)
                     
-                    Divider().background(Color.gray.opacity(0.3))
+                    Divider().background(Color.gray.opacity(0.2))
                     
                     // Transaction Details
                     VStack(spacing: 16) {
-                        HStack {
+                        HStack(alignment: .top) {
                             Text("CARD")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.system(size: 11, weight: .bold))
                                 .foregroundColor(.gray)
-                            Spacer()
-                            HStack {
-                                Image(systemName: "creditcard.fill")
-                                Text("Apple Card (•••• 1234)")
-                                    .font(.system(size: 14))
+                                .frame(width: 70, alignment: .leading)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Image(systemName: "creditcard.fill")
+                                        .foregroundColor(.blue)
+                                    Text("Apple Card")
+                                        .font(.system(size: 15, weight: .medium))
+                                }
+                                Text("•••• 1234")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.gray)
                             }
+                            Spacer()
                         }
                         
                         Divider().background(Color.gray.opacity(0.1))
                         
                         HStack {
                             Text("PLAN")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.system(size: 11, weight: .bold))
                                 .foregroundColor(.gray)
-                            Spacer()
+                                .frame(width: 70, alignment: .leading)
                             Text(selectedPlan)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: 15, weight: .medium))
+                            Spacer()
                         }
                         
                         Divider().background(Color.gray.opacity(0.1))
                         
                         HStack {
-                            Text("PAY TO")
-                                .font(.system(size: 12, weight: .bold))
+                            Text("TOTAL")
+                                .font(.system(size: 11, weight: .bold))
                                 .foregroundColor(.gray)
+                                .frame(width: 70, alignment: .leading)
+                            Text(selectedPlan.contains("$3") ? "$3.00" : "$25.00")
+                                .font(.system(size: 15, weight: .bold))
                             Spacer()
-                            Text("EyeFortune App")
-                                .font(.system(size: 14))
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .padding(20)
                     
-                    // Confirmation Button
+                    Divider().background(Color.gray.opacity(0.2))
+                    
+                    // Confirmation Section
                     if isProcessing {
-                        VStack(spacing: 12) {
+                        VStack(spacing: 16) {
                             ProgressView()
-                                .padding()
+                                .scaleEffect(1.2)
                             Text("Processing...")
-                                .font(.system(size: 14))
+                                .font(.system(size: 15))
                                 .foregroundColor(.gray)
                         }
-                        .padding(.bottom, 30)
+                        .frame(height: 180)
                     } else {
-                        VStack(spacing: 12) {
-                            Image(systemName: "faceid")
-                                .font(.system(size: 44))
-                                .foregroundColor(.blue)
+                        VStack(spacing: 20) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "faceid")
+                                    .font(.system(size: 36))
+                                    .foregroundColor(.blue)
+                                
+                                Text("Double Click to Pay")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                            }
+                            .onAppear {
+                                // Simulate haptic on appear
+                                let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                                impactMed.impactOccurred()
+                            }
                             
-                            Text("Double Click to Pay")
-                                .font(.system(size: 12))
-                                .foregroundColor(.gray)
-                            
-                            Button(action: onConfirm) {
+                            Button(action: {
+                                let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                                impactHeavy.impactOccurred()
+                                onConfirm()
+                            }) {
                                 HStack {
                                     Image(systemName: "applelogo")
                                     Text("Pay with Touch ID / Face ID")
                                 }
+                                .font(.system(size: 17, weight: .semibold))
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
+                                .frame(height: 50)
                                 .background(Color.black)
-                                .cornerRadius(12)
+                                .cornerRadius(10)
                             }
+                            .padding(.horizontal, 20)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 30)
+                        .frame(height: 180)
                     }
                 }
-                .background(Color(white: 0.12))
+                .background(Color(white: 0.1))
                 .cornerRadius(20, corners: [.topLeft, .topRight])
-                .shadow(radius: 10)
+                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: -5)
             }
         }
     }

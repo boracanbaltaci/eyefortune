@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var showLanguagePicker = false
     @State private var showSubscription = false
     @AppStorage("notificationsEnabled") var notificationsEnabled = true
+    @AppStorage("isPremium") var isPremium = false
     @State private var showHelpCenter = false
     @State private var showDeleteConfirmation = false
     @State private var showInfoPopup = false
@@ -181,6 +182,20 @@ struct SettingsView: View {
                                     .cornerRadius(12)
                                     .foregroundColor(themeManager.primaryTextColor)
                                 }
+                                
+                                HStack {
+                                    Image(systemName: "crown.fill")
+                                        .foregroundColor(themeManager.accentYellow)
+                                    Text("Premium Status")
+                                    Spacer()
+                                    Toggle("", isOn: $isPremium)
+                                        .labelsHidden()
+                                        .tint(themeManager.accentYellow)
+                                }
+                                .padding()
+                                .background(themeManager.cardBgColor)
+                                .cornerRadius(12)
+                                .foregroundColor(themeManager.primaryTextColor)
                             }
                         }
 
