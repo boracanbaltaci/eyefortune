@@ -5,8 +5,9 @@ struct DynamicEyeView: View {
     let colorName: String
     @ObservedObject var themeManager: ThemeManager
     
+    @State private var pulseEffect = 1.0
+    @State private var rotationDegree = 0.0
     @State private var animateGlow = false
-    @State private var animateIris = false
     
     private var irisColor: Color {
         Color(hex: hexColor)
@@ -14,71 +15,177 @@ struct DynamicEyeView: View {
     
     var body: some View {
         ZStack {
-            // 1. Inner Glow
+            scleraShadow
+            limbalRing
+            irisView
+            iridialFibers // Added sharp fibers layer
+            cryptsAndFurrows
+            pupilView
+            reflections
+            corneaGlow
+        }
+        .scaleEffect(pulseEffect)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true)) {
+                pulseEffect = 1.05
+                animateGlow = true
+            }
+            withAnimation(.linear(duration: 30).repeatForever(autoreverses: false)) {
+                rotationDegree = 360
+            }
+        }
+    }
+    
+    // MARK: - Subviews
+    
+    private var scleraShadow: some View {
+        Circle()
+            .fill(RadialGradient(
+                gradient: Gradient(colors: [irisColor.opacity(0.3), Color.clear]),
+                center: .center,
+                startRadius: 50,
+                endRadius: 75
+            ))
+            .scaleEffect(animateGlow ? 1.08 : 1.0)
+    }
+    
+    private var limbalRing: some View {
+        Circle()
+            .stroke(irisColor.opacity(0.8), lineWidth: 5)
+            .frame(width: 122, height: 122)
+            .blur(radius: 1.5)
+    }
+    
+    private var irisView: some View {
+        Group {
+            // Strong Background Color
+            Circle()
+                .fill(irisColor.opacity(0.95))
+            
+            // Depth Gradient
             Circle()
                 .fill(RadialGradient(
-                    gradient: Gradient(colors: [irisColor.opacity(0.4), Color.clear]),
+                    gradient: Gradient(colors: [irisColor.opacity(0.8), irisColor.opacity(0.4), .black.opacity(0.3)]),
                     center: .center,
-                    startRadius: 0,
-                    endRadius: 70
+                    startRadius: 5,
+                    endRadius: 60
                 ))
-                .scaleEffect(animateGlow ? 1.2 : 1.0)
-                .opacity(animateGlow ? 0.6 : 0.4)
             
-            // 2. Iris Base
+            // Vibrancy layer to pop the color
             Circle()
                 .fill(
                     AngularGradient(
                         gradient: Gradient(colors: [
-                            irisColor.opacity(0.8),
+                            irisColor.opacity(0.6),
+                            irisColor,
                             irisColor.opacity(0.4),
                             irisColor,
-                            irisColor.opacity(0.6),
-                            irisColor.opacity(0.8)
+                            irisColor.opacity(0.6)
                         ]),
                         center: .center
                     )
                 )
-                .frame(width: 120, height: 120)
-                .rotationEffect(.degrees(animateIris ? 360 : 0))
+                .blendMode(.screen)
+                .opacity(0.7)
+        }
+        .frame(width: 120, height: 120)
+        .rotationEffect(.degrees(rotationDegree))
+    }
+    
+    private var iridialFibers: some View {
+        ZStack {
+            ForEach(0..<60) { i in
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [.white.opacity(0.15), irisColor.opacity(0.4), .clear]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 1, height: CGFloat.random(in: 35...50))
+                    .offset(y: -30)
+                    .rotationEffect(.degrees(Double(i) * 6))
+            }
             
-            // 3. Iris Texture (Simplified)
+            ForEach(0..<40) { i in
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [.black.opacity(0.2), .clear]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 0.5, height: CGFloat.random(in: 20...40))
+                    .offset(y: -35)
+                    .rotationEffect(.degrees(Double(i) * 9 + 4))
+            }
+        }
+        .frame(width: 120, height: 120)
+        .rotationEffect(.degrees(rotationDegree * 0.5))
+    }
+    
+    private var cryptsAndFurrows: some View {
+        Circle()
+            .stroke(
+                AngularGradient(
+                    gradient: Gradient(colors: [.black.opacity(0.15), .clear, .black.opacity(0.08), .clear]),
+                    center: .center
+                ),
+                lineWidth: 18
+            )
+            .frame(width: 75, height: 75)
+            .blur(radius: 4)
+    }
+    
+    private var pupilView: some View {
+        Circle()
+            .fill(Color.black)
+            .frame(width: 44, height: 44)
+            .overlay(
+                Circle()
+                    .stroke(irisColor.opacity(0.35), lineWidth: 1.5)
+            )
+            .shadow(color: .black.opacity(0.7), radius: 6, x: 0, y: 0)
+            .scaleEffect(pulseEffect > 1 ? 0.98 : 1.0)
+    }
+    
+    private var reflections: some View {
+        Group {
+            // Main Highlight
             Circle()
-                .stroke(
-                    AngularGradient(
-                        gradient: Gradient(colors: [.white.opacity(0.2), .clear, .white.opacity(0.1), .clear]),
-                        center: .center
-                    ),
-                    lineWidth: 2
-                )
-                .frame(width: 100, height: 100)
-                .rotationEffect(.degrees(animateIris ? -360 : 0))
+                .fill(Color.white.opacity(0.6))
+                .frame(width: 20, height: 16)
+                .offset(x: -24, y: -24)
+                .rotationEffect(.degrees(-15))
+                .blur(radius: 1)
             
-            // 4. Pupil
-            Circle()
-                .fill(Color.black)
-                .frame(width: 40, height: 40)
-                .shadow(color: irisColor.opacity(0.3), radius: 10)
-            
-            // 5. Specular Reflection
+            // Secondary Soft Glow
             Circle()
                 .fill(Color.white.opacity(0.3))
-                .frame(width: 15, height: 15)
-                .offset(x: -25, y: -25)
-                .blur(radius: 2)
+                .frame(width: 35, height: 35)
+                .offset(x: -18, y: -18)
+                .blur(radius: 6)
             
-            // 6. Outer Border
+            // Tiny Sparkle
             Circle()
-                .stroke(themeManager.accentYellow.opacity(0.3), lineWidth: 1)
-                .frame(width: 144, height: 144)
+                .fill(Color.white.opacity(0.8))
+                .frame(width: 5, height: 5)
+                .offset(x: -32, y: -22)
         }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-                animateGlow = true
-            }
-            withAnimation(.linear(duration: 20).repeatForever(autoreverses: false)) {
-                animateIris = true
-            }
-        }
+    }
+    
+    private var corneaGlow: some View {
+        Circle()
+            .stroke(
+                LinearGradient(
+                    gradient: Gradient(colors: [.white.opacity(0.3), .clear, .white.opacity(0.1)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                lineWidth: 1.5
+            )
+            .frame(width: 144, height: 144)
     }
 }

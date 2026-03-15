@@ -102,12 +102,6 @@ struct InsightDetailView: View {
                                 .foregroundColor(type.mainColor)
                                 .shadow(color: type.mainColor.opacity(0.5), radius: 20)
                             
-                            if type == .strengths {
-                                Image(systemName: "sparkles")
-                                    .font(.system(size: 24))
-                                    .foregroundColor(type.mainColor.opacity(0.6))
-                                    .offset(x: 45, y: -45)
-                            }
                         }
                         .padding(.top, 40)
                         
