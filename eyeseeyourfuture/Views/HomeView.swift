@@ -11,7 +11,6 @@ struct InsightCategory: Identifiable {
     var isExpanded: Bool = false
 }
 
-// MARK: - HomeView
 struct HomeView: View {
     @EnvironmentObject var fortuneViewModel: FortuneViewModel
     @EnvironmentObject var themeManager: ThemeManager
@@ -24,7 +23,12 @@ struct HomeView: View {
     @AppStorage("irisReading") var irisReading: String = ""
     
     @AppStorage("isPremium") var isPremium = false
+    @StateObject private var profileManager = ProfileManager.shared
     @State private var showSubscription = false
+    @State private var showActionMenu = false
+    @State private var showContactUs = false
+    @State private var showSetup = false
+    @State private var isPressed = false
     
     @State private var categories: [InsightCategory] = [
         InsightCategory(title: "Aşk & İlişkiler", subtitle: "Uyum: Yüksek Potansiyel", icon: "heart.fill", color: Color.pink, description: "Kalbinin derinliklerinde saklı olan duygular, bu dönemde gün yüzüne çıkacak. Partnerinle olan iletişimin güçleniyor, ancak küçük yanlış anlaşılmalara karşı dikkatli olmalısın."),
@@ -102,6 +106,30 @@ struct HomeView: View {
                                 }
                             }
                             .padding(.top, 10)
+                            .scaleEffect(isPressed ? 0.92 : 1.0)
+                            .contentShape(Circle())
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                    isPressed = true
+                                }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                        isPressed = false
+                                    }
+                                    showActionMenu = true
+                                }
+                            }
+                            .confirmationDialog("Göz Analizi", isPresented: $showActionMenu, titleVisibility: .visible) {
+                                Button("Göz rengim yanlış, tekrar analiz et") {
+                                    showContactUs = true
+                                }
+                                Button("Göz ve analiz ekle") {
+                                    _ = profileManager.createPlaceholderProfile()
+                                    showSetup = true 
+                                }
+                                Button("İptal", role: .cancel) {}
+                            }
                             
                             VStack(spacing: 8) {
                                 Text(dynamicGreeting)
@@ -276,6 +304,38 @@ struct HomeView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Menu {
+                        ForEach(profileManager.profiles) { profile in
+                            Button(action: {
+                                withAnimation {
+                                    profileManager.switchProfile(to: profile)
+                                }
+                            }) {
+                                HStack {
+                                    Text(profile.name)
+                                    if profile.id.uuidString == profileManager.activeProfileId {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Divider()
+                        
+                        Button(action: {
+                            _ = profileManager.createPlaceholderProfile()
+                            showSetup = true 
+                        }) {
+                            Label("Yeni Profil Ekle", systemImage: "plus")
+                        }
+                    } label: {
+                        Image(systemName: "person.crop.circle.badge.plus")
+                            .foregroundColor(themeManager.primaryTextColor)
+                            .font(.system(size: 20))
+                    }
+                }
+                
                 ToolbarItem(placement: .principal) {
                     Text("Ana Sayfan")
                         .font(.system(size: 17, weight: .bold, design: .serif))
@@ -318,6 +378,16 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showSubscription) {
                 SubscriptionView(shouldShowPersonalSetup: .constant(false))
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
+            }
+            .sheet(isPresented: $showContactUs) {
+                ContactUsView()
+                    .environmentObject(themeManager)
+                    .environmentObject(lm)
+            }
+            .sheet(isPresented: $showSetup) {
+                PersonalSetupView()
                     .environmentObject(themeManager)
                     .environmentObject(lm)
             }

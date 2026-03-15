@@ -72,11 +72,6 @@ struct PersonalityAnalysisView: View {
                                 .font(.system(size: 64))
                                 .foregroundColor(themeManager.accentYellow)
                                 .shadow(color: themeManager.accentYellow.opacity(0.5), radius: 20)
-                            
-                            Image(systemName: "sparkles")
-                                .font(.system(size: 24))
-                                .foregroundColor(themeManager.accentYellow.opacity(0.6))
-                                .offset(x: 45, y: -45)
                         }
                         .padding(.top, 40)
                         

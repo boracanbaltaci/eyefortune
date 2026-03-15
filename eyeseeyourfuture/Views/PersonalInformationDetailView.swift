@@ -12,6 +12,9 @@ struct PersonalInformationDetailView: View {
     @AppStorage("lastPersonalDataEditDate") var lastPersonalEdit: Double = 0
     @AppStorage("lastQuizEditDate") var lastQuizEdit: Double = 0
     
+    @AppStorage("hasCompletedInitialPersonalEdit") var hasCompletedInitialPersonalEdit = false
+    @AppStorage("hasCompletedInitialQuizEdit") var hasCompletedInitialQuizEdit = false
+    
     @State private var quizAnswers: [UUID: QuizAnswer] = [:]
     
     @State private var isEditingPersonal = false
@@ -46,13 +49,15 @@ struct PersonalInformationDetailView: View {
     ]
     
     private var canEditPersonal: Bool {
+        if !hasCompletedInitialPersonalEdit { return true }
         let oneMonth: TimeInterval = 30 * 24 * 60 * 60
-        return Date().timeIntervalSince1970 - lastPersonalEdit > oneMonth || lastPersonalEdit == 0
+        return Date().timeIntervalSince1970 - lastPersonalEdit > oneMonth
     }
     
     private var canEditQuiz: Bool {
+        if !hasCompletedInitialQuizEdit { return true }
         let oneMonth: TimeInterval = 30 * 24 * 60 * 60
-        return Date().timeIntervalSince1970 - lastQuizEdit > oneMonth || lastQuizEdit == 0
+        return Date().timeIntervalSince1970 - lastQuizEdit > oneMonth
     }
     
     var body: some View {
@@ -84,6 +89,7 @@ struct PersonalInformationDetailView: View {
                                         fullName = tempFullName
                                         birthDate = tempBirthDate
                                         lastPersonalEdit = Date().timeIntervalSince1970
+                                        hasCompletedInitialPersonalEdit = true
                                         isEditingPersonal = false
                                     }
                                     .font(.system(size: 12, weight: .bold))
@@ -183,6 +189,7 @@ struct PersonalInformationDetailView: View {
                                         quizAnswers = tempQuizAnswers
                                         saveQuizAnswers()
                                         lastQuizEdit = Date().timeIntervalSince1970
+                                        hasCompletedInitialQuizEdit = true
                                         isEditingQuiz = false
                                     }
                                     .font(.system(size: 12, weight: .bold))

@@ -6,6 +6,7 @@ struct PersonalSetupView: View {
     @Environment(\.dismiss) var dismiss
     
     @AppStorage("userName") var userNameStore: String = ""
+    @StateObject private var profileManager = ProfileManager.shared
     @State private var fullName = ""
     @State private var birthDate = ""
     @State private var birthTime = ""
@@ -152,7 +153,8 @@ struct PersonalSetupView: View {
                             VStack(spacing: 16) {
                                 Button(action: {
                                     if isFormValid {
-                                        // Save name to AppStorage before moving forward
+                                        // Save to ProfileManager
+                                        profileManager.updateActiveProfileInfo(name: fullName, birthDate: birthDate)
                                         userNameStore = fullName
                                         navigateToScanner = true
                                     }
@@ -207,8 +209,11 @@ struct PersonalSetupView: View {
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .onAppear {
-                // Pre-fill if name already exists
-                if fullName.isEmpty && !userNameStore.isEmpty {
+                // Pre-fill if name already exists in active profile or legacy store
+                if let active = profileManager.activeProfile {
+                    fullName = active.name == "New Profile" ? "" : active.name
+                    birthDate = active.birthDate
+                } else if !userNameStore.isEmpty {
                     fullName = userNameStore
                 }
             }
