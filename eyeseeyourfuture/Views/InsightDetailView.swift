@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InsightDetailView: View {
     let type: InsightType
+    @EnvironmentObject var fortuneViewModel: FortuneViewModel
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) var dismiss
     
@@ -12,7 +13,8 @@ struct InsightDetailView: View {
         var id: String { rawValue }
         
         var title: String {
-            self == .strengths ? "Güçlü Yönlerin" : "Zayıf Yönlerin"
+            // We'll use a local helper to access lm, but better to handle it in the view
+            "" 
         }
         
         var icon: String {
@@ -66,14 +68,14 @@ struct InsightDetailView: View {
                     
                     Spacer()
                     
-                    Text(type.title)
+                    Text(type == .strengths ? lm.t(.insightDetailStrengthsTitle) : lm.t(.insightDetailWeaknessesTitle))
                         .font(.system(size: 18, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.accentYellow)
                     
                     Spacer()
                     
                     // Share Button
-                    ShareLink(item: insightContent, subject: Text(type.title), message: Text("EyeSeesYourFuture ile ruhsal kimliğimi keşfettim!")) {
+                    ShareLink(item: insightContent, subject: Text(type == .strengths ? lm.t(.insightDetailStrengthsTitle) : lm.t(.insightDetailWeaknessesTitle)), message: Text(lm.t(.insightDetailShareMessage))) {
                         ZStack {
                             Circle()
                                 .fill(themeManager.cardBgColor)
@@ -126,7 +128,7 @@ struct InsightDetailView: View {
                         // Content Card
                         VStack(alignment: .leading, spacing: 28) {
                             HStack {
-                                Text(type == .strengths ? "GÜÇLÜ YÖNLER" : "ZAYIF YÖNLER")
+                                Text(type == .strengths ? lm.t(.insightDetailStrengthsHeader) : lm.t(.insightDetailWeaknessesHeader))
                                     .font(.system(size: 13, weight: .black))
                                     .tracking(3)
                                     .foregroundColor(type.mainColor)
@@ -134,8 +136,8 @@ struct InsightDetailView: View {
                             }
                             
                             Text(insightContent)
-                                .font(.system(size: 19, weight: .medium, design: .serif))
-                                .lineSpacing(10)
+                                .font(.system(size: 16, weight: .medium, design: .serif))
+                                .lineSpacing(6)
                                 .foregroundColor(themeManager.primaryTextColor)
                                 .blur(radius: isPremium ? 0 : 8) // Blur content if not premium
                             
@@ -145,7 +147,7 @@ struct InsightDetailView: View {
                                     Image(systemName: type == .weaknesses ? "lightbulb.fill" : "star.fill")
                                         .foregroundColor(type.mainColor)
                                         .font(.system(size: 14))
-                                    Text(lm.t(.tabHome)) // Placeholder for localized string "Rehber"
+                                    Text(lm.t(.insightDetailGuide))
                                         .font(.system(size: 10, weight: .black))
                                         .tracking(1)
                                         .foregroundColor(themeManager.secondaryTextColor)
@@ -190,7 +192,7 @@ struct InsightDetailView: View {
                         HStack(spacing: 12) {
                             Image(systemName: type == .weaknesses ? "info.circle" : "sparkles")
                                 .foregroundColor(type.mainColor.opacity(0.6))
-                            Text(type == .weaknesses ? "Farkındalık dönüşümün ilk adımıdır." : "Işığını parlatmaya devam et.")
+                            Text(type == .strengths ? lm.t(.insightDetailStrengthsFooter) : lm.t(.insightDetailWeaknessesFooter))
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }
@@ -217,17 +219,17 @@ struct InsightDetailView: View {
     
     private var insightContent: String {
         if type == .strengths {
-            return "Ruhsal haritan, derin bir sezgisel güce ve empatik bir auraya sahip olduğunu gösteriyor. İnsanların söyleyemediklerini hissetme yeteneğin, seni çevrendeki karanlıkta bir fener yapıyor. Kararlılığın ve içsel dengen, en fırtınalı anlarda bile seni ayakta tutan en büyük müttefikin."
+            return fortuneViewModel.strengthsFortune?.text ?? lm.t(.scanAnalyzing)
         } else {
-            return "Kozmik enerjin bazen aşırı hassasiyet nedeniyle dağılabiliyor. Başkalarının enerjilerini sünger gibi çekmen, kendi ruhsal merkezinden uzaklaşmana neden olabilir. Kararsızlık anlarında evrenin işaretlerini yanlış yorumlamaya meyillisin, bu da seni belirsizlik rüzgarlarına karşı savunmasız bırakıyor. Dikkatini odaklamakta zorlandığında, evrenin sesini gürültü olarak algılayabilirsin."
+            return fortuneViewModel.weaknessesFortune?.text ?? lm.t(.scanAnalyzing)
         }
     }
     
     private var adviceContent: String {
         if type == .strengths {
-            return "Işığını paylaşırken kendi enerjini korumayı unutma. Pozitif aurana çekilenlerin enerjini tüketmesine izin verme."
+            return lm.t(.insightDetailStrengthsAdvice)
         } else {
-            return "Sık sık topraklanma ritüelleri yapmalı, başkalarının dertlerini kendi yükün haline getirmekten kaçınmalı ve her sabah zihnini koruyucu bir kalkanla çevrelediğini hayal etmelisin."
+            return lm.t(.insightDetailWeaknessesAdvice)
         }
     }
 }

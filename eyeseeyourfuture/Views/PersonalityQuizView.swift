@@ -68,9 +68,29 @@ class PersonalityQuizViewModel: ObservableObject {
     func startAnalysis() {
         isAnalyzing = true
         
-        // Save answers to UserDefaults for later retrieval
-        if let encoded = try? JSONEncoder().encode(answers) {
-            UserDefaults.standard.set(encoded, forKey: "quizAnswers")
+        // Categorize answers
+        var categoryResults: [String: [QuizAnswer]] = [:]
+        for question in questions {
+            if let answer = answers[question.id] {
+                categoryResults[question.category, default: []].append(answer)
+            }
+        }
+        
+        // Create a summary for AI
+        var summary: [String: String] = [:]
+        for (category, answers) in categoryResults {
+            let yesCount = answers.filter { $0 == .yes }.count
+            let total = answers.count
+            summary[category] = "\(total) sorudan \(yesCount) tanesine 'Evet' dedi."
+        }
+        
+        // Save answers and summary to UserDefaults
+        if let encodedSummary = try? JSONEncoder().encode(summary) {
+            UserDefaults.standard.set(encodedSummary, forKey: "quizResultsSummary")
+        }
+        
+        if let encodedAnswers = try? JSONEncoder().encode(answers) {
+            UserDefaults.standard.set(encodedAnswers, forKey: "quizAnswers")
         }
         
         // Simulate AI analysis delay

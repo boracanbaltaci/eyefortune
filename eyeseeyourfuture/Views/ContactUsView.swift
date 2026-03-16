@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContactUsView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     @Environment(\.dismiss) private var dismiss
     
     @State private var fullName = ""
@@ -25,11 +26,11 @@ struct ContactUsView: View {
                                 .foregroundColor(themeManager.accentYellow)
                                 .padding(.bottom, 8)
                             
-                            Text("Bize Ulaşın")
+                            Text(lm.t(.contactTitle))
                                 .font(.system(size: 28, weight: .bold, design: .serif))
                                 .foregroundColor(themeManager.primaryTextColor)
                             
-                            Text("Göz renginiz yanlış belirlendiyse veya bir geri bildiriminiz varsa bize yazın.")
+                            Text(lm.t(.contactSubtitle))
                                 .font(.system(size: 14))
                                 .foregroundColor(themeManager.secondaryTextColor)
                                 .multilineTextAlignment(.center)
@@ -39,12 +40,12 @@ struct ContactUsView: View {
                         
                         // Form
                         VStack(spacing: 20) {
-                            ContactTextField(title: "Ad Soyad", placeholder: "Adınızı giriniz", text: $fullName, themeManager: themeManager)
+                            ContactTextField(title: lm.t(.contactName), placeholder: lm.t(.registerFullNamePlaceholder), text: $fullName, themeManager: themeManager)
                             
-                            ContactTextField(title: "Apple ID E-posta", placeholder: "example@apple.com", text: $email, themeManager: themeManager, keyboardType: .emailAddress)
+                            ContactTextField(title: lm.t(.contactEmail), placeholder: "example@apple.com", text: $email, themeManager: themeManager, keyboardType: .emailAddress)
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Mesajınız")
+                                Text(lm.t(.contactMessage))
                                     .font(.system(size: 14, weight: .medium))
                                     .foregroundColor(themeManager.secondaryTextColor)
                                     .padding(.leading, 4)
@@ -69,7 +70,7 @@ struct ContactUsView: View {
                             // Mock send action
                             showSuccessAlert = true
                         }) {
-                            Text("Gönder")
+                            Text(lm.t(.contactSend))
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundColor(themeManager.bgColor)
                                 .frame(maxWidth: .infinity)
@@ -103,10 +104,10 @@ struct ContactUsView: View {
                     fullName = userNameStore
                 }
             }
-            .alert("Mesajınız Gönderildi", isPresented: $showSuccessAlert) {
-                Button("Tamam", role: .cancel) { dismiss() }
+            .alert(lm.t(.contactSuccess), isPresented: $showSuccessAlert) {
+                Button(lm.t(.alertOk), role: .cancel) { dismiss() }
             } message: {
-                Text("Geri bildiriminiz için teşekkür ederiz. Kozmik ekibimiz en kısa sürede sizinle iletişime geçecektir.")
+                Text(lm.t(.contactSuccessSub))
             }
         }
     }

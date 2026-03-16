@@ -5,7 +5,14 @@ struct User: Identifiable, Codable {
     var id: UUID = UUID()
     var name: String?
     var birthDate: Date?
+    var birthTime: String?
+    var zodiacSign: String?
     var element: String?
+    
+    var eyeColor: String?
+    var eyePattern: String?
+    
+    var personalityQuizResults: [String: String]? // Category: Description/Result
     
     var lastScanDate: Date?
     var savedFortunes: [Fortune] = []

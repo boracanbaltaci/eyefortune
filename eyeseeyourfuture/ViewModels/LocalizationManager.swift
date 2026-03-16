@@ -39,7 +39,8 @@ enum AppLanguage: String, CaseIterable, Identifiable, Codable {
 // MARK: - Localization Manager
 @MainActor
 class LocalizationManager: ObservableObject {
-    @AppStorage("appLanguage") var languageCode: String = AppLanguage.turkish.rawValue {
+    @AppStorage("appLanguage", store: UserDefaults(suiteName: "group.com.boradev.eyefortune")) 
+    var languageCode: String = AppLanguage.turkish.rawValue {
         didSet { objectWillChange.send() }
     }
 
@@ -49,8 +50,9 @@ class LocalizationManager: ObservableObject {
     }
 
     /// Returns the localized string for a given key in the active language.
-    func t(_ key: LKey) -> String {
-        return LocalizedStrings.translations[language]?[key]
+    func t(_ key: LKey, language: AppLanguage? = nil) -> String {
+        let lang = language ?? self.language
+        return LocalizedStrings.translations[lang]?[key]
             ?? LocalizedStrings.translations[.english]?[key]
             ?? key.rawValue
     }

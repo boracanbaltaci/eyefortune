@@ -4,7 +4,16 @@ import SwiftUI
 
 class FortuneViewModel: ObservableObject {
     @Published var dailyFortune: Fortune?
+    @Published var loveFortune: Fortune?
+    @Published var healthFortune: Fortune?
+    @Published var wealthFortune: Fortune?
+    @Published var careerFortune: Fortune?
+    @Published var strengthsFortune: Fortune?
+    @Published var weaknessesFortune: Fortune?
+    @Published var personalityFortune: Fortune?
+    
     @Published var isLoading: Bool = false
+    private let openAIService = OpenAIService.shared
     
     // In a real app, this would use UserDefaults or CoreData
     @Published var savedFortunes: [Fortune] = [] {
@@ -17,7 +26,7 @@ class FortuneViewModel: ObservableObject {
     
     init() {
         loadFortunes()
-        fetchDailyFortune()
+        loadCategorizedFortunes()
     }
     
     private func saveFortunes() {
@@ -33,25 +42,108 @@ class FortuneViewModel: ObservableObject {
         }
     }
     
-    func fetchDailyFortune() {
+    func fetchDailyFortune(user: User, language: AppLanguage) {
         isLoading = true
-        // Simulate network request or DB fetch delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            let fortuneTexts = [
-                "Bugün gözlerindeki parıltı, evrenin sana fısıldadığı büyük bir yeniliğin habercisi. Ruhun, geçmişin yüklerinden arınarak yeni bir döngüye girmeye hazır. Önümüzdeki günlerde karşına çıkacak olan beklenmedik fırsatlar, hayatının akışını tahmin edemeyeceğin kadar olumlu yönde değiştirebilir. İçindeki bilgeliğe güven ve sezgilerinin seni doğru kapıya ulaştırmasına izin ver.",
-                "İçindeki kadim güç bugün her zamankinden daha belirgin bir şekilde dışarı yansıyor. Etrafındaki insanlar senin auranın yarattığı o sakinleştirici ve yol gösterici enerjiyi hissedecekler. Liderlik etme ve vizyonunu paylaşma zamanı geldi. Karşılaştığın engeller, aslında senin iradeni güçlendirmek için karşında duruyor. Bugün attığın her adım, gelecekteki büyük zaferlerinin temelini oluşturacak.",
-                "Göz bebeklerinin derinliklerinde saklı olan o mistik ışık, çok yakında alacağın ve hayatında yeni bir sayfa açacak olan müjdeli bir habere işaret ediyor. Maddi ve manevi bolluğun kapıları senin için aralanıyor. Sabırla beklediğin o an, yıldızların hizalanmasıyla birlikte gerçeğe dönüşmek üzere. Kalbini açık tut ve evrenin sana sunduğu bu eşsiz hediyeyi sevgiyle kabul et.",
-                "Zihnin bugün kozmik bir berraklık içinde; karar vermekte zorlandığın o karmaşık meseleler artık gün gibi ortada. Kendi iç sesini dinlediğinde, aslında en doğru cevabın hep orada olduğunu fark edeceksin. Cesaretini topla ve o beklenen kararı ver. Hayatındaki eski enerjileri serbest bırakarak, yeni başlangıçlar için yer açmanın tam sırası. Yolun aydınlık, şansın daim olsun."
-            ]
-            
-            let randomText = fortuneTexts.randomElement() ?? "Harika bir gün seni bekliyor."
-            
-            self.dailyFortune = Fortune(
-                text: randomText,
-                dateGenerated: Date(),
-                type: .daily
-            )
-            self.isLoading = false
+        let prompt = AIPromptGenerator.generateDailyFortunePrompt(user: user, language: language)
+        
+        openAIService.generateFortune(prompt: prompt) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let text):
+                    let fortune = Fortune(text: text, dateGenerated: Date(), type: .daily, language: language)
+                    self?.dailyFortune = fortune
+                    self?.saveCategorizedFortune(fortune, key: "daily_fortune_cache")
+                    NotificationManager.shared.sendDailyFortuneReadyNotification(language: language)
+                case .failure(let error):
+                    print("Daily Fortune Error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func fetchInsightFortune(type: Fortune.FortuneType, user: User, language: AppLanguage) {
+        let prompt: String
+        if type == .personality {
+            prompt = AIPromptGenerator.generatePersonalityPrompt(user: user, language: language)
+        } else {
+            prompt = AIPromptGenerator.generateInsightPrompt(type: type, user: user, language: language)
+        }
+        
+        openAIService.generateFortune(prompt: prompt) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let text):
+                    let fortune = Fortune(text: text, dateGenerated: Date(), type: type, language: language)
+                    switch type {
+                    case .love:
+                        self?.loveFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "love_fortune_cache")
+                    case .health:
+                        self?.healthFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "health_fortune_cache")
+                    case .wealth:
+                        self?.wealthFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "wealth_fortune_cache")
+                    case .career:
+                        self?.careerFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "career_fortune_cache")
+                    case .strengths:
+                        self?.strengthsFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "strengths_fortune_cache")
+                    case .weaknesses:
+                        self?.weaknessesFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "weaknesses_fortune_cache")
+                    case .personality:
+                        self?.personalityFortune = fortune
+                        self?.saveCategorizedFortune(fortune, key: "personality_fortune_cache")
+                    default: break
+                    }
+                case .failure(let error):
+                    print("\(type.rawValue) Insight Error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func saveCategorizedFortune(_ fortune: Fortune, key: String) {
+        if let encoded = try? JSONEncoder().encode(fortune) {
+            UserDefaults.standard.set(encoded, forKey: key)
+        }
+    }
+    
+    private func loadCategorizedFortunes() {
+        if let data = UserDefaults.standard.data(forKey: "daily_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            dailyFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "love_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            loveFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "health_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            healthFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "wealth_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            wealthFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "career_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            careerFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "strengths_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            strengthsFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "weaknesses_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            weaknessesFortune = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "personality_fortune_cache"),
+           let decoded = try? JSONDecoder().decode(Fortune.self, from: data) {
+            personalityFortune = decoded
         }
     }
     
@@ -61,5 +153,16 @@ class FortuneViewModel: ObservableObject {
         } else {
             savedFortunes.append(fortune)
         }
+    }
+    
+    func clearCachesIfLanguageChanged(currentLanguage: AppLanguage) {
+        if dailyFortune?.language != currentLanguage { dailyFortune = nil }
+        if loveFortune?.language != currentLanguage { loveFortune = nil }
+        if healthFortune?.language != currentLanguage { healthFortune = nil }
+        if wealthFortune?.language != currentLanguage { wealthFortune = nil }
+        if careerFortune?.language != currentLanguage { careerFortune = nil }
+        if strengthsFortune?.language != currentLanguage { strengthsFortune = nil }
+        if weaknessesFortune?.language != currentLanguage { weaknessesFortune = nil }
+        if personalityFortune?.language != currentLanguage { personalityFortune = nil }
     }
 }

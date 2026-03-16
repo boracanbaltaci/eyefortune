@@ -30,7 +30,7 @@ struct SettingsView: View {
 
                         // Account Section
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("HESAP VE VERİ")
+                            Text(lm.t(.settingsSectionAccount))
                                 .font(.system(size: 11, weight: .bold))
                                 .tracking(2)
                                 .foregroundColor(themeManager.accentYellow.opacity(0.7))
@@ -40,8 +40,8 @@ struct SettingsView: View {
                                 NavigationLink(destination: PersonalInformationDetailView()) {
                                     SettingsRow(
                                         icon: "person.text.rectangle.fill",
-                                        title: "Kişisel Bilgiler",
-                                        subtitle: "Ad, doğum tarihi ve kişilik verileri",
+                                        title: lm.t(.settingsPersonalInfo),
+                                        subtitle: lm.t(.settingsPersonalInfoSub),
                                         themeManager: themeManager
                                     )
                                 }
@@ -50,8 +50,8 @@ struct SettingsView: View {
                                 Button(action: { showContactUs = true }) {
                                     SettingsRow(
                                         icon: "eye.fill",
-                                        title: "Göz Rengimi Düzelt",
-                                        subtitle: "Yanlış belirlendiyse talep oluşturun",
+                                        title: lm.t(.settingsFixEyeColor),
+                                        subtitle: lm.t(.settingsFixEyeColorSub),
                                         themeManager: themeManager
                                     )
                                 }
@@ -122,8 +122,8 @@ struct SettingsView: View {
                                 }) {
                                     SettingsRow(
                                         icon: "shield.lefthalf.filled",
-                                        title: "Gizlilik Politikası",
-                                        subtitle: "Verilerinizin nasıl korunduğunu görün",
+                                        title: lm.t(.settingsPrivacyPolicy),
+                                        subtitle: lm.t(.settingsPrivacyPolicySub),
                                         showExternalIcon: true,
                                         themeManager: themeManager
                                     )
@@ -135,8 +135,8 @@ struct SettingsView: View {
                                 }) {
                                     SettingsRow(
                                         icon: "star.bubble.fill",
-                                        title: "Bizi Değerlendir",
-                                        subtitle: "App Store'da yorum bırakın",
+                                        title: lm.t(.settingsRateUs),
+                                        subtitle: lm.t(.settingsRateUsSub),
                                         showExternalIcon: true,
                                         themeManager: themeManager
                                     )
@@ -187,7 +187,7 @@ struct SettingsView: View {
                                 HStack {
                                     Image(systemName: "crown.fill")
                                         .foregroundColor(themeManager.accentYellow)
-                                    Text("Premium Status")
+                                    Text(lm.t(.premiumStatus))
                                     Spacer()
                                     Toggle("", isOn: $isPremium)
                                         .labelsHidden()
@@ -206,7 +206,7 @@ struct SettingsView: View {
                                 authManager.signOut()
                                 presentationMode.wrappedValue.dismiss()
                             }) {
-                                Text("Çıkış Yap")
+                                Text(lm.t(.settingsLogout))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(themeManager.primaryTextColor)
                             }
@@ -215,7 +215,7 @@ struct SettingsView: View {
                             Button(action: {
                                 showDeleteConfirmation = true
                             }) {
-                                Text("Hesabı Sil")
+                                Text(lm.t(.settingsDeleteAccount))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.red)
                             }
@@ -255,13 +255,13 @@ struct SettingsView: View {
                 ContactUsView()
             }
 
-            .alert("Hesabı Sil", isPresented: $showDeleteConfirmation) {
-                Button("Vazgeç", role: .cancel) { }
-                Button("Sil", role: .destructive) {
+            .alert(lm.t(.settingsDeleteConfirmTitle), isPresented: $showDeleteConfirmation) {
+                Button(lm.t(.settingsCancel), role: .cancel) { }
+                Button(lm.t(.settingsDelete), role: .destructive) {
                     deleteProfile()
                 }
             } message: {
-                Text("Profilinizi silmek istediğinize emin misiniz? Tüm verileriniz kalıcı olarak silinecektir.")
+                Text(lm.t(.settingsDeleteConfirmMessage))
             }
         }
     }

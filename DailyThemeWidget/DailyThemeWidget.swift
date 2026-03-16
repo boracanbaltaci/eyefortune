@@ -44,38 +44,91 @@ class WidgetThemeManager {
 // MARK: - Light Localization Helper
 struct WidgetLocalizer {
     static func t(_ key: String) -> String {
-        let language = UserDefaults.standard.string(forKey: "appLanguage") ?? "tr"
+        let sharedDefaults = UserDefaults(suiteName: "group.com.boradev.eyefortune") ?? .standard
+        let language = sharedDefaults.string(forKey: "appLanguage") ?? "tr"
         
-        let trStrings: [String: String] = [
-            "widget_header": "Günün Teması:",
-            "theme_love": "AŞK",
-            "theme_friendship": "ARKADAŞLIK",
-            "theme_family": "AİLE",
-            "theme_peace": "HUZUR",
-            "theme_anxiety": "ENDİŞE",
-            "theme_excitement": "HEYECAN",
-            "theme_sports": "SPOR",
-            "theme_entertainment": "EĞLENCE",
-            "theme_work": "İŞ",
-            "theme_education": "EĞİTİM"
+        let translations: [String: [String: String]] = [
+            "tr": [
+                "widget_header": "Günün Teması:",
+                "theme_love": "AŞK",
+                "theme_friendship": "ARKADAŞLIK",
+                "theme_family": "AİLE",
+                "theme_peace": "HUZUR",
+                "theme_anxiety": "ENDİŞE",
+                "theme_excitement": "HEYECAN",
+                "theme_sports": "SPOR",
+                "theme_entertainment": "EĞLENCE",
+                "theme_work": "İŞ",
+                "theme_education": "EĞİTİM"
+            ],
+            "en": [
+                "widget_header": "Daily Theme:",
+                "theme_love": "LOVE",
+                "theme_friendship": "FRIENDSHIP",
+                "theme_family": "FAMILY",
+                "theme_peace": "PEACE",
+                "theme_anxiety": "ANXIETY",
+                "theme_excitement": "EXCITEMENT",
+                "theme_sports": "SPORTS",
+                "theme_entertainment": "ENTERTAINMENT",
+                "theme_work": "WORK",
+                "theme_education": "EDUCATION"
+            ],
+            "fr": [
+                "widget_header": "Thème du jour:",
+                "theme_love": "AMOUR",
+                "theme_friendship": "AMITIÉ",
+                "theme_family": "FAMILLE",
+                "theme_peace": "PAIX",
+                "theme_anxiety": "ANXIÉTÉ",
+                "theme_excitement": "EXCITATION",
+                "theme_sports": "SPORTS",
+                "theme_entertainment": "DIVERTISSEMENT",
+                "theme_work": "TRAVAIL",
+                "theme_education": "ÉDUCATION"
+            ],
+            "es": [
+                "widget_header": "Tema del día:",
+                "theme_love": "AMOR",
+                "theme_friendship": "AMISTAD",
+                "theme_family": "FAMILIA",
+                "theme_peace": "PAZ",
+                "theme_anxiety": "ANSIEDAD",
+                "theme_excitement": "EMOCIÓN",
+                "theme_sports": "DEPORTES",
+                "theme_entertainment": "ENTRETENIMIENTO",
+                "theme_work": "TRABAJO",
+                "theme_education": "EDUCACIÓN"
+            ],
+            "de": [
+                "widget_header": "Tages-Thema:",
+                "theme_love": "LIEBE",
+                "theme_friendship": "FREUNDSCHAFT",
+                "theme_family": "FAMILIE",
+                "theme_peace": "FRIEDEN",
+                "theme_anxiety": "ANGST",
+                "theme_excitement": "AUFREGUNG",
+                "theme_sports": "SPORT",
+                "theme_entertainment": "UNTERHALTUNG",
+                "theme_work": "ARBEIT",
+                "theme_education": "BILDUNG"
+            ],
+            "it": [
+                "widget_header": "Tema del Giorno:",
+                "theme_love": "AMORE",
+                "theme_friendship": "AMICIZIA",
+                "theme_family": "FAMIGLIA",
+                "theme_peace": "PACE",
+                "theme_anxiety": "ANSIA",
+                "theme_excitement": "EMOZIONE",
+                "theme_sports": "SPORT",
+                "theme_entertainment": "DIVERTIMENTO",
+                "theme_work": "LAVORO",
+                "theme_education": "ISTRUZIONE"
+            ]
         ]
         
-        let enStrings: [String: String] = [
-            "widget_header": "Daily Theme:",
-            "theme_love": "LOVE",
-            "theme_friendship": "FRIENDSHIP",
-            "theme_family": "FAMILY",
-            "theme_peace": "PEACE",
-            "theme_anxiety": "ANXIETY",
-            "theme_excitement": "EXCITEMENT",
-            "theme_sports": "SPORTS",
-            "theme_entertainment": "ENTERTAINMENT",
-            "theme_work": "WORK",
-            "theme_education": "EDUCATION"
-        ]
-        
-        if language == "en" { return enStrings[key] ?? key }
-        return trStrings[key] ?? key
+        return translations[language]?[key] ?? translations["en"]?[key] ?? key
     }
 }
 

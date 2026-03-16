@@ -100,6 +100,12 @@ struct ReadingView: View {
                     .environmentObject(themeManager)
                     .environmentObject(lm)
             }
+            .onAppear {
+                viewModel.checkAndFetchWeeklyArticles(language: lm.language)
+            }
+            .onChange(of: lm.language) { oldLanguage, newLanguage in
+                viewModel.checkAndFetchWeeklyArticles(language: newLanguage)
+            }
         }
     }
 }
@@ -160,13 +166,13 @@ struct FeaturedReadingBanner: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     HStack(spacing: 12) {
-                        Label(article.category.rawValue, systemImage: article.category.icon)
+                        Label(article.category.displayName(lm: lm), systemImage: article.category.icon)
                             .font(.system(size: 11))
                             .foregroundColor(.white.opacity(0.7))
 
-                        Label("\(article.readingMinutes) dk", systemImage: "clock")
-                            .font(.system(size: 11))
-                            .foregroundColor(.white.opacity(0.7))
+                        Label("\(article.readingMinutes) \(lm.t(.readingMinutesSub))", systemImage: "clock")
+                             .font(.system(size: 11))
+                             .foregroundColor(.white.opacity(0.7))
                     }
 
                     HStack {
@@ -223,16 +229,7 @@ struct CategoryCard: View {
     let onTap: () -> Void
 
     private var localizedName: String {
-        switch category {
-        case .all:         return lm.t(.readingCatAll)
-        case .meditation:  return lm.t(.readingCatMed)
-        case .personality: return lm.t(.readingCatPers)
-        case .development: return lm.t(.readingCatDev)
-        case .mindfulness: return lm.t(.readingCatMind)
-        case .wellness:    return lm.t(.readingCatWell)
-        case .spiritualism: return lm.t(.readingCatSpir)
-        case .astrology:    return lm.t(.readingCatAstro)
-        }
+        return category.displayName(lm: lm)
     }
 
     var body: some View {
@@ -304,7 +301,7 @@ struct ReadingArticleCard: View {
                     )
 
                     // Category badge on image
-                    Label(article.category.rawValue, systemImage: article.category.icon)
+                    Label(article.category.displayName(lm: lm), systemImage: article.category.icon)
                         .font(.system(size: 10, weight: .bold))
                         .foregroundColor(themeManager.bgColor)
                         .padding(.horizontal, 10)

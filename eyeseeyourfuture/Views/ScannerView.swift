@@ -43,16 +43,25 @@ struct ScannerView: View {
                                 .animation(.linear(duration: 0.1), value: scannerViewModel.scanProgress)
 
                             VStack {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: themeManager.primaryTextColor))
-                                Text(lm.t(.scanAnalyzing))
-                                    .foregroundColor(themeManager.primaryTextColor)
-                                    .font(.caption)
-                                    .padding(.top, 5)
-                                Text("\(Int(scannerViewModel.scanProgress * 100))%")
-                                    .foregroundColor(themeManager.accentYellow)
-                                    .font(.title2)
-                                    .fontWeight(.bold)
+                                if scannerViewModel.isAligning {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: themeManager.primaryTextColor))
+                                    Text(lm.t(.scanAligning))
+                                        .foregroundColor(themeManager.primaryTextColor)
+                                        .font(.caption)
+                                        .padding(.top, 5)
+                                } else {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: themeManager.primaryTextColor))
+                                    Text(lm.t(.scanAnalyzing))
+                                        .foregroundColor(themeManager.primaryTextColor)
+                                        .font(.caption)
+                                        .padding(.top, 5)
+                                    Text("\(Int(scannerViewModel.scanProgress * 100))%")
+                                        .foregroundColor(themeManager.accentYellow)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                }
                             }
                         } else {
                             Image(systemName: "eye")
@@ -63,10 +72,23 @@ struct ScannerView: View {
                         }
                     }
 
+                    if !scannerViewModel.isScanning {
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundColor(themeManager.accentYellow)
+                            Text(lm.t(.scanWarning))
+                                .font(.caption2)
+                                .foregroundColor(themeManager.secondaryTextColor)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .padding(.horizontal, 40)
+                        .padding(.top, 20)
+                    }
+
                     Spacer()
 
                     Button(action: {
-                        scannerViewModel.startScan()
+                        scannerViewModel.startScan(language: lm.language)
                     }) {
                         Text(scannerViewModel.isScanning ? lm.t(.scanning) : lm.t(.scanButton))
                             .font(.headline)

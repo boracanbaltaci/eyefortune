@@ -1,17 +1,30 @@
 import Foundation
 
 // MARK: - Reading Category
-enum ReadingCategory: String, CaseIterable, Identifiable {
-    case all           = "Tümü"
-    case meditation    = "Meditasyon"
-    case personality   = "Kişilik"
-    case development   = "Gelişim"
-    case mindfulness   = "Mindfulness"
-    case wellness      = "Sağlık"
-    case spiritualism  = "Spiritüalizm"
-    case astrology     = "Astroloji"
+enum ReadingCategory: String, CaseIterable, Identifiable, Codable {
+    case all           = "all"
+    case meditation    = "meditation"
+    case personality   = "personality"
+    case development   = "development"
+    case mindfulness   = "mindfulness"
+    case wellness      = "wellness"
+    case spiritualism  = "spiritualism"
+    case astrology     = "astrology"
 
     var id: String { self.rawValue }
+
+    func displayName(lm: LocalizationManager) -> String {
+        switch self {
+        case .all:          return lm.t(.readingCatAll)
+        case .meditation:   return lm.t(.readingCatMed)
+        case .personality:  return lm.t(.readingCatPers)
+        case .development:  return lm.t(.readingCatDev)
+        case .mindfulness:  return lm.t(.readingCatMind)
+        case .wellness:     return lm.t(.readingCatWell)
+        case .spiritualism: return lm.t(.readingCatSpir)
+        case .astrology:    return lm.t(.readingCatAstro)
+        }
+    }
 
     var icon: String {
         switch self {
@@ -28,7 +41,7 @@ enum ReadingCategory: String, CaseIterable, Identifiable {
 }
 
 // MARK: - Reading Article Model
-struct ReadingArticle: Identifiable {
+struct ReadingArticle: Identifiable, Codable {
     let id: UUID
     let title: String
     let subtitle: String

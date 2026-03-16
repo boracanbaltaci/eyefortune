@@ -15,6 +15,7 @@ struct LoginView: View {
     @State private var showError = false
     
     @AppStorage("userEmail") var userEmail: String = ""
+    @AppStorage("isSetupComplete") var isSetupComplete: Bool = false
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -32,11 +33,11 @@ struct LoginView: View {
                             VStack(spacing: 40) {
                                 // Centered Title
                                 VStack(spacing: 12) {
-                                    Text("Giriş Yap")
+                                    Text(lm.t(.loginTitle))
                                         .font(.system(size: 36, weight: .bold, design: .serif))
                                         .foregroundColor(themeManager.primaryTextColor)
                                     
-                                    Text("Kozmik yolculuğuna kaldığın yerden devam et.")
+                                    Text(lm.t(.loginSubtitle))
                                         .font(.system(size: 16))
                                         .foregroundColor(themeManager.secondaryTextColor)
                                         .multilineTextAlignment(.center)
@@ -91,12 +92,17 @@ struct LoginView: View {
                                     
                                     // Consult the Oracle Button
                                     Button(action: {
-                                        authManager.loginWithEmail(email: email, password: password) { success in
-                                            if success {
-                                                userEmail = email
-                                                showSubscription = true
-                                            } else {
-                                                showError = true
+                                        if email.isEmpty || password.isEmpty {
+                                            authManager.errorMessage = "E-posta ve şifre alanları zorunludur." // Manual override or can use lm.t if key exists
+                                            showError = true
+                                        } else {
+                                            authManager.loginWithEmail(email: email, password: password) { success in
+                                                if success {
+                                                    userEmail = email
+                                                    showSubscription = true
+                                                } else {
+                                                    showError = true
+                                                }
                                             }
                                         }
                                     }) {
@@ -105,7 +111,7 @@ struct LoginView: View {
                                                 ProgressView()
                                                     .tint(themeManager.bgColor)
                                             } else {
-                                                Text("Giriş Yap")
+                                                Text(lm.t(.loginTitle))
                                                     .font(.system(size: 17, weight: .bold))
                                                 Image(systemName: "sparkles")
                                             }
@@ -117,14 +123,14 @@ struct LoginView: View {
                                         .cornerRadius(30)
                                         .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10, x: 0, y: 0)
                                     }
-                                    .disabled(authManager.isLoading || email.isEmpty || password.isEmpty)
+                                    .disabled(authManager.isLoading)
                                     .padding(.top, 10)
                                 }
                                 .padding(.horizontal, 20)
-                                .alert("Hata", isPresented: $showError) {
-                                    Button("Tamam", role: .cancel) { }
+                                .alert(lm.t(.alertError), isPresented: $showError) {
+                                    Button(lm.t(.alertOk), role: .cancel) { }
                                 } message: {
-                                    Text(authManager.errorMessage ?? "Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.")
+                                    Text(authManager.errorMessage ?? lm.t(.alertError))
                                 }
                                 
                                 // Divider
@@ -133,7 +139,7 @@ struct LoginView: View {
                                         .fill(themeManager.inputBgColor)
                                         .frame(height: 1)
                                     
-                                    Text("Veya")
+                                    Text(lm.t(.loginOrConnect))
                                         .font(.system(size: 11, weight: .semibold))
                                         .foregroundColor(themeManager.secondaryTextColor)
                                         .padding(.horizontal, 10)
@@ -179,7 +185,7 @@ struct LoginView: View {
                             
                             // Register Link
                             HStack(spacing: 5) {
-                                Text("Burada yeni misin?")
+                                Text(lm.t(.loginNewHere))
                                     .font(.system(size: 14))
                                     .foregroundColor(themeManager.secondaryTextColor)
                                 Button(action: {

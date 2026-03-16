@@ -55,12 +55,12 @@ class NotificationManager: ObservableObject {
     }
     
     func triggerTestNotifications() {
-        let lm = LocalizationManager()
-        let titles = [lm.t(.notifTitle), lm.t(.notifTitle), lm.t(.notifTitle)]
+        let currentLang = LocalizationManager().language
+        let titles = [getLocalized(.notifTitle, lang: currentLang), getLocalized(.notifTitle, lang: currentLang), getLocalized(.notifTitle, lang: currentLang)]
         let bodies = [
-            lm.t(.notifDaily),
-            lm.t(.notifInactivity),
-            lm.t(.notifMonthly)
+            getLocalized(.notifDaily, lang: currentLang),
+            getLocalized(.notifInactivity, lang: currentLang),
+            getLocalized(.notifMonthly, lang: currentLang)
         ]
         
         for i in 0..<3 {
@@ -76,16 +76,32 @@ class NotificationManager: ObservableObject {
         }
     }
     
+    func sendDailyFortuneReadyNotification(language: AppLanguage) {
+        guard notificationsEnabled else { return }
+        
+        let content = UNMutableNotificationContent()
+        content.title = getLocalized(.notifTitle, lang: language)
+        content.body = getLocalized(.notifFortuneReady, lang: language)
+        content.sound = .default
+        
+        // Immediate (5 seconds)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: "fortune_ready_\(UUID().uuidString)", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request)
+    }
+    
     // MARK: - Internal Scheduling Helpers
-    private func getLocalized(_ key: LKey) -> String {
+    private func getLocalized(_ key: LKey, lang: AppLanguage? = nil) -> String {
         let lm = LocalizationManager()
-        return lm.t(key)
+        return lm.t(key, language: lang)
     }
     
     private func scheduleDailyNotification() {
+        let currentLang = LocalizationManager().language
         let content = UNMutableNotificationContent()
-        content.title = getLocalized(.notifTitle)
-        content.body = getLocalized(.notifDaily)
+        content.title = getLocalized(.notifTitle, lang: currentLang)
+        content.body = getLocalized(.notifDaily, lang: currentLang)
         content.sound = .default
         
         var dateComponents = DateComponents()
@@ -99,9 +115,10 @@ class NotificationManager: ObservableObject {
     }
     
     private func scheduleInactivityNotification() {
+        let currentLang = LocalizationManager().language
         let content = UNMutableNotificationContent()
-        content.title = getLocalized(.notifTitle)
-        content.body = getLocalized(.notifInactivity)
+        content.title = getLocalized(.notifTitle, lang: currentLang)
+        content.body = getLocalized(.notifInactivity, lang: currentLang)
         content.sound = .default
         
         // 3 days: 3 * 24 * 60 * 60
@@ -113,9 +130,10 @@ class NotificationManager: ObservableObject {
     }
     
     private func scheduleMonthlyNotification() {
+        let currentLang = LocalizationManager().language
         let content = UNMutableNotificationContent()
-        content.title = getLocalized(.notifTitle)
-        content.body = getLocalized(.notifMonthly)
+        content.title = getLocalized(.notifTitle, lang: currentLang)
+        content.body = getLocalized(.notifMonthly, lang: currentLang)
         content.sound = .default
         
         var dateComponents = DateComponents()

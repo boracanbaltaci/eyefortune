@@ -32,18 +32,31 @@ class AuthManager: ObservableObject {
     
     // MARK: - Email/Password
     
-    func registerWithEmail(email: String, password: String, completion: @escaping (Bool) -> Void) {
+    func registerWithEmail(email: String, password: String, fullName: String, completion: @escaping (Bool) -> Void) {
         isLoading = true
         errorMessage = nil
         
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let error = error {
+            if let error = error {
+                DispatchQueue.main.async {
+                    self?.isLoading = false
                     self?.errorMessage = error.localizedDescription
                     completion(false)
-                } else {
-                    completion(true)
+                }
+            } else if let user = authResult?.user {
+                // Update display name
+                let changeRequest = user.createProfileChangeRequest()
+                changeRequest.displayName = fullName
+                changeRequest.commitChanges { error in
+                    DispatchQueue.main.async {
+                        self?.isLoading = false
+                        if let error = error {
+                            self?.errorMessage = error.localizedDescription
+                            completion(false)
+                        } else {
+                            completion(true)
+                        }
+                    }
                 }
             }
         }

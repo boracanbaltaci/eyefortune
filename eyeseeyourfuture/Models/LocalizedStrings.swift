@@ -18,13 +18,47 @@ enum LKey: String, Codable {
     case homeDailyFortune   = "home_daily_fortune"
     case homePersonality    = "home_personality"
     case homeTier           = "home_tier"
+    case homeGreetingsMorning = "home_greetings_morning"
+    case homeGreetingsAfternoon = "home_greetings_afternoon"
+    case homeGreetingsEvening = "home_greetings_evening"
+    case homeGreetingsNight = "home_greetings_night"
+    case homeMysticMorning = "home_mystic_morning"
+    case homeMysticAfternoon = "home_mystic_afternoon"
+    case homeMysticEvening = "home_mystic_evening"
+    case homeMysticNight = "home_mystic_night"
 
+    case homeSeeInsights    = "home_see_insights"
+    case homeEyeAnalysis    = "home_eye_analysis"
+    case homeFixEyeColor    = "home_fix_eye_color"
+    
+    case homeInsightLove        = "home_insight_love"
+    case homeInsightLoveSub     = "home_insight_love_sub"
+    case homeInsightHealth      = "home_insight_health"
+    case homeInsightHealthSub   = "home_insight_health_sub"
+    case homeInsightWealth      = "home_insight_wealth"
+    case homeInsightWealthSub   = "home_insight_wealth_sub"
+    case homeInsightCareer      = "home_insight_career"
+    case homeInsightCareerSub   = "home_insight_career_sub"
+    
+    case insightDetailStrengthsTitle = "insight_detail_strengths_title"
+    case insightDetailWeaknessesTitle = "insight_detail_weaknesses_title"
+    case insightDetailStrengthsHeader = "insight_detail_strengths_header"
+    case insightDetailWeaknessesHeader = "insight_detail_weaknesses_header"
+    case insightDetailStrengthsAdvice = "insight_detail_strengths_advice"
+    case insightDetailWeaknessesAdvice = "insight_detail_weaknesses_advice"
+    case insightDetailStrengthsFooter = "insight_detail_strengths_footer"
+    case insightDetailWeaknessesFooter = "insight_detail_weaknesses_footer"
+    case insightDetailShareMessage   = "insight_detail_share_message"
+    case insightDetailGuide          = "insight_detail_guide"
+    
     // MARK: Scanner
     case scanTitle          = "scan_title"
     case scanSubtitle       = "scan_subtitle"
     case scanButton         = "scan_button"
     case scanning           = "scanning"
     case scanAnalyzing      = "scan_analyzing"
+    case scanWarning        = "scan_warning"
+    case scanAligning       = "scan_aligning"
 
     // MARK: Fortune Result
     case fortuneTitle       = "fortune_title"
@@ -41,6 +75,21 @@ enum LKey: String, Codable {
     case settingsTitle          = "settings_title"
     case settingsSectionGeneral = "settings_section_general"
     case settingsSectionSupport = "settings_section_support"
+    case settingsSectionAccount = "settings_section_account"
+    case settingsPersonalInfo   = "settings_personal_info"
+    case settingsPersonalInfoSub = "settings_personal_info_sub"
+    case settingsFixEyeColor    = "settings_fix_eye_color"
+    case settingsFixEyeColorSub = "settings_fix_eye_color_sub"
+    case settingsPrivacyPolicy  = "settings_privacy_policy"
+    case settingsPrivacyPolicySub = "settings_privacy_policy_sub"
+    case settingsRateUs         = "settings_rate_us"
+    case settingsRateUsSub      = "settings_rate_us_sub"
+    case settingsLogout         = "settings_logout"
+    case settingsDeleteAccount  = "settings_delete_account"
+    case settingsDeleteConfirmTitle = "settings_delete_confirm_title"
+    case settingsDeleteConfirmMessage = "settings_delete_confirm_message"
+    case settingsCancel         = "settings_cancel"
+    case settingsDelete         = "settings_delete"
     case settingsNotifications  = "settings_notifications"
     case settingsNotifSub       = "settings_notif_sub"
     case settingsPrivacy        = "settings_privacy"
@@ -70,6 +119,7 @@ enum LKey: String, Codable {
     case loginPassword      = "login_password"
     case loginPasswordPlaceholder = "login_password_placeholder"
     case loginForgot        = "login_forgot"
+    case loginEntry         = "login_entry"
     case loginButton        = "login_button"
     case loginOrConnect     = "login_or_connect"
     case loginGoogle        = "login_google"
@@ -118,6 +168,7 @@ enum LKey: String, Codable {
     case notifDaily        = "notif_daily"
     case notifInactivity   = "notif_inactivity"
     case notifMonthly      = "notif_monthly"
+    case notifFortuneReady = "notif_fortune_ready"
     
     // MARK: Widget & Themes
     case widgetHeader      = "widget_header"
@@ -141,6 +192,45 @@ enum LKey: String, Codable {
     case premiumLockedTitle = "premium_locked_title"
     case premiumLockedDesc  = "premium_locked_desc"
     case premiumLockedButton = "premium_locked_button"
+    case premiumStatus      = "premium_status"
+    
+    // MARK: Alerts
+    case alertError         = "alert_error"
+    case alertOk            = "alert_ok"
+    case loginNewHere       = "login_new_here"
+    case registerTitle      = "register_title"
+    case registerSubtitle   = "register_subtitle"
+    case registerFullName   = "register_full_name"
+    case registerFullNamePlaceholder = "register_full_name_placeholder"
+    case registerEmailPlaceholder = "register_email_placeholder"
+    case registerPasswordMismatch = "register_password_mismatch"
+    case registerAlreadyHaveAccount = "register_already_have_account"
+    case registerNavTitle   = "register_nav_title"
+    
+    // MARK: Contact Us
+    case contactTitle       = "contact_title"
+    case contactSubtitle    = "contact_subtitle"
+    case contactName        = "contact_name"
+    case contactEmail       = "contact_email"
+    case contactSubject     = "contact_subject"
+    case contactMessage     = "contact_message"
+    case contactSend        = "contact_send"
+    case contactSuccess     = "contact_success"
+    case contactSuccessSub  = "contact_success_sub"
+    
+    // MARK: Fortune Results
+    case fortuneDaily       = "fortune_daily"
+    case fortunePersonality = "fortune_personality"
+    case fortuneShareMessage = "fortune_share_message"
+    case fortuneGuide       = "fortune_guide"
+    case fortuneGuideMotto  = "fortune_guide_motto"
+    
+    // MARK: History
+    case historyContinueReading = "history_continue_reading"
+    
+    // MARK: Reading
+    case readingMinutesSub  = "reading_minutes_sub"
+    case personalityGuideAdvice = "personality_guide_advice"
 }
 
 // MARK: - Translations Dictionary
@@ -163,12 +253,42 @@ struct LocalizedStrings {
             .homeDailyFortune:"GÜNLÜK FALINI GÖR",
             .homePersonality: "KİŞİLİK ANALİZİNİ GÖR",
             .homeTier:        "SEVİYE IV GİZEMCİ",
+            .homeGreetingsMorning: "GÜNAYDIN",
+            .homeGreetingsAfternoon: "İYİ GÜNLER",
+            .homeGreetingsEvening: "İYİ AKŞAMLAR",
+            .homeGreetingsNight: "İYİ GECELER",
+            .homeMysticMorning: "Güneşin doğuşuyla evrenin kapıları aralanıyor, ruhun ışığa kavuşuyor.",
+            .homeMysticAfternoon: "Günün en parlak anında kadim bilgiler zihnine akmaya başlıyor.",
+            .homeMysticEvening: "Yıldızlar gökyüzüne yerleşirken gizemli mesajlar sezgilerine ulaşıyor.",
+            .homeMysticNight: "Gecenin derinliğinde yıldızlar parlıyor, sana rehberlik eden mesajlar fısıldıyorlar.",
+
+            .homeInsightLove:         "Aşk & İlişkiler",
+            .homeInsightLoveSub:      "Uyum Analizi",
+            .homeInsightHealth:       "Canlılık & Sağlık",
+            .homeInsightHealthSub:    "Enerji Durumu",
+            .homeInsightWealth:       "Refah & Bolluk",
+            .homeInsightWealthSub:    "Maddi Şans",
+            .homeInsightCareer:       "Kariyer & Hedefler",
+            .homeInsightCareerSub:    "Gelecek Planı",
+
+            .insightDetailStrengthsTitle: "Güçlü Yönlerin",
+            .insightDetailWeaknessesTitle: "Zayıf Yönlerin",
+            .insightDetailStrengthsHeader: "GÜÇLÜ YÖNLER",
+            .insightDetailWeaknessesHeader: "ZAYIF YÖNLER",
+            .insightDetailStrengthsAdvice: "Kozmik güçler ve yıldızların fısıltısı senin bu eşsiz yeteneklerini destekliyor. Bu parlak yönlerini hayatının her alanına yaymak, sadece senin için değil, çevrendekiler için de bir ışık kaynağı olacaktır. İçindeki bu gücü fark etmek, ruhsal yolculuğunda atacağın en önemli adımlardan biridir. Gökyüzündeki hizalanmalar senin bu potansiyelini en yüksek seviyeye çıkarmak için uygun bir zemin hazırlıyor. Kendine olan güvenini bu güçlerden alarak, karşına çıkan her türlü engeli zarafetle aşabileceğini unutma. Evrenin enerjisini bu yönlerine kanalize ettiğinde, mucizelerin gerçekleşmeye başladığını göreceksin. Şansın ve bilgeliğin her daim seninle olsun.",
+            .insightDetailWeaknessesAdvice: "Zayıf yönlerini cesaretle kabul etmek, onları sarsılmaz bir güce dönüştürmenin ilk ve en kutsal adımıdır. Her bir eksiklik, aslında ruhunun tamamlanmayı bekleyen bir parçası ve öğrenilmesi gereken bir dersidir. Evren sana bu alanlarda gelişim göstermen için sürekli olarak küçük rehberlikler ve fırsatlar sunuyor. Bu yönlerinin farkında olmak, hayatındaki dengeyi kurmanı ve daha sağlam kararlar almanı sağlayacaktır. Kendine karşı şefkatli ol ama bu yönlerini geliştirmek için gereken iradeyi de içinden çıkar. Unutma ki en büyük elmaslar, en yüksek baskı altında ve karanlığın içinde şekillenir. Yıldızlar, senin bu dönüşüm sürecinde her zaman yanında olacak ve yolunu aydınlatacaktır.",
+            .insightDetailStrengthsFooter: "Işığını parlatmaya devam et.",
+            .insightDetailWeaknessesFooter: "Farkındalık dönüşümün ilk adımıdır.",
+            .insightDetailShareMessage:   "EyeSeesYourFuture ile ruhsal kimliğimi keşfettim!",
+            .insightDetailGuide:          "REHBER",
 
             .scanTitle:       "Gözünü Tarat",
             .scanSubtitle:    "Yapay zeka göz irisine bakarak kaderini okuyacak.",
             .scanButton:      "Taramayı Başlat",
             .scanning:        "Taranıyor...",
             .scanAnalyzing:   "Analiz ediliyor...",
+            .scanWarning:     "Not: Lütfen gözünüzü kadraja tam ortalayın ve yeterli ışık olduğundan emin olun. Hatalı sonuç almamak için bu önemlidir.",
+            .scanAligning:    "Göz hizalanıyor...",
 
             .fortuneTitle:    "Yapay Zeka Okuması",
             .fortuneSaveClose:"Kaydet ve Kapat",
@@ -182,6 +302,21 @@ struct LocalizedStrings {
             .settingsTitle:           "Mistik Ayarlar",
             .settingsSectionGeneral:  "GENEL DENEYİM",
             .settingsSectionSupport:  "DESTEK & YASAL",
+            .settingsSectionAccount:  "HESAP VE VERİ",
+            .settingsPersonalInfo:    "Kişisel Bilgiler",
+            .settingsPersonalInfoSub: "Ad, doğum tarihi ve kişilik verileri",
+            .settingsFixEyeColor:     "Göz Rengimi Düzelt",
+            .settingsFixEyeColorSub:  "Yanlış belirlendiyse talep oluşturun",
+            .settingsPrivacyPolicy:   "Gizlilik Politikası",
+            .settingsPrivacyPolicySub: "Verilerinizin nasıl korunduğunu görün",
+            .settingsRateUs:          "Bizi Değerlendir",
+            .settingsRateUsSub:       "App Store\'da yorum bırakın",
+            .settingsLogout:          "Çıkış Yap",
+            .settingsDeleteAccount:   "Hesabı Sil",
+            .settingsDeleteConfirmTitle: "Hesabı Sil",
+            .settingsDeleteConfirmMessage: "Profilinizi silmek istediğinize emin misiniz? Tüm verileriniz kalıcı olarak silinecektir.",
+            .settingsCancel:          "Vazgeç",
+            .settingsDelete:          "Sil",
             .settingsNotifications:   "Bildirim Ayarları",
             .settingsNotifSub:        "Günlük okumalar ve kozmik uyarılar",
             .settingsPrivacy:         "Hesap Gizliliği",
@@ -208,7 +343,8 @@ struct LocalizedStrings {
             .loginEmailPlaceholder:   "Kozmik e-postanı gir",
             .loginPassword:           "Şifre",
             .loginPasswordPlaceholder:"Gizli anahtarını gir",
-            .loginForgot:             "Şifremi Unuttum?",
+            .loginForgot:             "Şifremi Unuttum",
+            .loginEntry:              "Giriş Yap",
             .loginButton:             "Orakla Danış",
             .loginOrConnect:          "VEYA BAĞLAN",
             .loginGoogle:             "Google ile Devam Et",
@@ -254,6 +390,7 @@ struct LocalizedStrings {
             .notifDaily:         "Bakalım bugün seni neler bekliyor 👁️",
             .notifInactivity:    "Merak ediyorum. Sen etmiyor musun? ✨",
             .notifMonthly:       "Bu ay seni nelerin beklediğini sana söylemeliyim. 👁️",
+            .notifFortuneReady:   "Günlük falın hazır ✨",
             
             .widgetHeader:       "Günün Teması:",
             .themeLove:          "AŞK",
@@ -274,6 +411,39 @@ struct LocalizedStrings {
             .premiumLockedTitle:  "Celestial Erişim Kilitli",
             .premiumLockedDesc:   "Bu özel analizi ve kozmik rehberliği görüntülemek için Premium'a yükseltin.",
             .premiumLockedButton: "Kilidi Hemen Aç",
+            .premiumStatus:       "Premium Durumu",
+            .alertError:          "Hata",
+            .alertOk:             "Tamam",
+            .loginNewHere:        "Burada yeni misin?",
+            .registerTitle:       "Yolculuğuna Başla",
+            .registerSubtitle:    "Yıldızların senin için ne sakladığını öğrenmek için bilgilerini gir.",
+            .registerFullName:    "Tam Ad",
+            .registerFullNamePlaceholder: "Adını gir",
+            .registerEmailPlaceholder: "ruhun@kozmos.com",
+            .registerPasswordMismatch: "Şifreler eşleşmiyor.",
+            .registerAlreadyHaveAccount: "Zaten bir hesabın var mı?",
+            .registerNavTitle:     "Göksel Rehberlik",
+            
+            .contactTitle:        "Bize Ulaşın",
+            .contactSubtitle:     "Göz renginiz yanlış belirlendiyse veya bir geri bildiriminiz varsa bize yazın.",
+            .contactName:         "Ad Soyad",
+            .contactEmail:        "Apple ID E-posta",
+            .contactSubject:      "Konu",
+            .contactMessage:      "Mesajınız",
+            .contactSend:         "Gönder",
+            .contactSuccess:      "Mesajınız Gönderildi",
+            .contactSuccessSub:   "Geri bildiriminiz için teşekkür ederiz. Kozmik ekibimiz en kısa sürede sizinle iletişime geçecektir.",
+            
+            .fortuneDaily:        "Günlük Falın",
+            .fortunePersonality:  "Kişilik Analizin",
+            .fortuneShareMessage: "EyeSeesYourFuture ile kaderimi keşfettim!",
+            .fortuneGuide:        "KOZMİK REHBER",
+            .fortuneGuideMotto:   "Evrenin fısıltılarını dinle, kalbinin sesini takip et.",
+            
+            .historyContinueReading: "OKUMAYA DEVAM ET",
+            
+            .readingMinutesSub:   "dk",
+            .personalityGuideAdvice: "Kendini keşfetme yolculuğun, evrenin sana sunduğu en değerli hazinedir. Bu analizdeki her bir cümle, içindeki gizli potansiyeli uyandırmak ve gerceğe dönüştürmek için bir anahtardır. Hayatının bu evresinde karşına çıkan her zorluk, aslında ruhunun gelişimi için tasarlanmış özel birer basamaktır. Kendi iç sesine güvenmeyi öğrendikçe, dış dünyanın karmaşası yerini derin bir huzura ve netliğe bırakacaktır. Yıldızların ve irisin fısıldadığı bu bilgilerle yolunu aydınlatırken, her adımında daha cesur ve bilinçli ilerleyeceksin. Unutma ki sen, kendi kaderinin hem yazarı hem de başrol oyuncususun. Işığını parlatmaya devam ettikçe, evren de senin için yeni kapılar açmaya devam edecektir.",
         ],
 
         // ──────────────────────────────────────────
@@ -292,12 +462,42 @@ struct LocalizedStrings {
             .homeDailyFortune:"VIEW DAILY FORTUNE",
             .homePersonality: "VIEW PERSONALITY ANALYSIS",
             .homeTier:        "TIER IV MYSTIC",
+            .homeGreetingsMorning: "GOOD MORNING",
+            .homeGreetingsAfternoon: "GOOD DAY",
+            .homeGreetingsEvening: "GOOD EVENING",
+            .homeGreetingsNight: "GOOD NIGHT",
+            .homeMysticMorning: "With the sunrise, the gates of the universe open, your soul finds light.",
+            .homeMysticAfternoon: "At the brightest moment of the day, ancient wisdom begins to flow into your mind.",
+            .homeMysticEvening: "As the stars settle in the sky, mysterious messages reach your intuition.",
+            .homeMysticNight: "In the depths of the night, the stars shine, whispering messages that guide you.",
+
+            .homeInsightLove:         "Love & Relationships",
+            .homeInsightLoveSub:      "Harmony Analysis",
+            .homeInsightHealth:       "Vitality & Health",
+            .homeInsightHealthSub:    "Energy State",
+            .homeInsightWealth:       "Wealth & Abundance",
+            .homeInsightWealthSub:    "Financial Luck",
+            .homeInsightCareer:       "Career & Goals",
+            .homeInsightCareerSub:    "Future Plan",
+
+            .insightDetailStrengthsTitle: "Your Strengths",
+            .insightDetailWeaknessesTitle: "Your Weaknesses",
+            .insightDetailStrengthsHeader: "STRENGTHS",
+            .insightDetailWeaknessesHeader: "WEAKNESSES",
+            .insightDetailStrengthsAdvice: "Cosmic powers and the whispers of the stars support these unique talents of yours. Spreading these brilliant aspects to every area of your life will be a source of light not only for you but also for those around you. Recognizing this inner power is one of the most important steps in your spiritual journey. The alignments in the sky are preparing a suitable ground for you to reach the highest level of this potential. Never forget that by taking your self-confidence from these powers, you can overcome every obstacle you encounter with grace. When you channel the energy of the universe into these directions, you will see miracles begin to happen. May luck and wisdom always be with you.",
+            .insightDetailWeaknessesAdvice: "Courageously accepting your weaknesses is the first and most sacred step in turning them into an unshakable strength. Every shortcoming is actually a part of your soul waiting to be completed and a lesson to be learned. The universe constantly offers small guidances and opportunities for you to grow in these areas. Being aware of these aspects will allow you to establish balance in your life and make more solid decisions. Be compassionate towards yourself but also find the will to develop these areas within you. Remember that the greatest diamonds are shaped under the highest pressure and in darkness. The stars will always be by your side during this transformation process and will light your way.",
+            .insightDetailStrengthsFooter: "Keep shining your light.",
+            .insightDetailWeaknessesFooter: "Awareness is the first step of transformation.",
+            .insightDetailShareMessage:   "I discovered my spiritual identity with EyeSeesYourFuture!",
+            .insightDetailGuide:          "GUIDE",
 
             .scanTitle:       "Scan Your Eye",
             .scanSubtitle:    "AI will read your destiny through your iris.",
             .scanButton:      "Start Scan",
             .scanning:        "Scanning...",
             .scanAnalyzing:   "Analyzing...",
+            .scanWarning:     "Note: Please center your eye in the frame and ensure enough light for an accurate analysis.",
+            .scanAligning:    "Aligning eye...",
 
             .fortuneTitle:    "AI Reading",
             .fortuneSaveClose:"Save & Close",
@@ -311,6 +511,21 @@ struct LocalizedStrings {
             .settingsTitle:           "Mystic Settings",
             .settingsSectionGeneral:  "GENERAL EXPERIENCE",
             .settingsSectionSupport:  "SUPPORT & LEGAL",
+            .settingsSectionAccount:  "ACCOUNT AND DATA",
+            .settingsPersonalInfo:    "Personal Information",
+            .settingsPersonalInfoSub: "Name, birth date, and personality data",
+            .settingsFixEyeColor:     "Fix My Eye Color",
+            .settingsFixEyeColorSub:  "Create a request if identified incorrectly",
+            .settingsPrivacyPolicy:   "Privacy Policy",
+            .settingsPrivacyPolicySub: "See how your data is protected",
+            .settingsRateUs:          "Rate Us",
+            .settingsRateUsSub:       "Leave a review on the App Store",
+            .settingsLogout:          "Log Out",
+            .settingsDeleteAccount:   "Delete Account",
+            .settingsDeleteConfirmTitle: "Delete Account",
+            .settingsDeleteConfirmMessage: "Are you sure you want to delete your profile? All your data will be permanently deleted.",
+            .settingsCancel:          "Cancel",
+            .settingsDelete:          "Delete",
             .settingsNotifications:   "Notification Settings",
             .settingsNotifSub:        "Daily readings & cosmic alerts",
             .settingsPrivacy:         "Account Privacy",
@@ -337,7 +552,8 @@ struct LocalizedStrings {
             .loginEmailPlaceholder:   "Enter your celestial email",
             .loginPassword:           "Password",
             .loginPasswordPlaceholder:"Enter your secret key",
-            .loginForgot:             "Forgot Password?",
+            .loginForgot:             "Forgot Password",
+            .loginEntry:              "Log In",
             .loginButton:             "Consult the Oracle",
             .loginOrConnect:          "OR CONNECT VIA",
             .loginGoogle:             "Continue with Google",
@@ -383,6 +599,7 @@ struct LocalizedStrings {
             .notifDaily:         "Let's see what awaits you today 👁️",
             .notifInactivity:    "I'm curious. Aren't you? ✨",
             .notifMonthly:       "I must tell you what awaits you this month. 👁️",
+            .notifFortuneReady:   "Your daily fortune is ready ✨",
             
             .widgetHeader:       "Daily Theme:",
             .themeLove:          "LOVE",
@@ -403,6 +620,39 @@ struct LocalizedStrings {
             .premiumLockedTitle:  "Celestial Access Locked",
             .premiumLockedDesc:   "Upgrade to Premium to view this detailed analysis and cosmic guidance.",
             .premiumLockedButton: "Unlock Now",
+            .premiumStatus:       "Premium Status",
+            .alertError:          "Error",
+            .alertOk:             "OK",
+            .loginNewHere:        "New here?",
+            .registerTitle:       "Begin Your Journey",
+            .registerSubtitle:    "Enter your details to reveal what the stars have in store for you.",
+            .registerFullName:    "Full Name",
+            .registerFullNamePlaceholder: "Enter your name",
+            .registerEmailPlaceholder: "your.soul@cosmos.com",
+            .registerPasswordMismatch: "Passwords do not match.",
+            .registerAlreadyHaveAccount: "Already have an account?",
+            .registerNavTitle:     "Celestial Guidance",
+            
+            .contactTitle:        "Contact Us",
+            .contactSubtitle:     "Write to us if your eye color was identified incorrectly or if you have feedback.",
+            .contactName:         "Full Name",
+            .contactEmail:        "Apple ID Email",
+            .contactSubject:      "Subject",
+            .contactMessage:      "Your Message",
+            .contactSend:         "Send",
+            .contactSuccess:      "Message Sent",
+            .contactSuccessSub:   "Thank you for your feedback. Our cosmic team will contact you as soon as possible.",
+            
+            .fortuneDaily:        "Daily Fortune",
+            .fortunePersonality:  "Personality Analysis",
+            .fortuneShareMessage: "I discovered my destiny with EyeSeesYourFuture!",
+            .fortuneGuide:        "COSMIC GUIDE",
+            .fortuneGuideMotto:   "Listen to the whispers of the universe, follow the voice of your heart.",
+            
+            .historyContinueReading: "CONTINUE READING",
+            .personalityGuideAdvice: "Your journey of self-discovery is the most precious treasure the universe has ever offered you. Every sentence in this analysis is a golden key designed to awaken and transform your hidden potential into reality. Every challenge you encounter at this stage of your life is actually a stepping stone specially crafted for your soul's growth. As you learn to trust your own inner voice, the chaos of the outside world will give way to a profound sense of peace and clarity. By lighting your path with these insights whispered by the stars and your iris, you will move forward with more courage and awareness. Never forget that you are both the author and the lead actor of your own destiny. As you continue to shine your light, the universe will continue to open new doors of opportunity for you.",
+            
+            .readingMinutesSub:   "min",
         ],
 
         // ──────────────────────────────────────────
@@ -421,6 +671,14 @@ struct LocalizedStrings {
             .homeDailyFortune:"VOIR LA FORTUNE DU JOUR",
             .homePersonality: "VOIR L'ANALYSE DE PERSONNALITÉ",
             .homeTier:        "MYSTIQUE NIVEAU IV",
+            .homeGreetingsMorning: "BONJOUR",
+            .homeGreetingsAfternoon: "BONNE JOURNÉE",
+            .homeGreetingsEvening: "BONSOIR",
+            .homeGreetingsNight: "BONNE NUIT",
+            .homeMysticMorning: "Avec le lever du soleil, les portes de l'univers s'ouvrent, votre âme trouve la lumière.",
+            .homeMysticAfternoon: "Au moment le plus brillant de la journée, la sagesse ancienne commence à couler dans votre esprit.",
+            .homeMysticEvening: "Alors que les étoiles s'installent dans le ciel, des messages mystérieux atteignent votre intuition.",
+            .homeMysticNight: "Dans les profondeurs de la nuit, les étoiles brillent, murmurant des messages qui vous guident.",
 
             .scanTitle:       "Scannez votre œil",
             .scanSubtitle:    "L'IA lira votre destinée dans votre iris.",
@@ -438,6 +696,9 @@ struct LocalizedStrings {
             .settingsTitle:           "Paramètres mystiques",
             .settingsSectionGeneral:  "EXPÉRIENCE GÉNÉRALE",
             .settingsSectionSupport:  "SUPPORT & LÉGAL",
+            .settingsSectionAccount:  "COMPTE ET DONNÉES",
+            .settingsLogout:          "Se déconnecter",
+            .settingsDeleteAccount:   "Supprimer le compte",
             .settingsNotifications:   "Paramètres de notification",
             .settingsNotifSub:        "Lectures quotidiennes & alertes cosmiques",
             .settingsPrivacy:         "Confidentialité du compte",
@@ -521,6 +782,14 @@ struct LocalizedStrings {
             .homeDailyFortune:"VER FORTUNA DIARIA",
             .homePersonality: "VER ANÁLISIS DE PERSONALIDAD",
             .homeTier:        "MÍSTICO NIVEL IV",
+            .homeGreetingsMorning: "BUENOS DÍAS",
+            .homeGreetingsAfternoon: "BUENAS TARDES",
+            .homeGreetingsEvening: "BUENAS NOCHES",
+            .homeGreetingsNight: "BUENAS NOCHES",
+            .homeMysticMorning: "Con el amanecer, las puertas del universo se abren, tu alma encuentra la luz.",
+            .homeMysticAfternoon: "En el momento más brillante del día, la sabiduría antigua comienza a fluir en tu mente.",
+            .homeMysticEvening: "A medida que las estrellas se asientan en el cielo, mensajes misteriosos llegan a tu intuición.",
+            .homeMysticNight: "En las profundidades de la noche, las estrellas brillan, susurrando mensajes que te guían.",
 
             .scanTitle:       "Escanea tu ojo",
             .scanSubtitle:    "La IA leerá tu destino a través de tu iris.",
@@ -538,6 +807,9 @@ struct LocalizedStrings {
             .settingsTitle:           "Configuración mística",
             .settingsSectionGeneral:  "EXPERIENCIA GENERAL",
             .settingsSectionSupport:  "SOPORTE & LEGAL",
+            .settingsSectionAccount:  "CUENTA Y DATOS",
+            .settingsLogout:          "Cerrar sesión",
+            .settingsDeleteAccount:   "Eliminar cuenta",
             .settingsNotifications:   "Configuración de notificaciones",
             .settingsNotifSub:        "Lecturas diarias y alertas cósmicas",
             .settingsPrivacy:         "Privacidad de la cuenta",
@@ -621,6 +893,14 @@ struct LocalizedStrings {
             .homeDailyFortune:"TAGESHOROSKOP ANZEIGEN",
             .homePersonality: "PERSÖNLICHKEITSANALYSE ANZEIGEN",
             .homeTier:        "MYSTIKER STUFE IV",
+            .homeGreetingsMorning: "GUTEN MORGEN",
+            .homeGreetingsAfternoon: "GUTEN TAG",
+            .homeGreetingsEvening: "GUTEN ABEND",
+            .homeGreetingsNight: "GUTE NACHT",
+            .homeMysticMorning: "Mit dem Sonnenaufgang öffnen sich die Tore des Universums, deine Seele findet Licht.",
+            .homeMysticAfternoon: "Im hellsten Moment des Tages beginnt alte Weisheit in deinen Geist zu fließen.",
+            .homeMysticEvening: "Während sich die Sterne am Himmel niederlassen, erreichen geheimnisvolle Botschaften deine Intuition.",
+            .homeMysticNight: "In den Tiefen der Nacht leuchten die Sterne und flüstern Botschaften, die dich leiten.",
 
             .scanTitle:       "Auge scannen",
             .scanSubtitle:    "Die KI liest dein Schicksal in deiner Iris.",
@@ -638,6 +918,9 @@ struct LocalizedStrings {
             .settingsTitle:           "Mystische Einstellungen",
             .settingsSectionGeneral:  "ALLGEMEINE ERFAHRUNG",
             .settingsSectionSupport:  "SUPPORT & RECHT",
+            .settingsSectionAccount:  "KONTO UND DATEN",
+            .settingsLogout:          "Abmelden",
+            .settingsDeleteAccount:   "Konto löschen",
             .settingsNotifications:   "Benachrichtigungseinstellungen",
             .settingsNotifSub:        "Tägliche Lesungen & kosmische Alarme",
             .settingsPrivacy:         "Kontodatenschutz",
@@ -721,6 +1004,14 @@ struct LocalizedStrings {
             .homeDailyFortune:"VEDI FORTUNA GIORNALIERA",
             .homePersonality: "VEDI ANALISI DELLA PERSONALITÀ",
             .homeTier:        "MISTICO LIVELLO IV",
+            .homeGreetingsMorning: "BUONGIORNO",
+            .homeGreetingsAfternoon: "BUON POMERIGGIO",
+            .homeGreetingsEvening: "BUONASERA",
+            .homeGreetingsNight: "BUONANOTTE",
+            .homeMysticMorning: "Con l'alba, le porte dell'universo si aprono, la tua anima trova la luce.",
+            .homeMysticAfternoon: "Nel momento più luminoso della giornata, l'antica saggezza inizia a scorrere nella tua mente.",
+            .homeMysticEvening: "Mentre le stelle si sistemano nel cielo, messaggi misteriosi raggiungono il tuo intuito.",
+            .homeMysticNight: "Nelle profondità della notte, le stelle brillano, sussurrando messaggi che ti guidano.",
 
             .scanTitle:       "Scansiona il tuo occhio",
             .scanSubtitle:    "L'IA leggerà il tuo destino nel tuo iride.",
@@ -738,6 +1029,9 @@ struct LocalizedStrings {
             .settingsTitle:           "Impostazioni mistiche",
             .settingsSectionGeneral:  "ESPERIENZA GENERALE",
             .settingsSectionSupport:  "SUPPORTO & LEGALE",
+            .settingsSectionAccount:  "ACCOUNT E DATI",
+            .settingsLogout:          "Esci",
+            .settingsDeleteAccount:   "Elimina account",
             .settingsNotifications:   "Impostazioni notifiche",
             .settingsNotifSub:        "Letture giornaliere e avvisi cosmici",
             .settingsPrivacy:         "Privacy dell'account",

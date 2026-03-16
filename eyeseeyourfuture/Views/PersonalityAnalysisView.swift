@@ -86,8 +86,8 @@ struct PersonalityAnalysisView: View {
                             }
                             
                             Text(text)
-                                .font(.system(size: 19, weight: .medium, design: .serif))
-                                .lineSpacing(10)
+                                .font(.system(size: 16, weight: .medium, design: .serif))
+                                .lineSpacing(6)
                                 .foregroundColor(themeManager.primaryTextColor)
                                 .blur(radius: isPremium ? 0 : 12)
                             
@@ -103,7 +103,7 @@ struct PersonalityAnalysisView: View {
                                         .foregroundColor(themeManager.secondaryTextColor)
                                 }
                                 
-                                Text("Kendini keşfetme yolculuğun, evrenin sana sunduğu en değerli hazinedir. Bu analizdeki her bir cümle, içindeki potansiyeli uyandırmak için bir anahtardır.")
+                                Text(lm.t(.personalityGuideAdvice))
                                     .font(.system(size: 15, weight: .semibold))
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .padding(20)

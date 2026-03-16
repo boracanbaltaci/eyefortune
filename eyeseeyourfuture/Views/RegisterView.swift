@@ -3,6 +3,7 @@ import SwiftUI
 struct RegisterView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     @Environment(\.presentationMode) var presentationMode
     
     // State variables for form fields
@@ -45,11 +46,11 @@ struct RegisterView: View {
                         
                         // Texts
                         VStack(spacing: 8) {
-                            Text("Begin Your Journey")
+                            Text(lm.t(.registerTitle))
                                 .font(.system(size: 28, weight: .bold, design: .serif))
                                 .foregroundColor(themeManager.primaryTextColor)
                             
-                            Text("Enter your details to reveal what the stars have\nin store for you.")
+                            Text(lm.t(.registerSubtitle))
                                 .font(.system(size: 15, weight: .regular))
                                 .foregroundColor(themeManager.secondaryTextColor)
                                 .multilineTextAlignment(.center)
@@ -61,8 +62,8 @@ struct RegisterView: View {
                         // Form Fields
                         VStack(spacing: 18) {
                             CustomTextField(
-                                title: "Full Name",
-                                placeholder: "Enter your name",
+                                title: lm.t(.registerFullName),
+                                placeholder: lm.t(.registerFullNamePlaceholder),
                                 iconName: "person.fill",
                                 text: $fullName,
                                 isSecure: false,
@@ -70,8 +71,8 @@ struct RegisterView: View {
                             )
                             
                             CustomTextField(
-                                title: "Email",
-                                placeholder: "your.soul@cosmos.com",
+                                title: lm.t(.loginEmail),
+                                placeholder: lm.t(.registerEmailPlaceholder),
                                 iconName: "envelope.fill",
                                 text: $email,
                                 isSecure: false,
@@ -79,7 +80,7 @@ struct RegisterView: View {
                             )
                             
                             CustomTextField(
-                                title: "Password",
+                                title: lm.t(.loginPassword),
                                 placeholder: "••••••••",
                                 iconName: "lock.fill",
                                 text: $password,
@@ -88,7 +89,7 @@ struct RegisterView: View {
                             )
                             
                             CustomTextField(
-                                title: "Confirm Password",
+                                title: lm.t(.loginPasswordPlaceholder), // Reusing password placeholder logic as confirm
                                 placeholder: "••••••••",
                                 iconName: "checkmark.shield.fill",
                                 text: $confirmPassword,
@@ -100,17 +101,20 @@ struct RegisterView: View {
                         
                         // Create Account Button
                         Button(action: {
-                            if password == confirmPassword {
-                                authManager.registerWithEmail(email: email, password: password) { success in
+                            if fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty {
+                                authManager.errorMessage = "Tüm alanların doldurulması zorunludur."
+                                showError = true
+                            } else if password != confirmPassword {
+                                authManager.errorMessage = lm.t(.registerPasswordMismatch)
+                                showError = true
+                            } else {
+                                authManager.registerWithEmail(email: email, password: password, fullName: fullName) { success in
                                     if success {
                                         showSubscription = true
                                     } else {
                                         showError = true
                                     }
                                 }
-                            } else {
-                                authManager.errorMessage = "Şifreler eşleşmiyor."
-                                showError = true
                             }
                         }) {
                             HStack {
@@ -118,7 +122,7 @@ struct RegisterView: View {
                                     ProgressView()
                                         .tint(themeManager.bgColor)
                                 } else {
-                                    Text("Create Account")
+                                    Text(lm.t(.loginRegister))
                                         .font(.system(size: 17, weight: .bold))
                                     Image(systemName: "sparkles")
                                 }
@@ -129,26 +133,26 @@ struct RegisterView: View {
                             .background(themeManager.accentYellow)
                             .cornerRadius(30)
                         }
-                        .disabled(authManager.isLoading || email.isEmpty || password.isEmpty || fullName.isEmpty)
+                        .disabled(authManager.isLoading)
                         .padding(.horizontal, 20)
                         .padding(.top, 30)
-                        .alert("Hata", isPresented: $showError) {
-                            Button("Tamam", role: .cancel) { }
+                        .alert(lm.t(.alertError), isPresented: $showError) {
+                            Button(lm.t(.alertOk), role: .cancel) { }
                         } message: {
-                            Text(authManager.errorMessage ?? "Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin.")
+                            Text(authManager.errorMessage ?? lm.t(.alertError))
                         }
                         
                         // Social Buttons removed as requested
                         
                         // Login Link
                         HStack(spacing: 5) {
-                            Text("Already have an account?")
+                            Text(lm.t(.registerAlreadyHaveAccount))
                                 .font(.system(size: 14))
                                 .foregroundColor(themeManager.secondaryTextColor)
                             Button(action: {
                                 presentationMode.wrappedValue.dismiss()
                             }) {
-                                Text("Log In")
+                                Text(lm.t(.loginEntry))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(themeManager.accentYellow)
                             }
@@ -161,7 +165,7 @@ struct RegisterView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Celestial Guidance")
+                    Text(lm.t(.registerNavTitle))
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }

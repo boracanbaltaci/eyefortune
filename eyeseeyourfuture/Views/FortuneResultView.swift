@@ -41,14 +41,14 @@ struct FortuneResultView: View {
                         
                         Spacer()
                         
-                        Text(fortune.type == .aiScan ? "Kişilik Analizin" : "Günlük Falın")
+                        Text(fortune.type == .aiScan ? lm.t(.fortunePersonality) : lm.t(.fortuneDaily))
                             .font(.system(size: 18, weight: .bold, design: .serif))
                             .foregroundColor(themeManager.accentYellow)
                         
                         Spacer()
                         
                         // Share Button
-                        ShareLink(item: fortune.text, subject: Text(fortune.type == .aiScan ? "Kişilik Analizim" : "Günlük Falım"), message: Text("EyeSeesYourFuture ile kaderimi keşfettim!")) {
+                        ShareLink(item: fortune.text, subject: Text(fortune.type == .aiScan ? lm.t(.fortunePersonality) : lm.t(.fortuneDaily)), message: Text(lm.t(.fortuneShareMessage))) {
                             ZStack {
                                 Circle()
                                     .fill(themeManager.cardBgColor)
@@ -113,8 +113,8 @@ struct FortuneResultView: View {
                                 }
                                 
                                 Text(fortune.text)
-                                    .font(.system(size: 19, weight: .medium, design: .serif))
-                                    .lineSpacing(10)
+                                    .font(.system(size: 16, weight: .medium, design: .serif))
+                                    .lineSpacing(6)
                                     .foregroundColor(themeManager.primaryTextColor)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -134,12 +134,12 @@ struct FortuneResultView: View {
                             
                             // Motivational Footer
                             VStack(spacing: 8) {
-                                Text("KOZMİK REHBER")
+                                Text(lm.t(.fortuneGuide))
                                     .font(.system(size: 10, weight: .black))
                                     .tracking(2)
                                     .foregroundColor(themeManager.accentYellow.opacity(0.5))
                                 
-                                Text("Evrenin fısıltılarını dinle, kalbinin sesini takip et.")
+                                Text(lm.t(.fortuneGuideMotto))
                                     .font(.system(size: 14, weight: .medium, design: .serif))
                                     .italic()
                                     .foregroundColor(themeManager.secondaryTextColor)

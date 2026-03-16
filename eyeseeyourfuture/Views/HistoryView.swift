@@ -63,7 +63,7 @@ struct HistoryView: View {
                     AdBannerView()
                 }
             }
-            .navigationTitle("Gizli Defter")
+            .navigationTitle(lm.t(.historyTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
@@ -80,6 +80,7 @@ struct HistoryView: View {
 struct FavoriteFortuneCard: View {
     let fortune: Fortune
     @ObservedObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     let onTap: () -> Void
     
     var body: some View {
@@ -97,7 +98,7 @@ struct FavoriteFortuneCard: View {
                             .foregroundColor(themeManager.accentYellow)
                     }
                     
-                    Text(fortune.type == .aiScan ? "Kişilik Analizi" : "Gelecek Okuması")
+                    Text(fortune.type == .aiScan ? lm.t(.fortunePersonality) : lm.t(.fortuneDaily))
                         .font(.system(size: 11, weight: .black))
                         .tracking(1)
                         .foregroundColor(themeManager.accentYellow)
@@ -119,7 +120,7 @@ struct FavoriteFortuneCard: View {
                 
                 // Footer
                 HStack {
-                    Text("OKUMAYA DEVAM ET")
+                    Text(lm.t(.historyContinueReading))
                         .font(.system(size: 10, weight: .black))
                         .foregroundColor(themeManager.accentYellow.opacity(0.8))
                     

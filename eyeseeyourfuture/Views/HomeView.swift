@@ -29,12 +29,7 @@ struct HomeView: View {
     @State private var showSetup = false
     @State private var isPressed = false
     
-    @State private var categories: [InsightCategory] = [
-        InsightCategory(title: "Aşk & İlişkiler", subtitle: "Uyum: Yüksek Potansiyel", icon: "heart.fill", color: Color.pink, description: "Kalbinin derinliklerinde saklı olan duygular, bu dönemde gün yüzüne çıkacak. Partnerinle olan iletişimin güçleniyor, ancak küçük yanlış anlaşılmalara karşı dikkatli olmalısın."),
-        InsightCategory(title: "Canlılık & Sağlık", subtitle: "Enerji: Ay Fazına Duyarlı", icon: "bolt.fill", color: Color.green, description: "Fiziksel enerjin şu sıralar dalgalı seyredebilir. Dinlenmeye ve meditasyona vakit ayırarak iç dengeni korumaya odaklanmalısın. Doğal taşların enerjisinden faydalanabilirsin."),
-        InsightCategory(title: "Refah & Bolluk", subtitle: "Durum: Yükselen Şans", icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025"), description: "Maddi konularda beklenmedik kapılar aralanabilir. Harcamalarını kontrol altında tutarsan, ay sonuna doğru bütçende gözle görülür bir rahatlama hissedebilirsin."),
-        InsightCategory(title: "Kariyer & Hedefler", subtitle: "Yol: Geçiş Evresi", icon: "briefcase.fill", color: Color.blue, description: "İş hayatında yeni sorumluluklar seni bekliyor olabilir. Yeteneklerini sergilemek için harika bir fırsat dönemi. Cesur adımlar atmaktan çekinme, yıldızlar seni destekliyor.")
-    ]
+    @State private var categories: [InsightCategory] = []
     
     @State private var showSettings = false
     @State private var showFortunePage = false
@@ -120,11 +115,11 @@ struct HomeView: View {
                                         showActionMenu = true
                                     }
                                 }
-                                .confirmationDialog("Göz Analizi", isPresented: $showActionMenu, titleVisibility: .visible) {
-                                    Button("Göz rengim yanlış, tekrar analiz et") {
+                                .confirmationDialog(lm.t(.homeEyeAnalysis), isPresented: $showActionMenu, titleVisibility: .visible) {
+                                    Button(lm.t(.homeFixEyeColor)) {
                                         showContactUs = true
                                     }
-                                    Button("İptal", role: .cancel) {}
+                                    Button(lm.t(.settingsCancel), role: .cancel) {}
                                 }
                                 
                                 VStack(spacing: 8) {
@@ -227,7 +222,11 @@ struct HomeView: View {
                                 }
                                 
                                 Button(action: {
-                                    if irisReading.isEmpty {
+                                    if let aiPersonality = fortuneViewModel.personalityFortune?.text {
+                                        personalityAnalysisText = aiPersonality
+                                    } else if !irisReading.isEmpty {
+                                        personalityAnalysisText = irisReading
+                                    } else {
                                         personalityAnalysisText = """
                                         Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor.
                                         Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi.
@@ -235,8 +234,6 @@ struct HomeView: View {
                                         Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor.
                                         Bu hassasiyetin senin en büyük süper gücün ve gelişim yolculuğundaki rehberin.
                                         """
-                                    } else {
-                                        personalityAnalysisText = irisReading
                                     }
                                     showPersonalityModal = true
                                 }) {
@@ -304,10 +301,9 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Ana Sayfan")
+                    Text(lm.t(.tabHome))
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
-                }
                 }
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
@@ -348,30 +344,99 @@ struct HomeView: View {
                     .environmentObject(themeManager)
                     .environmentObject(lm)
             }
-            .sheet(isPresented: $showSetup) {
-                PersonalSetupView()
-                    .environmentObject(themeManager)
-                    .environmentObject(lm)
+            .onAppear {
+                setupCategories()
+                triggerAIGeneration()
             }
+            .onChange(of: fortuneViewModel.loveFortune?.text) { _, _ in setupCategories() }
+            .onChange(of: fortuneViewModel.healthFortune?.text) { _, _ in setupCategories() }
+            .onChange(of: fortuneViewModel.wealthFortune?.text) { _, _ in setupCategories() }
+            .onChange(of: fortuneViewModel.careerFortune?.text) { _, _ in setupCategories() }
+            .onChange(of: lm.language) { oldLang, newLang in
+                fortuneViewModel.clearCachesIfLanguageChanged(currentLanguage: newLang)
+                NotificationManager.shared.scheduleAllNotifications()
+                triggerAIGeneration()
+            }
+        }
+    }
+    
+    private func setupCategories() {
+        categories = [
+            InsightCategory(title: lm.t(.homeInsightLove), subtitle: lm.t(.homeInsightLoveSub), icon: "heart.fill", color: Color.pink, description: fortuneViewModel.loveFortune?.text ?? lm.t(.scanAnalyzing)),
+            InsightCategory(title: lm.t(.homeInsightHealth), subtitle: lm.t(.homeInsightHealthSub), icon: "bolt.fill", color: Color.green, description: fortuneViewModel.healthFortune?.text ?? lm.t(.scanAnalyzing)),
+            InsightCategory(title: lm.t(.homeInsightWealth), subtitle: lm.t(.homeInsightWealthSub), icon: "dollarsign.circle.fill", color: Color(hex: "#f4c025"), description: fortuneViewModel.wealthFortune?.text ?? lm.t(.scanAnalyzing)),
+            InsightCategory(title: lm.t(.homeInsightCareer), subtitle: lm.t(.homeInsightCareerSub), icon: "briefcase.fill", color: Color.blue, description: fortuneViewModel.careerFortune?.text ?? lm.t(.scanAnalyzing))
+        ]
+    }
+    
+    private func triggerAIGeneration() {
+        // Construct user context
+        let birthTime = UserDefaults.standard.string(forKey: "userBirthTime")
+        let birthDateStr = UserDefaults.standard.string(forKey: "userBirthDate")
+        let zodiac = UserDefaults.standard.string(forKey: "userZodiac")
+        let element = UserDefaults.standard.string(forKey: "userElement")
+        
+        var quizResults: [String: String]? = nil
+        if let data = UserDefaults.standard.data(forKey: "quizResultsSummary") {
+            quizResults = try? JSONDecoder().decode([String: String].self, from: data)
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        let birthDate = birthDateStr != nil ? formatter.date(from: birthDateStr!) : nil
+        
+        let userContext = User(
+            name: userNameStore,
+            birthDate: birthDate,
+            birthTime: birthTime,
+            zodiacSign: zodiac,
+            element: element,
+            personalityQuizResults: quizResults
+        )
+        
+        // Fetch missing ones
+        if fortuneViewModel.dailyFortune == nil {
+            fortuneViewModel.fetchDailyFortune(user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.loveFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .love, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.healthFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .health, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.wealthFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .wealth, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.careerFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .career, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.strengthsFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .strengths, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.weaknessesFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .weaknesses, user: userContext, language: lm.language)
+        }
+        if fortuneViewModel.personalityFortune == nil {
+            fortuneViewModel.fetchInsightFortune(type: .personality, user: userContext, language: lm.language)
         }
     }
     
     private var dynamicGreeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
-        case 5..<12: return "GÜNAYDIN"
-        case 12..<18: return "İYİ GÜNLER"
-        case 18..<22: return "İYİ AKŞAMLAR"
-        default: return "İYİ GECELER"
+        case 5..<12: return lm.t(.homeGreetingsMorning)
+        case 12..<18: return lm.t(.homeGreetingsAfternoon)
+        case 18..<22: return lm.t(.homeGreetingsEvening)
+        default: return lm.t(.homeGreetingsNight)
         }
     }
     private var mysticSentence: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
-        case 5..<12: return "Güneşin doğuşuyla evrenin kapıları aralanıyor, ruhun ışığa kavuşuyor."
-        case 12..<18: return "Günün en parlak anında kadim bilgiler zihnine akmaya başlıyor."
-        case 18..<22: return "Yıldızlar gökyüzüne yerleşirken gizemli mesajlar sezgilerine ulaşıyor."
-        default: return "Gecenin derinliğinde yıldızlar parlıyor, sana rehberlik eden mesajlar fısıldıyorlar."
+        case 5..<12: return lm.t(.homeMysticMorning)
+        case 12..<18: return lm.t(.homeMysticAfternoon)
+        case 18..<22: return lm.t(.homeMysticEvening)
+        default: return lm.t(.homeMysticNight)
         }
     }
 }
@@ -505,6 +570,7 @@ struct InsightCategoryCard: View {
     let isExpanded: Bool
     let isPremium: Bool
     @ObservedObject var themeManager: ThemeManager
+    @EnvironmentObject var lm: LocalizationManager
     let onToggle: () -> Void
     
     var body: some View {
@@ -549,7 +615,7 @@ struct InsightCategoryCard: View {
                     }
                     
                     // Action pill
-                    Text("See Insights")
+                    Text(lm.t(.homeSeeInsights))
                         .font(.system(size: 10, weight: .bold))
                         .tracking(0.5)
                         .foregroundColor(themeManager.accentYellow)

@@ -7,6 +7,9 @@ struct PersonalSetupView: View {
     
     @AppStorage("userName") var userNameStore: String = ""
     @AppStorage("userBirthTime") var userBirthTimeStore: String = ""
+    @AppStorage("userBirthDate") var userBirthDateStore: String = ""
+    @AppStorage("userZodiac") var userZodiacStore: String = ""
+    @AppStorage("userElement") var userElementStore: String = ""
     @State private var fullName = ""
     @State private var birthDate = ""
     @State private var birthTime = ""
@@ -182,6 +185,9 @@ struct PersonalSetupView: View {
                                     if isFormValid {
                                         userNameStore = fullName
                                         userBirthTimeStore = "\(birthTime) \(timePeriod)"
+                                        userBirthDateStore = birthDate
+                                        userElementStore = selectedElement?.rawValue ?? ""
+                                        userZodiacStore = calculateZodiac(from: birthDate)
                                         navigateToScanner = true
                                     }
                                 }) {
@@ -338,6 +344,29 @@ struct PersonalSetupView: View {
         
         if result != value || value.contains(where: { !$0.isNumber && $0 != ":" }) {
             birthTime = result
+        }
+    }
+    
+    private func calculateZodiac(from dateStr: String) -> String {
+        let components = dateStr.split(separator: "/")
+        guard components.count >= 2,
+              let day = Int(components[0]),
+              let month = Int(components[1]) else { return "Bilinmiyor" }
+        
+        switch (month, day) {
+        case (1, 20...31), (2, 1...18): return "Kova"
+        case (2, 19...29), (3, 1...20): return "Balık"
+        case (3, 21...31), (4, 1...19): return "Koç"
+        case (4, 20...30), (5, 1...20): return "Boğa"
+        case (5, 21...31), (6, 1...20): return "İkizler"
+        case (6, 21...30), (7, 1...22): return "Yengeç"
+        case (7, 23...31), (8, 1...22): return "Aslan"
+        case (8, 23...31), (9, 1...22): return "Başak"
+        case (9, 23...30), (10, 1...22): return "Terazi"
+        case (10, 23...31), (11, 1...21): return "Akrep"
+        case (11, 22...30), (12, 1...21): return "Yay"
+        case (12, 22...31), (1, 1...19): return "Oğlak"
+        default: return "Bilinmiyor"
         }
     }
 }
