@@ -47,6 +47,20 @@ struct FortuneResultView: View {
                         
                         Spacer()
                         
+                        // Share Button
+                        ShareLink(item: fortune.text, subject: Text(fortune.type == .aiScan ? "Kişilik Analizim" : "Günlük Falım"), message: Text("EyeSeesYourFuture ile kaderimi keşfettim!")) {
+                            ZStack {
+                                Circle()
+                                    .fill(themeManager.cardBgColor)
+                                    .frame(width: 44, height: 44)
+                                    .shadow(color: Color.black.opacity(0.2), radius: 4)
+                                
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(themeManager.primaryTextColor)
+                                    .font(.system(size: 18, weight: .bold))
+                            }
+                        }
+                        
                         Button(action: { dismiss() }) {
                             ZStack {
                                 Circle()
@@ -137,6 +151,8 @@ struct FortuneResultView: View {
                         }
                         .frame(minHeight: geo.size.height - 100) // Ensure it fills space for centering
                     }
+                    
+                    AdBannerView()
                 }
             }
         }

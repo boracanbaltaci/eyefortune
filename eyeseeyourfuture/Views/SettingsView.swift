@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var lm: LocalizationManager
     @Environment(\.presentationMode) var presentationMode
@@ -202,13 +203,23 @@ struct SettingsView: View {
                         // Delete Profile
                         VStack(spacing: 16) {
                             Button(action: {
+                                authManager.signOut()
+                                presentationMode.wrappedValue.dismiss()
+                            }) {
+                                Text("Çıkış Yap")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(themeManager.primaryTextColor)
+                            }
+                            .padding(.top, 16)
+
+                            Button(action: {
                                 showDeleteConfirmation = true
                             }) {
                                 Text("Hesabı Sil")
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.red)
                             }
-                            .padding(.top, 16)
+                            .padding(.top, 10)
 
                             Text(lm.t(.settingsVersion))
                                 .font(.system(size: 10, weight: .bold))
@@ -222,16 +233,6 @@ struct SettingsView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .foregroundColor(themeManager.primaryTextColor)
-                            .font(.system(size: 18))
-                    }
-                }
-
                 ToolbarItem(placement: .principal) {
                     Text(lm.t(.settingsTitle))
                         .font(.system(size: 18, weight: .bold, design: .serif))

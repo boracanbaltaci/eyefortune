@@ -72,6 +72,20 @@ struct InsightDetailView: View {
                     
                     Spacer()
                     
+                    // Share Button
+                    ShareLink(item: insightContent, subject: Text(type.title), message: Text("EyeSeesYourFuture ile ruhsal kimliğimi keşfettim!")) {
+                        ZStack {
+                            Circle()
+                                .fill(themeManager.cardBgColor)
+                                .frame(width: 44, height: 44)
+                                .shadow(color: Color.black.opacity(0.2), radius: 4)
+                            
+                            Image(systemName: "square.and.arrow.up")
+                                .foregroundColor(themeManager.primaryTextColor)
+                                .font(.system(size: 18, weight: .bold))
+                        }
+                    }
+                    
                     Button(action: { dismiss() }) {
                         ZStack {
                             Circle()
@@ -184,6 +198,8 @@ struct InsightDetailView: View {
                         .padding(.bottom, 40)
                     }
                 }
+                
+                AdBannerView()
             }
             
             if !isPremium {

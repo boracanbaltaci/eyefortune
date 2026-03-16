@@ -6,7 +6,7 @@ struct PersonalSetupView: View {
     @Environment(\.dismiss) var dismiss
     
     @AppStorage("userName") var userNameStore: String = ""
-    @StateObject private var profileManager = ProfileManager.shared
+    @AppStorage("userBirthTime") var userBirthTimeStore: String = ""
     @State private var fullName = ""
     @State private var birthDate = ""
     @State private var birthTime = ""
@@ -44,9 +44,35 @@ struct PersonalSetupView: View {
     
     private var isFormValid: Bool {
         !fullName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        birthDate.count == 10 && 
+        isDateValid &&
         !birthTime.isEmpty &&
         selectedElement != nil
+    }
+    
+    private var isDateValid: Bool {
+        let components = birthDate.split(separator: "/")
+        guard components.count == 3 else { return false }
+        
+        guard let day = Int(components[0]),
+              let month = Int(components[1]),
+              let year = Int(components[2]) else { return false }
+        
+        // Basic range checks
+        guard month >= 1 && month <= 12 else { return false }
+        
+        let now = Date()
+        let calendar = Calendar.current
+        let currentYear = calendar.component(.year, from: now)
+        
+        guard year >= 1900 && year <= currentYear else { return false }
+        
+        let dateComponents = DateComponents(year: year, month: month, day: day)
+        guard let date = calendar.date(from: dateComponents), dateComponents.isValidDate(in: calendar) else {
+            return false
+        }
+        
+        // Ensure not in the future
+        return date <= now
     }
     
     var body: some View {
@@ -59,21 +85,19 @@ struct PersonalSetupView: View {
                         VStack(spacing: 0) {
                             // 3-Step Navigator
                             StepNavigator(currentStep: 1, themeManager: themeManager)
-                                .padding(.top, 10)
-                            
-                            Spacer(minLength: 20)
+                                .padding(.top, 5)
                             
                             // Centered Content Container
-                            VStack(spacing: 40) {
+                            VStack(spacing: 24) {
                                 // Header Texts
-                                VStack(spacing: 12) {
+                                VStack(spacing: 8) {
                                     Text("Kozmik Kimlik")
-                                        .font(.system(size: 32, weight: .bold, design: .serif))
+                                        .font(.system(size: 28, weight: .bold, design: .serif))
                                         .foregroundColor(themeManager.primaryTextColor)
                                         .multilineTextAlignment(.center)
                                     
                                     Text("Yıldız haritanı çizmek için temel bilgilerini gir.")
-                                        .font(.system(size: 14))
+                                        .font(.system(size: 13))
                                         .foregroundColor(themeManager.secondaryTextColor)
                                         .multilineTextAlignment(.center)
                                         .padding(.horizontal, 20)
@@ -101,6 +125,9 @@ struct PersonalSetupView: View {
                                                         completeBirthTime()
                                                     }
                                                 })
+                                                .onChange(of: birthTime) { _, newValue in
+                                                    formatTime(newValue)
+                                                }
                                                 .foregroundColor(themeManager.primaryTextColor)
                                                 .keyboardType(.numbersAndPunctuation)
                                                 .frame(maxWidth: .infinity)
@@ -153,9 +180,8 @@ struct PersonalSetupView: View {
                             VStack(spacing: 16) {
                                 Button(action: {
                                     if isFormValid {
-                                        // Save to ProfileManager
-                                        profileManager.updateActiveProfileInfo(name: fullName, birthDate: birthDate)
                                         userNameStore = fullName
+                                        userBirthTimeStore = "\(birthTime) \(timePeriod)"
                                         navigateToScanner = true
                                     }
                                 }) {
@@ -209,11 +235,8 @@ struct PersonalSetupView: View {
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .onAppear {
-                // Pre-fill if name already exists in active profile or legacy store
-                if let active = profileManager.activeProfile {
-                    fullName = active.name == "New Profile" ? "" : active.name
-                    birthDate = active.birthDate
-                } else if !userNameStore.isEmpty {
+                // Pre-fill if name already exists
+                if fullName.isEmpty && !userNameStore.isEmpty {
                     fullName = userNameStore
                 }
             }
@@ -256,12 +279,65 @@ struct PersonalSetupView: View {
     private func formatDate(_ value: String) {
         let clean = value.filter { "0123456789".contains($0) }
         var result = ""
+        
         for (i, char) in clean.enumerated() {
+            if i == 0 {
+                // First digit of day: can't be > 3 (assuming GG/AA/YYYY)
+                if let digit = Int(String(char)), digit > 3 { continue }
+            }
+            if i == 1 {
+                // Second digit of day: if first digit is 3, second must be 0 or 1
+                let firstDigit = Int(String(clean.prefix(1))) ?? 0
+                let secondDigit = Int(String(char)) ?? 0
+                if firstDigit == 3 && secondDigit > 1 { continue }
+            }
+            if i == 2 {
+                // First digit of month: max 1
+                if let digit = Int(String(char)), digit > 1 { continue }
+            }
+            if i == 3 {
+                // Second digit of month: if first digit is 1, second max 2
+                let firstDigit = Int(String(clean.dropFirst(2).prefix(1))) ?? 0
+                let secondDigit = Int(String(char)) ?? 0
+                if firstDigit == 1 && secondDigit > 2 { continue }
+            }
+            
             if i == 2 || i == 4 { result.append("/") }
             if i < 8 { result.append(char) }
         }
+        
         if result != value || value.contains(where: { !$0.isNumber && $0 != "/" }) {
             birthDate = result
+        }
+    }
+    
+    private func formatTime(_ value: String) {
+        let clean = value.filter { "0123456789".contains($0) }
+        var result = ""
+        
+        for (i, char) in clean.enumerated() {
+            if i == 0 {
+                // First digit of hour: max 2 (for 24h) or 1 (for 12h)
+                // Let's assume 12h as shown in AM/PM toggle
+                if let digit = Int(String(char)), digit > 1 { continue }
+            }
+            if i == 1 {
+                // Second digit of hour: if first digit is 1, second max 2
+                let firstDigit = Int(String(clean.prefix(1))) ?? 0
+                let secondDigit = Int(String(char)) ?? 0
+                if firstDigit == 1 && secondDigit > 2 { continue }
+            }
+            if i == 2 {
+                // First digit of minute: max 5
+                if let digit = Int(String(char)), digit > 5 { continue }
+            }
+
+            if i == 2 { result.append(":") }
+            if i < 4 { result.append(char) }
+        }
+        
+        if result != value || value.contains(where: { !$0.isNumber && $0 != ":" }) {
+            birthTime = result
         }
     }
 }

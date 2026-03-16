@@ -6,6 +6,8 @@ struct PersonalInformationDetailView: View {
     
     @AppStorage("userName") var fullName: String = ""
     @AppStorage("userBirthDate") var birthDate: String = ""
+    @AppStorage("userBirthTime") var birthTime: String = ""
+    @AppStorage("userEmail") var userEmail: String = ""
     @AppStorage("irisColorName") var irisColorName: String = ""
     @AppStorage("irisHex") var irisHex: String = "#4A90E2"
     
@@ -20,6 +22,7 @@ struct PersonalInformationDetailView: View {
     @State private var isEditingPersonal = false
     @State private var tempFullName = ""
     @State private var tempBirthDate = ""
+    @State private var tempBirthTime = ""
     
     @State private var isEditingQuiz = false
     @State private var tempQuizAnswers: [UUID: QuizAnswer] = [:]
@@ -88,6 +91,7 @@ struct PersonalInformationDetailView: View {
                                     Button("Kaydet") {
                                         fullName = tempFullName
                                         birthDate = tempBirthDate
+                                        birthTime = tempBirthTime
                                         lastPersonalEdit = Date().timeIntervalSince1970
                                         hasCompletedInitialPersonalEdit = true
                                         isEditingPersonal = false
@@ -99,6 +103,7 @@ struct PersonalInformationDetailView: View {
                                 Button(action: {
                                     tempFullName = fullName
                                     tempBirthDate = birthDate
+                                    tempBirthTime = birthTime
                                     isEditingPersonal = true
                                 }) {
                                     Text("Düzenle")
@@ -134,9 +139,12 @@ struct PersonalInformationDetailView: View {
                             if isEditingPersonal {
                                 PersonalEditRow(title: "Ad Soyad", text: $tempFullName, themeManager: themeManager)
                                 PersonalEditDateRow(title: "Doğum Tarihi", text: $tempBirthDate, themeManager: themeManager)
+                                PersonalEditRow(title: "Doğum Saati", text: $tempBirthTime, themeManager: themeManager)
                             } else {
                                 InfoRow(title: "Ad Soyad", value: fullName, themeManager: themeManager)
                                 InfoRow(title: "Doğum Tarihi", value: birthDate, themeManager: themeManager)
+                                InfoRow(title: "Doğum Saati", value: birthTime.isEmpty ? "Girilmedi" : birthTime, themeManager: themeManager)
+                                InfoRow(title: "Hesap", value: censorEmail(userEmail), themeManager: themeManager)
                             }
                             
                             HStack {
@@ -309,6 +317,22 @@ struct PersonalInformationDetailView: View {
     private func saveQuizAnswers() {
         if let encoded = try? JSONEncoder().encode(quizAnswers) {
             UserDefaults.standard.set(encoded, forKey: "quizAnswers")
+        }
+    }
+    
+    private func censorEmail(_ email: String) -> String {
+        guard !email.isEmpty else { return "Girilmedi" }
+        let components = email.split(separator: "@")
+        guard components.count == 2 else { return email }
+        
+        let user = String(components[0])
+        let domain = String(components[1])
+        
+        if user.count <= 2 {
+            return user + "***@" + domain
+        } else {
+            let start = user.prefix(1)
+            return start + "***@" + domain
         }
     }
 }

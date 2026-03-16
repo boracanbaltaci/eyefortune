@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.presentationMode) var presentationMode
     
@@ -9,6 +10,9 @@ struct RegisterView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var showError = false
+    @State private var showSubscription = false
+    @State private var showPersonalSetup = false
     
     var body: some View {
         NavigationStack {
@@ -96,12 +100,28 @@ struct RegisterView: View {
                         
                         // Create Account Button
                         Button(action: {
-                            // Action here
+                            if password == confirmPassword {
+                                authManager.registerWithEmail(email: email, password: password) { success in
+                                    if success {
+                                        showSubscription = true
+                                    } else {
+                                        showError = true
+                                    }
+                                }
+                            } else {
+                                authManager.errorMessage = "Şifreler eşleşmiyor."
+                                showError = true
+                            }
                         }) {
                             HStack {
-                                Text("Create Account")
-                                    .font(.system(size: 17, weight: .bold))
-                                Image(systemName: "sparkles")
+                                if authManager.isLoading {
+                                    ProgressView()
+                                        .tint(themeManager.bgColor)
+                                } else {
+                                    Text("Create Account")
+                                        .font(.system(size: 17, weight: .bold))
+                                    Image(systemName: "sparkles")
+                                }
                             }
                             .foregroundColor(themeManager.bgColor)
                             .frame(maxWidth: .infinity)
@@ -109,8 +129,14 @@ struct RegisterView: View {
                             .background(themeManager.accentYellow)
                             .cornerRadius(30)
                         }
+                        .disabled(authManager.isLoading || email.isEmpty || password.isEmpty || fullName.isEmpty)
                         .padding(.horizontal, 20)
                         .padding(.top, 30)
+                        .alert("Hata", isPresented: $showError) {
+                            Button("Tamam", role: .cancel) { }
+                        } message: {
+                            Text(authManager.errorMessage ?? "Kayıt yapılamadı. Lütfen bilgilerinizi kontrol edin.")
+                        }
                         
                         // Social Buttons removed as requested
                         
@@ -142,6 +168,12 @@ struct RegisterView: View {
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+        }
+        .fullScreenCover(isPresented: $showSubscription) {
+            SubscriptionView(shouldShowPersonalSetup: $showPersonalSetup)
+        }
+        .fullScreenCover(isPresented: $showPersonalSetup) {
+            PersonalSetupView()
         }
     }
 }

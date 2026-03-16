@@ -23,7 +23,6 @@ struct HomeView: View {
     @AppStorage("irisReading") var irisReading: String = ""
     
     @AppStorage("isPremium") var isPremium = false
-    @StateObject private var profileManager = ProfileManager.shared
     @State private var showSubscription = false
     @State private var showActionMenu = false
     @State private var showContactUs = false
@@ -49,303 +48,266 @@ struct HomeView: View {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
                 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        
-                        // MARK: Eye / Profile Section
+                VStack(spacing: 0) {
+                    ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
-                            ZStack {
-                                Circle()
-                                    .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
-                                    .frame(width: 280, height: 280)
-                                
-                                Circle()
-                                    .fill(RadialGradient(
-                                        gradient: Gradient(colors: [themeManager.accentYellow.opacity(0.15), Color.clear]),
-                                        center: .center,
-                                        startRadius: 0,
-                                        endRadius: 140
-                                    ))
-                                    .frame(width: 280, height: 280)
-                                
+                            
+                            // MARK: Eye / Profile Section
+                            VStack(spacing: 0) {
                                 ZStack {
                                     Circle()
-                                        .fill(themeManager.cardBgColor)
-                                        .frame(width: 144, height: 144)
+                                        .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
+                                        .frame(width: 280, height: 280)
                                     
                                     Circle()
-                                        .stroke(themeManager.accentYellow, lineWidth: 2.5)
-                                        .frame(width: 144, height: 144)
-                                        .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 20)
+                                        .fill(RadialGradient(
+                                            gradient: Gradient(colors: [themeManager.accentYellow.opacity(0.15), Color.clear]),
+                                            center: .center,
+                                            startRadius: 0,
+                                            endRadius: 140
+                                        ))
+                                        .frame(width: 280, height: 280)
                                     
-                                    if !scannedEyeImagePath.isEmpty {
-                                        let url = URL(fileURLWithPath: scannedEyeImagePath)
-                                        if let downsampled = ImageUtils.downsample(imageAt: url, to: CGSize(width: 134, height: 134)) {
-                                            Image(uiImage: downsampled)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 134, height: 134)
-                                                .clipShape(Circle())
-                                        } else if let uiImage = UIImage(contentsOfFile: scannedEyeImagePath) {
-                                            Image(uiImage: uiImage)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 134, height: 134)
-                                                .clipShape(Circle())
-                                        }
-                                    } else {
-                                        // Dynamic Eye View based on detected iris color
-                                        DynamicEyeView(
-                                            hexColor: irisHex,
-                                            colorName: irisColorName,
-                                            themeManager: themeManager
-                                        )
-                                        .frame(width: 134, height: 134)
-                                        .clipShape(Circle())
-                                    }
-                                }
-                            }
-                            .padding(.top, 10)
-                            .scaleEffect(isPressed ? 0.92 : 1.0)
-                            .contentShape(Circle())
-                            .onTapGesture {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                    isPressed = true
-                                }
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                        isPressed = false
-                                    }
-                                    showActionMenu = true
-                                }
-                            }
-                            .confirmationDialog("Göz Analizi", isPresented: $showActionMenu, titleVisibility: .visible) {
-                                Button("Göz rengim yanlış, tekrar analiz et") {
-                                    showContactUs = true
-                                }
-                                Button("Göz ve analiz ekle") {
-                                    _ = profileManager.createPlaceholderProfile()
-                                    showSetup = true 
-                                }
-                                Button("İptal", role: .cancel) {}
-                            }
-                            
-                            VStack(spacing: 8) {
-                                Text(dynamicGreeting)
-                                    .font(.system(size: 13, weight: .black))
-                                    .tracking(3)
-                                    .foregroundColor(themeManager.accentYellow.opacity(0.8))
-                                
-                                Text(userNameStore.isEmpty ? "Oracle Seer" : userNameStore)
-                                    .font(.system(size: 32, weight: .bold, design: .serif))
-                                    .foregroundColor(themeManager.accentYellow)
-                                
-                                Rectangle()
-                                    .fill(themeManager.accentYellow.opacity(0.3))
-                                    .frame(width: 48, height: 1)
-                                
-                                Text(mysticSentence)
-                                    .font(.system(size: 12, weight: .medium, design: .serif))
-                                    .foregroundColor(themeManager.secondaryTextColor)
-                                    .italic()
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal, 40)
-                            }
-                            .padding(.top, 10)
-                            .padding(.bottom, 16)
-                        }
-                        
-                        // MARK: Strengths / Weaknesses Buttons
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                selectedInsightType = .strengths
-                            }) {
-                                HStack(spacing: 10) {
-                                    Image(systemName: "star.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.green)
-                                    Text(lm.t(.homeStrengths))
-                                        .font(.system(size: 13, weight: .bold))
-                                        .foregroundColor(themeManager.primaryTextColor)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 14)
-                                .background(themeManager.cardBgColor)
-                                .cornerRadius(12)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.green.opacity(0.2), lineWidth: 1)
-                                )
-                            }
-                            
-                            Button(action: {
-                                selectedInsightType = .weaknesses
-                            }) {
-                                HStack(spacing: 10) {
-                                    Image(systemName: "shield.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.red)
-                                    Text(lm.t(.homeWeaknesses))
-                                        .font(.system(size: 13, weight: .bold))
-                                        .foregroundColor(themeManager.primaryTextColor)
-                                }
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 14)
-                                .background(themeManager.cardBgColor)
-                                .cornerRadius(12)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.red.opacity(0.15), lineWidth: 1)
-                                )
-                            }
-                        }
-                        .padding(.horizontal, 24)
-                        
-                        // MARK: CTA Buttons
-                        VStack(spacing: 16) {
-                            Button(action: {
-                                showFortunePage = true
-                            }) {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "sparkles")
-                                        .font(.system(size: 20, weight: .bold))
-                                    Text(lm.t(.homeDailyFortune))
-                                        .font(.system(size: 16, weight: .black))
-                                        .tracking(2)
-                                }
-                                .foregroundColor(themeManager.activeTheme == .midnight ? themeManager.bgColor : .white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 20)
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: themeManager.activeTheme == .aurora 
-                                                           ? [Color(hex: "#5D4037"), Color(hex: "#8B4513")] 
-                                                           : [Color(hex: "#f4c025"), Color(hex: "#ffd700")]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .cornerRadius(18)
-                                .shadow(color: (themeManager.activeTheme == .aurora ? Color(hex: "#8B4513") : themeManager.accentYellow).opacity(0.35), radius: 12, x: 0, y: 6)
-                            }
-                            
-                            Button(action: {
-                                if irisReading.isEmpty {
-                                    personalityAnalysisText = """
-                                    Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor.
-                                    Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi.
-                                    Zihnin bir kuş kadar hür ve meraklıyken, kararların bir dağ kadar sarsılmaz.
-                                    Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor.
-                                    Bu hassasiyetin senin en büyük süper gücün ve gelişim yolculuğundaki rehberin.
-                                    """
-                                } else {
-                                    personalityAnalysisText = irisReading
-                                }
-                                showPersonalityModal = true
-                            }) {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "brain.head.profile")
-                                        .font(.system(size: 20, weight: .bold))
-                                    Text(lm.t(.homePersonality))
-                                        .font(.system(size: 16, weight: .black))
-                                        .tracking(2)
-                                }
-                                .foregroundColor(themeManager.accentYellow)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 20)
-                                .background(themeManager.cardBgColor)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 18)
-                                        .stroke(themeManager.accentYellow.opacity(0.4), lineWidth: 2)
-                                )
-                                .cornerRadius(18)
-                                .shadow(color: themeManager.accentYellow.opacity(0.1), radius: 10, x: 0, y: 5)
-                            }
-                        }
-                        .padding(.horizontal, 24)
-                        .padding(.top, 24)
-                        
-                        ZStack {
-                            VStack(spacing: 12) {
-                                ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
-                                    InsightCategoryCard(
-                                        category: category,
-                                        isExpanded: category.isExpanded,
-                                        isPremium: isPremium,
-                                        themeManager: themeManager,
-                                        onToggle: {
-                                            if isPremium {
-                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                    categories[index].isExpanded.toggle()
-                                                }
-                                            } else {
-                                                showSubscription = true
+                                    ZStack {
+                                        Circle()
+                                            .fill(themeManager.cardBgColor)
+                                            .frame(width: 144, height: 144)
+                                        
+                                        Circle()
+                                            .stroke(themeManager.accentYellow, lineWidth: 2.5)
+                                            .frame(width: 144, height: 144)
+                                            .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 20)
+                                        
+                                        if !scannedEyeImagePath.isEmpty {
+                                            let url = URL(fileURLWithPath: scannedEyeImagePath)
+                                            if let downsampled = ImageUtils.downsample(imageAt: url, to: CGSize(width: 134, height: 134)) {
+                                                Image(uiImage: downsampled)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 134, height: 134)
+                                                    .clipShape(Circle())
+                                            } else if let uiImage = UIImage(contentsOfFile: scannedEyeImagePath) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 134, height: 134)
+                                                    .clipShape(Circle())
                                             }
+                                        } else {
+                                            // Dynamic Eye View based on detected iris color
+                                            DynamicEyeView(
+                                                hexColor: irisHex,
+                                                colorName: irisColorName,
+                                                themeManager: themeManager
+                                            )
+                                            .frame(width: 134, height: 134)
+                                            .clipShape(Circle())
                                         }
+                                    }
+                                }
+                                .padding(.top, 10)
+                                .scaleEffect(isPressed ? 0.92 : 1.0)
+                                .contentShape(Circle())
+                                .onTapGesture {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                        isPressed = true
+                                    }
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                            isPressed = false
+                                        }
+                                        showActionMenu = true
+                                    }
+                                }
+                                .confirmationDialog("Göz Analizi", isPresented: $showActionMenu, titleVisibility: .visible) {
+                                    Button("Göz rengim yanlış, tekrar analiz et") {
+                                        showContactUs = true
+                                    }
+                                    Button("İptal", role: .cancel) {}
+                                }
+                                
+                                VStack(spacing: 8) {
+                                    Text(dynamicGreeting)
+                                        .font(.system(size: 13, weight: .black))
+                                        .tracking(3)
+                                        .foregroundColor(themeManager.accentYellow.opacity(0.8))
+                                    
+                                    Text(userNameStore.isEmpty ? "Oracle Seer" : userNameStore)
+                                        .font(.system(size: 32, weight: .bold, design: .serif))
+                                        .foregroundColor(themeManager.accentYellow)
+                                    
+                                    Rectangle()
+                                        .fill(themeManager.accentYellow.opacity(0.3))
+                                        .frame(width: 48, height: 1)
+                                    
+                                    Text(mysticSentence)
+                                        .font(.system(size: 12, weight: .medium, design: .serif))
+                                        .foregroundColor(themeManager.secondaryTextColor)
+                                        .italic()
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 40)
+                                }
+                                .padding(.top, 10)
+                                .padding(.bottom, 16)
+                            }
+                            
+                            // MARK: Strengths / Weaknesses Buttons
+                            HStack(spacing: 12) {
+                                Button(action: {
+                                    selectedInsightType = .strengths
+                                }) {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: "star.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.green)
+                                        Text(lm.t(.homeStrengths))
+                                            .font(.system(size: 13, weight: .bold))
+                                            .foregroundColor(themeManager.primaryTextColor)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    .background(themeManager.cardBgColor)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.green.opacity(0.2), lineWidth: 1)
+                                    )
+                                }
+                                
+                                Button(action: {
+                                    selectedInsightType = .weaknesses
+                                }) {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: "shield.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.red)
+                                        Text(lm.t(.homeWeaknesses))
+                                            .font(.system(size: 13, weight: .bold))
+                                            .foregroundColor(themeManager.primaryTextColor)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 14)
+                                    .background(themeManager.cardBgColor)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.red.opacity(0.15), lineWidth: 1)
                                     )
                                 }
                             }
-                            .blur(radius: isPremium ? 0 : 4)
-                            .allowsHitTesting(isPremium)
+                            .padding(.horizontal, 24)
                             
-                            if !isPremium {
-                                PremiumLockOverlay(onSubscribe: {
-                                    showSubscription = true
-                                })
-                                .padding(.top, -10) // Align better with the title
+                            // MARK: CTA Buttons
+                            VStack(spacing: 16) {
+                                Button(action: {
+                                    showFortunePage = true
+                                }) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "sparkles")
+                                            .font(.system(size: 20, weight: .bold))
+                                        Text(lm.t(.homeDailyFortune))
+                                            .font(.system(size: 16, weight: .black))
+                                            .tracking(2)
+                                    }
+                                    .foregroundColor(themeManager.activeTheme == .midnight ? themeManager.bgColor : .white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 20)
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: themeManager.activeTheme == .aurora 
+                                                               ? [Color(hex: "#5D4037"), Color(hex: "#8B4513")] 
+                                                               : [Color(hex: "#f4c025"), Color(hex: "#ffd700")]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .cornerRadius(18)
+                                    .shadow(color: (themeManager.activeTheme == .aurora ? Color(hex: "#8B4513") : themeManager.accentYellow).opacity(0.35), radius: 12, x: 0, y: 6)
+                                }
+                                
+                                Button(action: {
+                                    if irisReading.isEmpty {
+                                        personalityAnalysisText = """
+                                        Yıldızların fısıltısı senin için derin bir bilgelik barındırıyor.
+                                        Senin ruhun, evrenin kadim elementlerinden olan Hava ve Toprak'ın eşsiz bir sentezi gibi.
+                                        Zihnin bir kuş kadar hür ve meraklıyken, kararların bir dağ kadar sarsılmaz.
+                                        Sezgilerin, çevrendeki insanların enerjilerini bir ayna gibi yansıtıyor.
+                                        Bu hassasiyetin senin en büyük süper gücün ve gelişim yolculuğundaki rehberin.
+                                        """
+                                    } else {
+                                        personalityAnalysisText = irisReading
+                                    }
+                                    showPersonalityModal = true
+                                }) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "brain.head.profile")
+                                            .font(.system(size: 20, weight: .bold))
+                                        Text(lm.t(.homePersonality))
+                                            .font(.system(size: 16, weight: .black))
+                                            .tracking(2)
+                                    }
+                                    .foregroundColor(themeManager.accentYellow)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 20)
+                                    .background(themeManager.cardBgColor)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 18)
+                                            .stroke(themeManager.accentYellow.opacity(0.4), lineWidth: 2)
+                                    )
+                                    .cornerRadius(18)
+                                    .shadow(color: themeManager.accentYellow.opacity(0.1), radius: 10, x: 0, y: 5)
+                                }
                             }
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            
+                            ZStack {
+                                VStack(spacing: 12) {
+                                    ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
+                                        InsightCategoryCard(
+                                            category: category,
+                                            isExpanded: category.isExpanded,
+                                            isPremium: isPremium,
+                                            themeManager: themeManager,
+                                            onToggle: {
+                                                if isPremium {
+                                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                        categories[index].isExpanded.toggle()
+                                                    }
+                                                } else {
+                                                    showSubscription = true
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                                .blur(radius: isPremium ? 0 : 4)
+                                .allowsHitTesting(isPremium)
+                                
+                                if !isPremium {
+                                    PremiumLockOverlay(onSubscribe: {
+                                        showSubscription = true
+                                    })
+                                    .padding(.top, -10) // Align better with the title
+                                }
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            .padding(.bottom, 60)
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.top, 24)
-                        .padding(.bottom, 60)
                     }
+                    
+                    AdBannerView()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Menu {
-                        ForEach(profileManager.profiles) { profile in
-                            Button(action: {
-                                withAnimation {
-                                    profileManager.switchProfile(to: profile)
-                                }
-                            }) {
-                                HStack {
-                                    Text(profile.name)
-                                    if profile.id.uuidString == profileManager.activeProfileId {
-                                        Image(systemName: "checkmark")
-                                    }
-                                }
-                            }
-                        }
-                        
-                        Divider()
-                        
-                        Button(action: {
-                            _ = profileManager.createPlaceholderProfile()
-                            showSetup = true 
-                        }) {
-                            Label("Yeni Profil Ekle", systemImage: "plus")
-                        }
-                    } label: {
-                        Image(systemName: "person.crop.circle.badge.plus")
-                            .foregroundColor(themeManager.primaryTextColor)
-                            .font(.system(size: 20))
-                    }
-                }
-                
                 ToolbarItem(placement: .principal) {
                     Text("Ana Sayfan")
                         .font(.system(size: 17, weight: .bold, design: .serif))
                         .foregroundColor(themeManager.primaryTextColor)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gearshape")
-                            .foregroundColor(themeManager.primaryTextColor)
-                    }
                 }
             }
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)

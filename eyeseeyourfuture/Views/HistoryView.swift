@@ -12,49 +12,55 @@ struct HistoryView: View {
             ZStack {
                 themeManager.bgColor.edgesIgnoringSafeArea(.all)
 
-                if fortuneViewModel.savedFortunes.filter({ $0.type == .daily }).isEmpty {
-                    VStack(spacing: 20) {
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 80))
-                            .foregroundColor(themeManager.accentYellow.opacity(0.2))
-                        Text(lm.t(.historyEmpty))
-                            .font(.system(size: 16, weight: .medium, design: .serif))
-                            .foregroundColor(themeManager.secondaryTextColor)
-                    }
-                } else {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            // Magical Header
-                            VStack(spacing: 12) {
-                                Text(lm.t(.historyHeaderTitle)) // Updated header title
-                                    .font(.system(size: 28, weight: .bold, design: .serif))
-                                    .foregroundColor(themeManager.accentYellow)
+                VStack(spacing: 0) {
+                    if fortuneViewModel.savedFortunes.filter({ $0.type == .daily }).isEmpty {
+                        VStack(spacing: 20) {
+                            Spacer()
+                            Image(systemName: "heart.fill")
+                                .font(.system(size: 80))
+                                .foregroundColor(themeManager.accentYellow.opacity(0.2))
+                            Text(lm.t(.historyEmpty))
+                                .font(.system(size: 16, weight: .medium, design: .serif))
+                                .foregroundColor(themeManager.secondaryTextColor)
+                            Spacer()
+                        }
+                    } else {
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                // Magical Header
+                                VStack(spacing: 12) {
+                                    Text(lm.t(.historyHeaderTitle)) // Updated header title
+                                        .font(.system(size: 28, weight: .bold, design: .serif))
+                                        .foregroundColor(themeManager.accentYellow)
+                                    
+                                    Text(lm.t(.historyHeaderSubtitle)) // Updated header subtitle
+                                        .font(.system(size: 14, weight: .medium, design: .serif))
+                                        .italic()
+                                        .foregroundColor(themeManager.secondaryTextColor)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 40)
+                                    
+                                    Rectangle()
+                                        .fill(themeManager.accentYellow.opacity(0.3))
+                                        .frame(width: 60, height: 1)
+                                        .padding(.top, 8)
+                                }
+                                .padding(.top, 40)
+                                .padding(.bottom, 30)
                                 
-                                Text(lm.t(.historyHeaderSubtitle)) // Updated header subtitle
-                                    .font(.system(size: 14, weight: .medium, design: .serif))
-                                    .italic()
-                                    .foregroundColor(themeManager.secondaryTextColor)
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal, 40)
-                                
-                                Rectangle()
-                                    .fill(themeManager.accentYellow.opacity(0.3))
-                                    .frame(width: 60, height: 1)
-                                    .padding(.top, 8)
-                            }
-                            .padding(.top, 40)
-                            .padding(.bottom, 30)
-
-                            LazyVStack(spacing: 20) {
-                                ForEach(fortuneViewModel.savedFortunes.filter({ $0.type == .daily })) { fortune in
-                                    FavoriteFortuneCard(fortune: fortune, themeManager: themeManager) {
-                                        selectedFortune = fortune
+                                LazyVStack(spacing: 20) {
+                                    ForEach(fortuneViewModel.savedFortunes.filter({ $0.type == .daily })) { fortune in
+                                        FavoriteFortuneCard(fortune: fortune, themeManager: themeManager) {
+                                            selectedFortune = fortune
+                                        }
                                     }
                                 }
+                                .padding(20)
                             }
-                            .padding(20)
                         }
                     }
+                    
+                    AdBannerView()
                 }
             }
             .navigationTitle("Gizli Defter")

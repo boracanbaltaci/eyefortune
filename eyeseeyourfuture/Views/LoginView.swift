@@ -1,6 +1,8 @@
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
+    @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var lm: LocalizationManager
     
@@ -10,6 +12,9 @@ struct LoginView: View {
     @State private var showSubscription = false
     @State private var showPersonalSetup = false
     @State private var navigateToRegister = false
+    @State private var showError = false
+    
+    @AppStorage("userEmail") var userEmail: String = ""
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -86,13 +91,24 @@ struct LoginView: View {
                                     
                                     // Consult the Oracle Button
                                     Button(action: {
-                                        // Trigger subscription modal after login
-                                        showSubscription = true
+                                        authManager.loginWithEmail(email: email, password: password) { success in
+                                            if success {
+                                                userEmail = email
+                                                showSubscription = true
+                                            } else {
+                                                showError = true
+                                            }
+                                        }
                                     }) {
                                         HStack {
-                                            Text("Giriş Yap")
-                                                .font(.system(size: 17, weight: .bold))
-                                            Image(systemName: "sparkles")
+                                            if authManager.isLoading {
+                                                ProgressView()
+                                                    .tint(themeManager.bgColor)
+                                            } else {
+                                                Text("Giriş Yap")
+                                                    .font(.system(size: 17, weight: .bold))
+                                                Image(systemName: "sparkles")
+                                            }
                                         }
                                         .foregroundColor(themeManager.bgColor)
                                         .frame(maxWidth: .infinity)
@@ -101,9 +117,15 @@ struct LoginView: View {
                                         .cornerRadius(30)
                                         .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10, x: 0, y: 0)
                                     }
+                                    .disabled(authManager.isLoading || email.isEmpty || password.isEmpty)
                                     .padding(.top, 10)
                                 }
                                 .padding(.horizontal, 20)
+                                .alert("Hata", isPresented: $showError) {
+                                    Button("Tamam", role: .cancel) { }
+                                } message: {
+                                    Text(authManager.errorMessage ?? "Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.")
+                                }
                                 
                                 // Divider
                                 HStack {
@@ -124,9 +146,31 @@ struct LoginView: View {
                                 
                                 // Login Social Buttons
                                 VStack(spacing: 15) {
-                                    LoginSocialButton(title: lm.t(.loginGoogle), iconName: "google", themeManager: themeManager)
-                                    LoginSocialButton(title: lm.t(.loginInstagram), iconName: "instagram", themeManager: themeManager)
-                                    LoginSocialButton(title: lm.t(.loginApple), iconName: "applelogo", themeManager: themeManager)
+                                    LoginSocialButton(title: lm.t(.loginGoogle), iconName: "google", themeManager: themeManager) {
+                                        authManager.loginWithGoogle { success in
+                                            if success {
+                                                showSubscription = true
+                                            } else {
+                                                showError = true
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Custom Styled Sign in with Apple Button
+                                    SignInWithAppleButton(.signIn) { request in
+                                        authManager.prepareAppleSignInRequest(request)
+                                    } onCompletion: { result in
+                                        authManager.handleAppleSignInCompletion(result) { success in
+                                            if success {
+                                                showSubscription = true
+                                            } else {
+                                                showError = true
+                                            }
+                                        }
+                                    }
+                                    .signInWithAppleButtonStyle(themeManager.activeTheme == .midnight ? .white : .black)
+                                    .frame(height: 50)
+                                    .cornerRadius(25)
                                 }
                                 .padding(.horizontal, 20)
                             }
@@ -158,6 +202,11 @@ struct LoginView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(themeManager.bgColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .onAppear {
+                if authManager.user != nil && !isSetupComplete {
+                    showSubscription = true
+                }
+            }
         }
         .fullScreenCover(isPresented: $showSubscription) {
             SubscriptionView(shouldShowPersonalSetup: $showPersonalSetup)
@@ -172,19 +221,17 @@ struct LoginView: View {
 struct LoginSocialButton: View {
     var title: String
     var iconName: String
+    @EnvironmentObject var authManager: AuthManager
     @ObservedObject var themeManager: ThemeManager
+    var action: () -> Void
     
     var body: some View {
-        Button(action: {}) {
+        Button(action: action) {
             HStack(spacing: 12) {
                 if iconName == "google" {
                     Image(systemName: "g.circle.fill")
                         .foregroundColor(themeManager.accentYellow)
                         .font(.system(size: 20))
-                } else if iconName == "instagram" {
-                    Image(systemName: "camera.fill")
-                        .foregroundColor(themeManager.accentYellow)
-                        .font(.system(size: 18))
                 } else {
                     Image(systemName: iconName)
                         .foregroundColor(themeManager.accentYellow)

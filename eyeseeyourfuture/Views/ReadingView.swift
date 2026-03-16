@@ -15,65 +15,69 @@ struct ReadingView: View {
             ZStack {
                 themeManager.bgColor.ignoresSafeArea()
 
-                ZStack {
-                    ScrollView(showsIndicators: false) {
-                        VStack(spacing: 0) {
-                            // MARK: Featured Banner
-                            if let featured = viewModel.featuredArticle {
-                                FeaturedReadingBanner(article: featured, themeManager: themeManager, lm: lm) {
-                                    if isPremium {
-                                        selectedArticle = featured
-                                    } else {
-                                        showSubscription = true
+                VStack(spacing: 0) {
+                    ZStack {
+                        ScrollView(showsIndicators: false) {
+                            VStack(spacing: 0) {
+                                // MARK: Featured Banner
+                                if let featured = viewModel.featuredArticle {
+                                    FeaturedReadingBanner(article: featured, themeManager: themeManager, lm: lm) {
+                                        if isPremium {
+                                            selectedArticle = featured
+                                        } else {
+                                            showSubscription = true
+                                        }
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.top, 16)
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.top, 16)
-                            }
-                            // MARK: Category Selectors
-                            CategoryFilterRow(selected: $viewModel.selectedCategory, themeManager: themeManager, lm: lm)
-                                .padding(.top, 12)
-                                .padding(.bottom, 8)
-
-                            // MARK: Article Cards
-                            if viewModel.nonFeaturedFiltered.isEmpty {
-                                VStack(spacing: 12) {
-                                    Image(systemName: "book.closed")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(themeManager.accentYellow.opacity(0.3))
-                                    Text(lm.t(.readingEmpty))
-                                        .font(.system(size: 14, design: .serif))
-                                        .foregroundColor(themeManager.secondaryTextColor)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 60)
-                            } else {
-                                LazyVStack(spacing: 16) {
-                                    ForEach(viewModel.nonFeaturedFiltered) { article in
-                                        ReadingArticleCard(article: article, themeManager: themeManager, lm: lm) {
-                                            if isPremium {
-                                                selectedArticle = article
-                                            } else {
-                                                showSubscription = true
+                                // MARK: Category Selectors
+                                CategoryFilterRow(selected: $viewModel.selectedCategory, themeManager: themeManager, lm: lm)
+                                    .padding(.top, 12)
+                                    .padding(.bottom, 8)
+                                
+                                // MARK: Article Cards
+                                if viewModel.nonFeaturedFiltered.isEmpty {
+                                    VStack(spacing: 12) {
+                                        Image(systemName: "book.closed")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(themeManager.accentYellow.opacity(0.3))
+                                        Text(lm.t(.readingEmpty))
+                                            .font(.system(size: 14, design: .serif))
+                                            .foregroundColor(themeManager.secondaryTextColor)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.top, 60)
+                                } else {
+                                    LazyVStack(spacing: 16) {
+                                        ForEach(viewModel.nonFeaturedFiltered) { article in
+                                            ReadingArticleCard(article: article, themeManager: themeManager, lm: lm) {
+                                                if isPremium {
+                                                    selectedArticle = article
+                                                } else {
+                                                    showSubscription = true
+                                                }
                                             }
                                         }
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.top, 16)
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.top, 16)
+                                
+                                Spacer().frame(height: 60)
                             }
-
-                            Spacer().frame(height: 60)
+                        }
+                        .blur(radius: isPremium ? 0 : 4)
+                        .allowsHitTesting(isPremium)
+                        
+                        if !isPremium {
+                            PremiumLockOverlay(onSubscribe: {
+                                showSubscription = true
+                            })
                         }
                     }
-                    .blur(radius: isPremium ? 0 : 4)
-                    .allowsHitTesting(isPremium)
                     
-                    if !isPremium {
-                        PremiumLockOverlay(onSubscribe: {
-                            showSubscription = true
-                        })
-                    }
+                    AdBannerView()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

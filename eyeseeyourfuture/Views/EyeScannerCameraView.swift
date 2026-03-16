@@ -238,6 +238,20 @@ class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             self.session.stopRunning()
         }
     }
+    
+    func reset() {
+        DispatchQueue.main.async {
+            self.capturedImage = nil
+            self.isAligned = false
+            self.stopCountdown()
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                if let self = self, !self.session.isRunning {
+                    self.session.startRunning()
+                }
+            }
+        }
+    }
 }
 
 // UIViewController bindings to show camera
@@ -417,17 +431,34 @@ struct EyeScannerCameraView: View {
                 Spacer()
                 
                 if scanCompleted {
-                    Button(action: {
-                        navigateToMainApp = true
-                    }) {
-                        Text("Yıldızlara Sor")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(themeManager.bgColor)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 18)
-                            .background(themeManager.accentYellow)
-                            .cornerRadius(16)
-                            .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10)
+                    VStack(spacing: 20) {
+                        Button(action: {
+                            navigateToMainApp = true
+                        }) {
+                            Text("Yıldızlara Sor")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(themeManager.bgColor)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(themeManager.accentYellow)
+                                .cornerRadius(16)
+                                .shadow(color: themeManager.accentYellow.opacity(0.4), radius: 10)
+                        }
+                        
+                        Button(action: {
+                            resetScan()
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                Text("Tekrar Tara")
+                            }
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 20)
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(20)
+                        }
                     }
                     .padding(.horizontal, 40)
                     .padding(.bottom, 60)
@@ -544,6 +575,16 @@ struct EyeScannerCameraView: View {
                 }
             }
         }
+    }
+    
+    private func resetScan() {
+        withAnimation {
+            scanProgress = 0
+            isScanning = false
+            scanCompleted = false
+            currentMysticNote = "İris haritası çıkarılıyor..."
+        }
+        cameraVM.reset()
     }
 }
 

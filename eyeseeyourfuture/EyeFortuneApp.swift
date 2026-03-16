@@ -1,8 +1,20 @@
 import SwiftUI
+import FirebaseCore
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
 
 @main
 struct EyeFortuneApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     // Shared instances for state management
+    @StateObject private var authManager = AuthManager()
     @StateObject private var fortuneViewModel = FortuneViewModel()
     @StateObject private var scannerViewModel = ScannerViewModel()
     @StateObject private var themeManager = ThemeManager()
@@ -19,8 +31,9 @@ struct EyeFortuneApp: App {
                         isSplashFinished = true
                     })
                     .environmentObject(themeManager)
-                } else if isSetupComplete {
+                } else if authManager.user != nil && isSetupComplete {
                     MainTabView()
+                        .environmentObject(authManager)
                         .environmentObject(fortuneViewModel)
                         .environmentObject(scannerViewModel)
                         .environmentObject(themeManager)
@@ -28,6 +41,7 @@ struct EyeFortuneApp: App {
                         .preferredColorScheme(themeManager.systemColorScheme)
                 } else {
                     LoginView()
+                        .environmentObject(authManager)
                         .environmentObject(themeManager)
                         .environmentObject(localizationManager)
                         .preferredColorScheme(themeManager.systemColorScheme)
