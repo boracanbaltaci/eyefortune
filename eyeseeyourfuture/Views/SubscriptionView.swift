@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 struct SubscriptionView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -6,11 +7,13 @@ struct SubscriptionView: View {
     // Binding to tell parent view to show the Personal Setup after dismissal
     @Binding var shouldShowPersonalSetup: Bool
     
+    @EnvironmentObject var storeManager: StoreManager
+    
     @AppStorage("isPremium") var isPremium = false
-    @State private var selectedPlan: PlanType = .annual
-    @State private var showApplePay = false
+    @State private var selectedProductId: String = "com.boradev.eyesee.annual"
     @State private var isProcessing = false
     @State private var showSuccess = false
+    @State private var errorMessage: String?
     
     // Theme Colors
     let bgColor = Color(red: 21.0/255.0, green: 20.0/255.0, blue: 15.0/255.0)
@@ -109,33 +112,26 @@ struct SubscriptionView: View {
                         
                         // Pricing Plans
                         VStack(spacing: 16) {
-                            // Monthly Plan
-                            PlanCard(
-                                title: "Monthly Mystic",
-                                price: "$3",
-                                period: "/month",
-                                description: "Standard celestial access, billed monthly.",
-                                isSelected: selectedPlan == .monthly,
-                                badge: nil,
-                                saveText: nil,
-                                accentYellow: accentYellow,
-                                cardBg: cardBg,
-                                action: { selectedPlan = .monthly }
-                            )
-                            
-                            // Annual Plan
-                            PlanCard(
-                                title: "Annual Oracle",
-                                price: "$25",
-                                period: "/year",
-                                description: nil,
-                                isSelected: selectedPlan == .annual,
-                                badge: "Best Value",
-                                saveText: "Save 30% annually",
-                                accentYellow: accentYellow,
-                                cardBg: accentYellow.opacity(0.1),
-                                action: { selectedPlan = .annual }
-                            )
+                            if storeManager.subscriptions.isEmpty {
+                                ProgressView()
+                                    .tint(accentYellow)
+                                    .padding()
+                            } else {
+                                ForEach(storeManager.subscriptions, id: \.id) { product in
+                                    PlanCard(
+                                        title: product.displayName,
+                                        price: product.displayPrice,
+                                        period: product.id.contains("monthly") ? "/ay" : "/yıl",
+                                        description: product.description,
+                                        isSelected: selectedProductId == product.id,
+                                        badge: product.id.contains("annual") ? "En İyi Değer" : nil,
+                                        saveText: product.id.contains("annual") ? "Yıllık %30 Tasarruf Et" : nil,
+                                        accentYellow: accentYellow,
+                                        cardBg: selectedProductId == product.id ? accentYellow.opacity(0.1) : cardBg,
+                                        action: { selectedProductId = product.id }
+                                    )
+                                }
+                            }
                         }
                         .padding(.horizontal, 24)
                         .padding(.bottom, 40)
@@ -147,18 +143,31 @@ struct SubscriptionView: View {
                     Divider().background(accentYellow.opacity(0.1))
                     
                     Button(action: {
-                        showApplePay = true
+                        Task {
+                            await buyProduct()
+                        }
                     }) {
-                        Text("Subscribe Now")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(bgColor)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 18)
-                            .background(accentYellow)
-                            .cornerRadius(15)
-                            .shadow(color: accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
-                            .padding(.horizontal, 24)
+                        if isProcessing {
+                            ProgressView()
+                                .tint(bgColor)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(accentYellow)
+                                .cornerRadius(15)
+                                .padding(.horizontal, 24)
+                        } else {
+                            Text("Hemen Abone Ol")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(bgColor)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(accentYellow)
+                                .cornerRadius(15)
+                                .shadow(color: accentYellow.opacity(0.3), radius: 10, x: 0, y: 5)
+                                .padding(.horizontal, 24)
+                        }
                     }
+                    .disabled(isProcessing || storeManager.subscriptions.isEmpty)
                     
                     Text("Recurring billing, cancel anytime. By subscribing, you agree to our Terms of Service and Privacy Policy.")
                         .font(.system(size: 11))
@@ -170,27 +179,6 @@ struct SubscriptionView: View {
                 .background(bgColor)
             }
             
-            if showApplePay {
-                ApplePaySimulationOverlay(
-                    isProcessing: $isProcessing,
-                    selectedPlan: selectedPlan == .monthly ? "Monthly Mystic ($3)" : "Annual Oracle ($25)",
-                    onCancel: { showApplePay = false },
-                    onConfirm: {
-                        isProcessing = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            isProcessing = false
-                            isPremium = true
-                            showApplePay = false
-                            withAnimation {
-                                showSuccess = true
-                            }
-                        }
-                    }
-                )
-                .transition(.move(edge: .bottom))
-                .zIndex(100)
-            }
-            
             if showSuccess {
                 SuccessOverlay(onDismiss: {
                     showSuccess = false
@@ -200,6 +188,26 @@ struct SubscriptionView: View {
                 .zIndex(101)
             }
         }
+    }
+    
+    private func buyProduct() async {
+        guard let product = storeManager.subscriptions.first(where: { $0.id == selectedProductId }) else { return }
+        
+        isProcessing = true
+        errorMessage = nil
+        
+        do {
+            if try await storeManager.purchase(product) != nil {
+                withAnimation {
+                    showSuccess = true
+                    isPremium = true
+                }
+            }
+        } catch {
+            errorMessage = "Satın alma işlemi başarısız oldu. Lütfen tekrar deneyin."
+        }
+        
+        isProcessing = false
     }
 }
 

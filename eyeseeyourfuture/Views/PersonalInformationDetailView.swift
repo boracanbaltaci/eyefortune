@@ -123,7 +123,7 @@ struct PersonalInformationDetailView: View {
                                 InfoRow(title: "Ad Soyad", value: fullName, themeManager: themeManager)
                                 InfoRow(title: "Doğum Tarihi", value: birthDate, themeManager: themeManager)
                                 InfoRow(title: "Doğum Saati", value: birthTime.isEmpty ? "Girilmedi" : birthTime, themeManager: themeManager)
-                                InfoRow(title: "Hesap", value: censorEmail(userEmail), themeManager: themeManager)
+                                InfoRow(title: "Hesap", value: userEmail.isEmpty ? "Apple ID" : censorEmail(userEmail), themeManager: themeManager)
                             }
                             
                             HStack {

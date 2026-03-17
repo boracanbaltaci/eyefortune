@@ -18,6 +18,7 @@ struct PersonalSetupView: View {
     
     @State private var navigateToScanner = false
     @State private var dismissToMain = false
+    @State private var attemptedContinue = false
     @AppStorage("isSetupComplete") var isSetupComplete: Bool = false
     
     enum ElementType: String, CaseIterable {
@@ -88,7 +89,6 @@ struct PersonalSetupView: View {
                         VStack(spacing: 0) {
                             // 3-Step Navigator
                             StepNavigator(currentStep: 1, themeManager: themeManager)
-                                .padding(.top, 5)
                             
                             // Centered Content Container
                             VStack(spacing: 24) {
@@ -108,10 +108,10 @@ struct PersonalSetupView: View {
                                 
                                 // Form Fields
                                 VStack(spacing: 24) {
-                                    SetupTextField(title: lm.t(.setupFullName), placeholder: "Adınızı giriniz", text: $fullName, icon: nil, autocapitalization: .words)
+                                    SetupTextField(title: lm.t(.setupFullName), placeholder: "Adınızı giriniz", text: $fullName, icon: nil, autocapitalization: .words, isError: attemptedContinue && fullName.trimmingCharacters(in: .whitespaces).isEmpty)
                                     
                                     HStack(spacing: 12) {
-                                        SetupTextField(title: lm.t(.setupBirthDate), placeholder: "GG / AA / YYYY", text: $birthDate, icon: "calendar", keyboardType: .numberPad)
+                                        SetupTextField(title: lm.t(.setupBirthDate), placeholder: "GG / AA / YYYY", text: $birthDate, icon: "calendar", keyboardType: .numberPad, isError: attemptedContinue && !isDateValid)
                                             .onChange(of: birthDate) { _, newValue in
                                                 formatDate(newValue)
                                             }
@@ -152,7 +152,7 @@ struct PersonalSetupView: View {
                                             .background(themeManager.inputBgColor)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: 15)
-                                                    .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
+                                                    .stroke((attemptedContinue && birthTime.isEmpty) ? Color.red : themeManager.accentYellow.opacity(0.2), lineWidth: (attemptedContinue && birthTime.isEmpty) ? 1.5 : 1)
                                             )
                                             .cornerRadius(15)
                                         }
@@ -169,6 +169,7 @@ struct PersonalSetupView: View {
                                                 ElementCard(
                                                     element: element,
                                                     isSelected: selectedElement == element,
+                                                    isError: attemptedContinue && selectedElement == nil,
                                                     action: { selectedElement = element }
                                                 )
                                             }
@@ -182,6 +183,7 @@ struct PersonalSetupView: View {
                             
                             VStack(spacing: 16) {
                                 Button(action: {
+                                    attemptedContinue = true
                                     if isFormValid {
                                         userNameStore = fullName
                                         userBirthTimeStore = "\(birthTime) \(timePeriod)"
@@ -196,11 +198,11 @@ struct PersonalSetupView: View {
                                         .foregroundColor(isFormValid ? themeManager.bgColor : .white.opacity(0.5))
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 18)
-                                        .background(isFormValid ? themeManager.accentYellow : Color.gray.opacity(0.3))
+                                        .background(isFormValid ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.3))
                                         .cornerRadius(15)
                                         .shadow(color: isFormValid ? themeManager.accentYellow.opacity(0.3) : .clear, radius: 10, x: 0, y: 5)
                                 }
-                                .disabled(!isFormValid)
+                                
                                 
                                 Text("Adım 1 / 3: Ruhsal Hizalanma")
                                     .font(.system(size: 12))
@@ -380,6 +382,7 @@ struct SetupTextField: View {
     var icon: String?
     var keyboardType: UIKeyboardType = .default
     var autocapitalization: TextInputAutocapitalization = .never
+    var isError: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -404,7 +407,7 @@ struct SetupTextField: View {
             .background(themeManager.inputBgColor)
             .overlay(
                 RoundedRectangle(cornerRadius: 15)
-                    .stroke(themeManager.accentYellow.opacity(0.2), lineWidth: 1)
+                    .stroke(isError ? Color.red : themeManager.accentYellow.opacity(0.2), lineWidth: isError ? 1.5 : 1)
             )
             .cornerRadius(15)
         }
@@ -416,6 +419,7 @@ struct ElementCard: View {
     @EnvironmentObject var themeManager: ThemeManager
     var element: PersonalSetupView.ElementType
     var isSelected: Bool
+    var isError: Bool = false
     var action: () -> Void
     
     var body: some View {
@@ -440,7 +444,7 @@ struct ElementCard: View {
             .background(isSelected ? themeManager.accentYellow.opacity(0.15) : themeManager.cardBgColor)
             .overlay(
                 RoundedRectangle(cornerRadius: 15)
-                    .stroke(isSelected ? themeManager.accentYellow : themeManager.accentYellow.opacity(0.1), lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? themeManager.accentYellow : (isError ? Color.red.opacity(0.5) : themeManager.accentYellow.opacity(0.1)), lineWidth: (isSelected || isError) ? 2 : 1)
             )
             .cornerRadius(15)
         }

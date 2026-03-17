@@ -13,6 +13,7 @@ struct LoginView: View {
     @State private var showPersonalSetup = false
     @State private var navigateToRegister = false
     @State private var showError = false
+    @State private var isPasswordVisible = false
     
     @AppStorage("userEmail") var userEmail: String = ""
     @AppStorage("isSetupComplete") var isSetupComplete: Bool = false
@@ -74,9 +75,21 @@ struct LoginView: View {
                                                 .font(.system(size: 16))
                                                 .frame(width: 20)
                                             
-                                            SecureField(lm.t(.loginPasswordPlaceholder), text: $password)
-                                                .foregroundColor(themeManager.accentYellow)
-                                                .colorMultiply(password.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
+                                            if isPasswordVisible {
+                                                TextField(lm.t(.loginPasswordPlaceholder), text: $password)
+                                                    .foregroundColor(themeManager.accentYellow)
+                                                    .colorMultiply(password.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
+                                            } else {
+                                                SecureField(lm.t(.loginPasswordPlaceholder), text: $password)
+                                                    .foregroundColor(themeManager.accentYellow)
+                                                    .colorMultiply(password.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
+                                            }
+                                            
+                                            Button(action: { isPasswordVisible.toggle() }) {
+                                                Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                                    .foregroundColor(themeManager.secondaryTextColor)
+                                                    .font(.system(size: 16))
+                                            }
                                         }
                                         .padding(.horizontal, 16)
                                         .padding(.vertical, 14)

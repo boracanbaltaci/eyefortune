@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import SwiftUI
-import Combine
 
 // MARK: - Supported Languages
 enum AppLanguage: String, CaseIterable, Identifiable, Codable {

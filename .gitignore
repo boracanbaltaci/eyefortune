@@ -66,4 +66,5 @@ node_modules/
 .env
 
 # dataconnect generated files
-.dataconnect
+# Secrets
+eyeseeyourfuture/Secrets.plist

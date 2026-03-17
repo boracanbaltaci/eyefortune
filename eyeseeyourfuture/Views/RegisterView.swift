@@ -15,6 +15,7 @@ struct RegisterView: View {
     @State private var showError = false
     @State private var showSubscription = false
     @State private var showPersonalSetup = false
+    @State private var isPasswordVisible = false
     
     var body: some View {
         NavigationStack {
@@ -85,16 +86,20 @@ struct RegisterView: View {
                                 placeholder: "••••••••",
                                 iconName: "lock.fill",
                                 text: $password,
-                                isSecure: true,
+                                isSecure: !isPasswordVisible,
+                                showToggle: true,
+                                isVisible: $isPasswordVisible,
                                 themeManager: themeManager
                             )
                             
                             CustomTextField(
-                                title: lm.t(.loginPasswordPlaceholder), // Reusing password placeholder logic as confirm
+                                title: lm.t(.loginPasswordPlaceholder),
                                 placeholder: "••••••••",
                                 iconName: "checkmark.shield.fill",
                                 text: $confirmPassword,
-                                isSecure: true,
+                                isSecure: !isPasswordVisible,
+                                showToggle: false,
+                                isVisible: $isPasswordVisible,
                                 themeManager: themeManager
                             )
                         }
@@ -235,8 +240,21 @@ struct CustomTextField: View {
     var iconName: String
     @Binding var text: String
     var isSecure: Bool
+    var showToggle: Bool = false
+    @Binding var isVisible: Bool
     
     @ObservedObject var themeManager: ThemeManager
+    
+    init(title: String, placeholder: String, iconName: String, text: Binding<String>, isSecure: Bool, showToggle: Bool = false, isVisible: Binding<Bool> = .constant(false), themeManager: ThemeManager) {
+        self.title = title
+        self.placeholder = placeholder
+        self.iconName = iconName
+        self._text = text
+        self.isSecure = isSecure
+        self.showToggle = showToggle
+        self._isVisible = isVisible
+        self.themeManager = themeManager
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -253,12 +271,19 @@ struct CustomTextField: View {
                 if isSecure {
                     SecureField(placeholder, text: $text)
                         .foregroundColor(themeManager.accentYellow)
-                        // Hack to change placeholder color
                         .colorMultiply(text.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
                 } else {
                     TextField(placeholder, text: $text)
                         .foregroundColor(themeManager.accentYellow)
                         .colorMultiply(text.isEmpty ? themeManager.accentYellow.opacity(0.6) : themeManager.primaryTextColor)
+                }
+                
+                if showToggle {
+                    Button(action: { isVisible.toggle() }) {
+                        Image(systemName: isVisible ? "eye.slash.fill" : "eye.fill")
+                            .foregroundColor(themeManager.secondaryTextColor)
+                            .font(.system(size: 16))
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -267,7 +292,6 @@ struct CustomTextField: View {
                 RoundedRectangle(cornerRadius: 15)
                     .fill(themeManager.inputBgColor)
             )
-            // Giving the border a slight yellow tint outline matching the design loosely
             .overlay(
                 RoundedRectangle(cornerRadius: 15)
                     .stroke(themeManager.inputBgColor.opacity(0.5), lineWidth: 1)

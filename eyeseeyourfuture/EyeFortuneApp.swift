@@ -14,11 +14,11 @@ struct EyeFortuneApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     // Shared instances for state management
+    @StateObject private var localizationManager = LocalizationManager()
+    @StateObject private var storeManager = StoreManager()
+    @StateObject private var themeManager = ThemeManager()
     @StateObject private var authManager = AuthManager()
     @StateObject private var fortuneViewModel = FortuneViewModel()
-    @StateObject private var scannerViewModel = ScannerViewModel()
-    @StateObject private var themeManager = ThemeManager()
-    @StateObject private var localizationManager = LocalizationManager()
     
     @AppStorage("isSetupComplete") var isSetupComplete: Bool = false
     @State private var isSplashFinished = false
@@ -31,19 +31,23 @@ struct EyeFortuneApp: App {
                         isSplashFinished = true
                     })
                     .environmentObject(themeManager)
+                    .environmentObject(authManager)
+                    .environmentObject(fortuneViewModel)
                 } else if authManager.user != nil && isSetupComplete {
                     MainTabView()
-                        .environmentObject(authManager)
-                        .environmentObject(fortuneViewModel)
-                        .environmentObject(scannerViewModel)
                         .environmentObject(themeManager)
                         .environmentObject(localizationManager)
+                        .environmentObject(storeManager)
+                        .environmentObject(authManager)
+                        .environmentObject(fortuneViewModel)
                         .preferredColorScheme(themeManager.systemColorScheme)
                 } else {
                     LoginView()
-                        .environmentObject(authManager)
                         .environmentObject(themeManager)
                         .environmentObject(localizationManager)
+                        .environmentObject(storeManager)
+                        .environmentObject(authManager)
+                        .environmentObject(fortuneViewModel)
                         .preferredColorScheme(themeManager.systemColorScheme)
                 }
             }
