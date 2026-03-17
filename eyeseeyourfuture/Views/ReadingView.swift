@@ -16,10 +16,16 @@ struct ReadingView: View {
                 themeManager.bgColor.ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    ZStack {
-                        ScrollView(showsIndicators: false) {
-                            VStack(spacing: 0) {
-                                // MARK: Featured Banner
+                                // MARK: Category Selectors (Moved outside for better filtering)
+                                CategoryFilterRow(selected: $viewModel.selectedCategory, themeManager: themeManager, lm: lm)
+                                    .padding(.top, 12)
+                                    .padding(.bottom, 8)
+                                    .background(themeManager.bgColor)
+                                
+                                ZStack {
+                                    ScrollView(showsIndicators: false) {
+                                        VStack(spacing: 0) {
+                                            // MARK: Featured Banner
                                 if let featured = viewModel.featuredArticle {
                                     FeaturedReadingBanner(article: featured, themeManager: themeManager, lm: lm) {
                                         if isPremium {
@@ -31,10 +37,7 @@ struct ReadingView: View {
                                     .padding(.horizontal, 16)
                                     .padding(.top, 16)
                                 }
-                                // MARK: Category Selectors
-                                CategoryFilterRow(selected: $viewModel.selectedCategory, themeManager: themeManager, lm: lm)
-                                    .padding(.top, 12)
-                                    .padding(.bottom, 8)
+                                            // Category row was here, moved outside
                                 
                                 // MARK: Article Cards
                                 if viewModel.nonFeaturedFiltered.isEmpty {
@@ -66,16 +69,9 @@ struct ReadingView: View {
                                 
                                 Spacer().frame(height: 60)
                             }
-                        }
-                        .blur(radius: isPremium ? 0 : 4)
-                        .allowsHitTesting(isPremium)
-                        
-                        if !isPremium {
-                            PremiumLockOverlay(onSubscribe: {
-                                showSubscription = true
-                            })
-                        }
-                    }
+                                    }
+                                }
+                                .padding(.top, -8) // Pull content up slightly to close the gap after relocation
                     
                     AdBannerView()
                 }

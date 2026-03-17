@@ -1,47 +1,16 @@
 import SwiftUI
 import Combine
 
-// MARK: - Models
-struct QuizQuestion: Identifiable {
-    let id = UUID()
-    let text: String
-    let category: String
-}
-
-enum QuizAnswer: String, Codable {
-    case yes = "Evet"
-    case no = "Hayır"
-}
+// Internal models removed, using PersonalityQuiz.swift
 
 // MARK: - ViewModel
 class PersonalityQuizViewModel: ObservableObject {
     @Published var currentIndex = 0
-    @Published var answers: [UUID: QuizAnswer] = [:]
+    @Published var answers: [String: QuizAnswer] = [:]
     @Published var isAnalyzing = false
     @Published var analysisComplete = false
     
-    let questions: [QuizQuestion] = [
-        QuizQuestion(text: "Yeni bir yere gittiğimde önce etrafımdaki enerjiyi hissederim.", category: "Sezgi"),
-        QuizQuestion(text: "Karar verirken mantığımdan çok iç sesime güvenirim.", category: "Karar Verme"),
-        QuizQuestion(text: "Rüyalarımın çoğu zaman gerçekleştiğine şahit olurum.", category: "Sezgi"),
-        QuizQuestion(text: "Kalabalık ortamlarda insanların duygularını hemen anlarım.", category: "Empati"),
-        QuizQuestion(text: "Doğada vakit geçirmek ruhumu her zaman tazeler.", category: "Enerji"),
-        QuizQuestion(text: "Küçük detaylar yerine büyük resme odaklanmayı tercih ederim.", category: "Algı"),
-        QuizQuestion(text: "Başkalarına yardım etmek bana derin bir huzur verir.", category: "Empati"),
-        QuizQuestion(text: "Planlarımın aniden değişmesi beni endişelendirmez.", category: "Esneklik"),
-        QuizQuestion(text: "Yalnız kalmak benim için bir ihtiyaçtır.", category: "İçsel Denge"),
-        QuizQuestion(text: "Geçmişteki hatalarımdan ders çıkarmak benim için kolaydır.", category: "Gelişim"),
-        QuizQuestion(text: "Gelecek hakkında düşünürken genellikle heyecanlıyımdır.", category: "Bakış Açısı"),
-        QuizQuestion(text: "Yaratıcı projeler üretmek beni motive eder.", category: "Yaratıcılık"),
-        QuizQuestion(text: "İnsanların niyetlerini bakışlarından anlayabilirim.", category: "Sezgi"),
-        QuizQuestion(text: "Hayatımda tesadüflere değil, eşzamanlılıklara inanırım.", category: "İnanç"),
-        QuizQuestion(text: "Farklı görüşlere sahip insanlarla kolayca anlaşabilirim.", category: "Sosyal"),
-        QuizQuestion(text: "Sabah saatleri benim için en verimli vakitlerdir.", category: "Ritim"),
-        QuizQuestion(text: "Bir işe başlamadan önce tüm riskleri hesaplamayı severim.", category: "Mantık"),
-        QuizQuestion(text: "Mistik ve gizemli konular her zaman ilgimi çekmiştir.", category: "Merak"),
-        QuizQuestion(text: "Kendimi ifade ederken sanatsal yolları tercih ederim.", category: "Yaratıcılık"),
-        QuizQuestion(text: "Hayatın bir amacı olduğuna ve her şeyin bir nedeni olduğuna inanırım.", category: "Felsefe")
-    ]
+    let questions = PersonalityQuiz.questions
     
     var currentQuestion: QuizQuestion {
         questions[currentIndex]

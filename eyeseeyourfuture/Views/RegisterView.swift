@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct RegisterView: View {
     @EnvironmentObject var authManager: AuthManager
@@ -142,7 +143,52 @@ struct RegisterView: View {
                             Text(authManager.errorMessage ?? lm.t(.alertError))
                         }
                         
-                        // Social Buttons removed as requested
+                        // MARK: Social Register
+                        VStack(spacing: 25) {
+                            HStack {
+                                Rectangle()
+                                    .fill(themeManager.inputBgColor)
+                                    .frame(height: 1)
+                                
+                                Text(lm.t(.loginOrConnect))
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundColor(themeManager.secondaryTextColor)
+                                    .padding(.horizontal, 10)
+                                
+                                Rectangle()
+                                    .fill(themeManager.inputBgColor)
+                                    .frame(height: 1)
+                            }
+                            
+                            VStack(spacing: 15) {
+                                LoginSocialButton(title: lm.t(.loginGoogle), iconName: "google", themeManager: themeManager) {
+                                    authManager.loginWithGoogle { success in
+                                        if success {
+                                            showSubscription = true
+                                        } else {
+                                            showError = true
+                                        }
+                                    }
+                                }
+                                
+                                SignInWithAppleButton(.signUp) { request in
+                                    authManager.prepareAppleSignInRequest(request)
+                                } onCompletion: { result in
+                                    authManager.handleAppleSignInCompletion(result) { success in
+                                        if success {
+                                            showSubscription = true
+                                        } else {
+                                            showError = true
+                                        }
+                                    }
+                                }
+                                .signInWithAppleButtonStyle(themeManager.activeTheme == .midnight ? .white : .black)
+                                .frame(height: 50)
+                                .cornerRadius(25)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 25)
                         
                         // Login Link
                         HStack(spacing: 5) {

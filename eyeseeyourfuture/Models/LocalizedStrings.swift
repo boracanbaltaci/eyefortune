@@ -261,6 +261,8 @@ struct LocalizedStrings {
             .homeMysticAfternoon: "Günün en parlak anında kadim bilgiler zihnine akmaya başlıyor.",
             .homeMysticEvening: "Yıldızlar gökyüzüne yerleşirken gizemli mesajlar sezgilerine ulaşıyor.",
             .homeMysticNight: "Gecenin derinliğinde yıldızlar parlıyor, sana rehberlik eden mesajlar fısıldıyorlar.",
+            .homeSeeInsights: "Görüntüle",
+            .homeEyeAnalysis: "Göz Analizi",
 
             .homeInsightLove:         "Aşk & İlişkiler",
             .homeInsightLoveSub:      "Uyum Analizi",
@@ -306,6 +308,7 @@ struct LocalizedStrings {
             .settingsPersonalInfo:    "Kişisel Bilgiler",
             .settingsPersonalInfoSub: "Ad, doğum tarihi ve kişilik verileri",
             .settingsFixEyeColor:     "Göz Rengimi Düzelt",
+            .homeFixEyeColor:         "Göz Analizimi Düzelt",
             .settingsFixEyeColorSub:  "Yanlış belirlendiyse talep oluşturun",
             .settingsPrivacyPolicy:   "Gizlilik Politikası",
             .settingsPrivacyPolicySub: "Verilerinizin nasıl korunduğunu görün",
@@ -470,6 +473,8 @@ struct LocalizedStrings {
             .homeMysticAfternoon: "At the brightest moment of the day, ancient wisdom begins to flow into your mind.",
             .homeMysticEvening: "As the stars settle in the sky, mysterious messages reach your intuition.",
             .homeMysticNight: "In the depths of the night, the stars shine, whispering messages that guide you.",
+            .homeSeeInsights: "View",
+            .homeEyeAnalysis: "Eye Analysis",
 
             .homeInsightLove:         "Love & Relationships",
             .homeInsightLoveSub:      "Harmony Analysis",
@@ -515,6 +520,7 @@ struct LocalizedStrings {
             .settingsPersonalInfo:    "Personal Information",
             .settingsPersonalInfoSub: "Name, birth date, and personality data",
             .settingsFixEyeColor:     "Fix My Eye Color",
+            .homeFixEyeColor:         "Fix My Eye Analysis",
             .settingsFixEyeColorSub:  "Create a request if identified incorrectly",
             .settingsPrivacyPolicy:   "Privacy Policy",
             .settingsPrivacyPolicySub: "See how your data is protected",

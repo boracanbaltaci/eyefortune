@@ -15,7 +15,7 @@ class ReadingViewModel: ObservableObject {
     }
 
     var featuredArticle: ReadingArticle? {
-        articles.first(where: { $0.isFeatured })
+        filteredArticles.first(where: { $0.isFeatured })
     }
 
     var nonFeaturedFiltered: [ReadingArticle] {

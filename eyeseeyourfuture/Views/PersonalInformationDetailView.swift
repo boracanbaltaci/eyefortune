@@ -17,7 +17,7 @@ struct PersonalInformationDetailView: View {
     @AppStorage("hasCompletedInitialPersonalEdit") var hasCompletedInitialPersonalEdit = false
     @AppStorage("hasCompletedInitialQuizEdit") var hasCompletedInitialQuizEdit = false
     
-    @State private var quizAnswers: [UUID: QuizAnswer] = [:]
+    @State private var quizAnswers: [String: QuizAnswer] = [:]
     
     @State private var isEditingPersonal = false
     @State private var tempFullName = ""
@@ -25,31 +25,10 @@ struct PersonalInformationDetailView: View {
     @State private var tempBirthTime = ""
     
     @State private var isEditingQuiz = false
-    @State private var tempQuizAnswers: [UUID: QuizAnswer] = [:]
+    @State private var tempQuizAnswers: [String: QuizAnswer] = [:]
     
     // Questions from PersonalityQuizViewModel for reference
-    let questions: [QuizQuestion] = [
-        QuizQuestion(text: "Yeni bir yere gittiğimde önce etrafımdaki enerjiyi hissederim.", category: "Sezgi"),
-        QuizQuestion(text: "Karar verirken mantığımdan çok iç sesime güvenirim.", category: "Karar Verme"),
-        QuizQuestion(text: "Rüyalarımın çoğu zaman gerçekleştiğine şahit olurum.", category: "Sezgi"),
-        QuizQuestion(text: "Kalabalık ortamlarda insanların duygularını hemen anlarım.", category: "Empati"),
-        QuizQuestion(text: "Doğada vakit geçirmek ruhumu her zaman tazeler.", category: "Enerji"),
-        QuizQuestion(text: "Küçük detaylar yerine büyük resme odaklanmayı tercih ederim.", category: "Algı"),
-        QuizQuestion(text: "Başkalarına yardım etmek bana derin bir huzur verir.", category: "Empati"),
-        QuizQuestion(text: "Planlarımın aniden değişmesi beni endişelendirmez.", category: "Esneklik"),
-        QuizQuestion(text: "Yalnız kalmak benim için bir ihtiyaçtır.", category: "İçsel Denge"),
-        QuizQuestion(text: "Geçmişteki hatalarımdan ders çıkarmak benim için kolaydır.", category: "Gelişim"),
-        QuizQuestion(text: "Gelecek hakkında düşünürken genellikle heyecanlıyımdır.", category: "Bakış Açısı"),
-        QuizQuestion(text: "Yaratıcı projeler üretmek beni motive eder.", category: "Yaratıcılık"),
-        QuizQuestion(text: "İnsanların niyetlerini bakışlarından anlayabilirim.", category: "Sezgi"),
-        QuizQuestion(text: "Hayatımda tesadüflere değil, eşzamanlılıklara inanırım.", category: "İnanç"),
-        QuizQuestion(text: "Farklı görüşlere sahip insanlarla kolayca anlaşabilirim.", category: "Sosyal"),
-        QuizQuestion(text: "Sabah saatleri benim için en verimli vakitlerdir.", category: "Ritim"),
-        QuizQuestion(text: "Bir işe başlamadan önce tüm riskleri hesaplamayı severim.", category: "Mantık"),
-        QuizQuestion(text: "Mistik ve gizemli konular her zaman ilgimi çekmiştir.", category: "Merak"),
-        QuizQuestion(text: "Kendimi ifade ederken sanatsal yolları tercih ederim.", category: "Yaratıcılık"),
-        QuizQuestion(text: "Hayatın bir amacı olduğuna ve her şeyin bir nedeni olduğuna inanırım.", category: "Felsefe")
-    ]
+    let questions = PersonalityQuiz.questions
     
     private var canEditPersonal: Bool {
         if !hasCompletedInitialPersonalEdit { return true }
@@ -243,46 +222,63 @@ struct PersonalInformationDetailView: View {
                                 .foregroundColor(themeManager.secondaryTextColor)
                                 .padding(.leading, 4)
                         } else {
-                            VStack(spacing: 8) {
+                            VStack(spacing: 12) {
                                 ForEach(questions) { question in
-                                    if let currentAnswer = isEditingQuiz ? tempQuizAnswers[question.id] : quizAnswers[question.id] {
+                                    let answer = isEditingQuiz ? tempQuizAnswers[question.id] : quizAnswers[question.id]
+                                    
+                                    VStack(alignment: .leading, spacing: 12) {
                                         HStack(alignment: .top, spacing: 16) {
                                             VStack(alignment: .leading, spacing: 4) {
                                                 Text(question.text)
-                                                    .font(.system(size: 13))
+                                                    .font(.system(size: 14, weight: .medium, design: .serif))
                                                     .foregroundColor(themeManager.primaryTextColor)
+                                                    .fixedSize(horizontal: false, vertical: true)
                                                 
                                                 Text(question.category.uppercased())
                                                     .font(.system(size: 9, weight: .black))
                                                     .foregroundColor(themeManager.accentYellow.opacity(0.6))
-                                                    .tracking(1)
+                                                    .tracking(1.5)
                                             }
                                             
                                             Spacer()
                                             
-                                            if isEditingQuiz {
-                                                HStack(spacing: 8) {
-                                                    QuizEditButton(title: "Evet", isSelected: currentAnswer == .yes) {
-                                                        tempQuizAnswers[question.id] = .yes
-                                                    }
-                                                    QuizEditButton(title: "Hayır", isSelected: currentAnswer == .no) {
-                                                        tempQuizAnswers[question.id] = .no
-                                                    }
-                                                }
-                                            } else {
-                                                Text(currentAnswer.rawValue)
-                                                    .font(.system(size: 12, weight: .bold))
-                                                    .foregroundColor(currentAnswer == .yes ? .green : .red)
+                                            if !isEditingQuiz {
+                                                Text(answer?.rawValue ?? "Girilmedi")
+                                                    .font(.system(size: 11, weight: .bold))
+                                                    .foregroundColor((answer == .yes ? Color.green : Color.red).opacity(0.8))
                                                     .padding(.horizontal, 8)
                                                     .padding(.vertical, 4)
-                                                    .background((currentAnswer == .yes ? Color.green : Color.red).opacity(0.1))
+                                                    .background((answer == .yes ? Color.green : Color.red).opacity(0.1))
                                                     .cornerRadius(6)
                                             }
                                         }
-                                        .padding(16)
-                                        .background(themeManager.cardBgColor)
-                                        .cornerRadius(12)
+                                        
+                                        if isEditingQuiz {
+                                            HStack(spacing: 12) {
+                                                QuizEditButton(title: "Evet", isSelected: answer == .yes) {
+                                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                                        tempQuizAnswers[question.id] = .yes
+                                                    }
+                                                }
+                                                
+                                                QuizEditButton(title: "Hayır", isSelected: answer == .no) {
+                                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                                        tempQuizAnswers[question.id] = .no
+                                                    }
+                                                }
+                                                
+                                                Spacer()
+                                            }
+                                            .padding(.top, 4)
+                                        }
                                     }
+                                    .padding(16)
+                                    .background(themeManager.cardBgColor)
+                                    .cornerRadius(16)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .stroke(isEditingQuiz ? themeManager.accentYellow.opacity(0.2) : themeManager.accentYellow.opacity(0.05), lineWidth: 1)
+                                    )
                                 }
                             }
                         }
@@ -309,7 +305,7 @@ struct PersonalInformationDetailView: View {
     
     private func loadQuizAnswers() {
         if let data = UserDefaults.standard.data(forKey: "quizAnswers"),
-           let decoded = try? JSONDecoder().decode([UUID: QuizAnswer].self, from: data) {
+           let decoded = try? JSONDecoder().decode([String: QuizAnswer].self, from: data) {
             quizAnswers = decoded
         }
     }
@@ -317,6 +313,25 @@ struct PersonalInformationDetailView: View {
     private func saveQuizAnswers() {
         if let encoded = try? JSONEncoder().encode(quizAnswers) {
             UserDefaults.standard.set(encoded, forKey: "quizAnswers")
+            
+            // Re-summarize for AI
+            var categoryResults: [String: [QuizAnswer]] = [:]
+            for question in PersonalityQuiz.questions {
+                if let answer = quizAnswers[question.id] {
+                    categoryResults[question.category, default: []].append(answer)
+                }
+            }
+            
+            var summary: [String: String] = [:]
+            for (category, answers) in categoryResults {
+                let yesCount = answers.filter { $0 == .yes }.count
+                let total = answers.count
+                summary[category] = "\(total) sorudan \(yesCount) tanesine 'Evet' dedi."
+            }
+            
+            if let encodedSummary = try? JSONEncoder().encode(summary) {
+                UserDefaults.standard.set(encodedSummary, forKey: "quizResultsSummary")
+            }
         }
     }
     
@@ -406,13 +421,30 @@ struct QuizEditButton: View {
     
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.system(size: 11, weight: .bold))
-                .foregroundColor(isSelected ? .white : .gray)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isSelected ? (title == "Evet" ? Color.green : Color.red) : Color.gray.opacity(0.1))
-                .cornerRadius(8)
+            HStack(spacing: 6) {
+                Image(systemName: title == "Evet" ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .font(.system(size: 12))
+                
+                Text(title)
+                    .font(.system(size: 12, weight: .bold))
+            }
+            .foregroundColor(isSelected ? .white : (title == "Evet" ? Color.green : Color.red).opacity(0.6))
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(
+                ZStack {
+                    if isSelected {
+                        (title == "Evet" ? Color.green : Color.red)
+                    } else {
+                        (title == "Evet" ? Color.green : Color.red).opacity(0.05)
+                    }
+                }
+            )
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(isSelected ? .clear : (title == "Evet" ? Color.green : Color.red).opacity(0.2), lineWidth: 1)
+            )
         }
     }
 }
